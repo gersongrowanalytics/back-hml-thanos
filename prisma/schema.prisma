@@ -212,6 +212,7 @@ model master_productos_so {
   id                            Int         @id @default(autoincrement()) @db.UnsignedInt
   proid                         Int?        @db.UnsignedInt
   codigo_producto               String?     @db.VarChar(255)
+  desde                         String?     @db.VarChar(255)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
   master_productos              master_productos?   @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "master_productos_so_id_foreign")
@@ -237,7 +238,6 @@ model ventas_so {
   unidad_medida                 String?     @db.VarChar(255)
   precio_unitario               String?     @db.VarChar(255)
   precio_total_sin_igv          String?     @db.VarChar(255)
-  desde                         String?     @db.VarChar(255)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
   master_productos_so           master_productos_so?   @relation(fields: [pro_so_id], references: [id], onUpdate: Restrict, map: "ventas_so_id_foreign")
