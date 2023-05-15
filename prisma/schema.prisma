@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model perpersonas {
+  perid                       Int           @id @default(autoincrement()) @db.UnsignedInt
+  pertipodocumento            String?       @db.VarChar(255)
+  pernumerodocumentoidentidad String?       @db.VarChar(255)
+  pernombrecompleto           String        @db.VarChar(255)
+  pernombre                   String?       @db.VarChar(255)
+  perapellidopaterno          String?       @db.VarChar(255)
+  perapellidomaterno          String?       @db.VarChar(255)
+  created_at                  DateTime?     @default(now())
+  updated_at                  DateTime?     @updatedAt @db.Timestamp(0)
+  usuusuarios                 usuusuarios[]
+}
+
+model estestados {
+  estid            Int                @id @default(autoincrement()) @db.UnsignedInt
+  estnombre        String             @db.VarChar(255)
+  estdescripcion   String             @db.Text
+  created_at       DateTime?          @default(now())
+  updated_at       DateTime?          @updatedAt @db.Timestamp(0)
+  paipaises        paipaises[]
+  tputiposusuarios tputiposusuarios[]
+  usuusuarios      usuusuarios[]
+}
+
+model tputiposusuarios {
+  tpuid                    Int                        @id @default(autoincrement()) @db.UnsignedInt
+  estid                    Int                        @default(1) @db.UnsignedInt
+  tpunombre                String                     @db.VarChar(255)
+  tpuprivilegio            String?                    @db.VarChar(255)
+  tpuid_padre              Int?                       @db.UnsignedInt
+  created_at               DateTime?                  @default(now())
+  updated_at               DateTime?                  @updatedAt @db.Timestamp(0)
+  estestados               estestados                 @relation(fields: [estid], references: [estid], onUpdate: Restrict, map: "tputiposusuarios_estid_foreign")
+  usuusuarios              usuusuarios[]
+  tuptiposusuariospermisos tuptiposusuariospermisos[]
+}
+
+model paipaises {
+  paiid                Int                    @id @default(autoincrement()) @db.UnsignedInt
+  estid                Int                    @default(1) @db.UnsignedInt
+  painombre            String                 @db.VarChar(255)
+  paiicono             String                 @db.VarChar(255)
+  paiiconocircular     String                 @db.VarChar(255)
+  paiiconomas          String                 @db.VarChar(255)
+  created_at           DateTime?              @default(now())
+  updated_at           DateTime?              @updatedAt @db.Timestamp(0)
+  estestados           estestados             @relation(fields: [estid], references: [estid], onUpdate: Restrict, map: "paipaises_estid_foreign")
+  paupaises            paupaisesusuarios[]
+  pempermisos          pempermisos[]
+}
+
+model paupaisesusuarios {
+  pauid       Int         @id @default(autoincrement()) @db.UnsignedInt
+  paiid       Int         @db.UnsignedInt
+  usuid       Int         @db.UnsignedInt
+  created_at  DateTime?   @default(now())
+  updated_at  DateTime?   @updatedAt @db.Timestamp(0)
+  paipaises   paipaises   @relation(fields: [paiid], references: [paiid], onUpdate: Restrict, map: "paupaisesusuarios_paiid_foreign")
+  usuusuarios usuusuarios @relation(fields: [usuid], references: [usuid], onUpdate: Restrict, map: "paupaisesusuarios_usuid_foreign")
+}
+
+model usuusuarios {
+  usuid                       Int                           @id @default(autoincrement()) @db.UnsignedInt
+  tpuid                       Int                           @db.UnsignedInt
+  perid                       Int                           @db.UnsignedInt
+  estid                       Int                           @default(1) @db.UnsignedInt
+  usucumpleanios              String?                       @db.VarChar(255)
+  usufechaincorporacion       DateTime?                     @db.Timestamp(0)
+  usutelefono                 String?                       @db.VarChar(255)
+  usuimagen                   String?                       @db.VarChar(255)
+  usuusuario                  String?                       @db.VarChar(255)
+  usuarea                     String?                       @db.VarChar(255)
+  usucorreo                   String?                       @db.VarChar(255)
+  usucorreopersonal           String?                       @db.VarChar(255)
+  usucontrasena               String?                       @db.VarChar(255)
+  usutoken                    String                        @db.VarChar(255)
+  usupaistodos                Boolean                       @default(false)
+  usupermisosespeciales       Boolean                       @default(false)
+  usuaceptoterminos           DateTime?                     @db.Timestamp(0)
+  usucerrosesion              Boolean                       @default(false)
+  usufechalogin               DateTime?                     @db.Date
+  usucierreautomatico         Boolean                       @default(false)
+  usufechacaducidad           DateTime?                     @db.Date
+  usuabreviacion              String?                       @db.VarChar(5)
+  usubackground               String?                       @db.VarChar(10)
+  created_at                  DateTime?                     @default(now())
+  updated_at                  DateTime?                     @updatedAt @db.Timestamp(0)
+  paupaises                   paupaisesusuarios[]
+  estestados                  estestados                    @relation(fields: [estid], references: [estid], onUpdate: Restrict, map: "usuusuarios_estid_foreign")
+  perpersonas                 perpersonas                   @relation(fields: [perid], references: [perid], onUpdate: Restrict, map: "usuusuarios_perid_foreign")
+  tputiposusuarios            tputiposusuarios              @relation(fields: [tpuid], references: [tpuid], onUpdate: Restrict, map: "usuusuarios_tpuid_foreign")
+  audauditorias               audauditorias[]
+}
+
+model pempermisos {
+  pemid                    Int                        @id @default(autoincrement()) @db.UnsignedInt
+  tpeid                    Int                        @db.UnsignedInt
+  paiid                    Int                        @db.UnsignedInt
+  pemnombre                String                     @db.VarChar(255)
+  pemslug                  String                     @db.VarChar(255)
+  pemruta                  String?                    @db.VarChar(255)
+  pemespecial              Boolean                    @default(false)
+  created_at               DateTime?                  @db.Timestamp(0)
+  updated_at               DateTime?                  @db.Timestamp(0)
+  paipaises                paipaises                  @relation(fields: [paiid], references: [paiid], onUpdate: Restrict, map: "pempermisos_paiid_foreign")
+  tpetipospermisos         tpetipospermisos           @relation(fields: [tpeid], references: [tpeid], onUpdate: Restrict, map: "pempermisos_tpeid_foreign")
+  tuptiposusuariospermisos tuptiposusuariospermisos[]
+}
+
+model tpetipospermisos {
+  tpeid       Int           @id @default(autoincrement()) @db.UnsignedInt
+  tpenombre   String        @db.VarChar(255)
+  created_at  DateTime?     @db.Timestamp(0)
+  updated_at  DateTime?     @db.Timestamp(0)
+  pempermisos pempermisos[]
+}
+
+model tuptiposusuariospermisos {
+  tupid            Int               @id @default(autoincrement()) @db.UnsignedInt
+  pemid            Int?              @db.UnsignedInt
+  tpuid            Int?              @db.UnsignedInt
+  pempermisos      pempermisos?      @relation(fields: [pemid], references: [pemid], onUpdate: Restrict, map: "tuptiposusuariospermisos_pemid_foreign")
+  tputiposusuarios tputiposusuarios? @relation(fields: [tpuid], references: [tpuid], onUpdate: Restrict, map: "tuptiposusuariospermisos_tpuid_foreign")
+  created_at       DateTime?         @default(now())
+  updated_at       DateTime?         @db.Timestamp(0)
+}
+
+model tpatiposauditorias {
+  tpaid         Int             @id @default(autoincrement()) @db.UnsignedInt
+  tpanombre     String          @db.VarChar(255)
+  created_at    DateTime?       @default(now())
+  updated_at    DateTime?       @db.Timestamp(0)
+  audauditorias audauditorias[]
+}
+
+model audauditorias {
+  audid              Int                 @id @default(autoincrement()) @db.UnsignedInt
+  tpaid              Int                 @db.UnsignedInt
+  usuid              Int?                @db.UnsignedInt
+  audip              String?             @db.VarChar(255)
+  audjsonentrada     String              @db.Text()
+  audjsonsalida      String              @db.Text()
+  auddescripcion     String              @db.Text()
+  audaccion          String              @db.VarChar(255)
+  audruta            String              @db.VarChar(255)
+  audlog             String?             @db.Text()
+  audpk              String?             @db.VarChar(255)
+  created_at         DateTime?           @default(now())
+  updated_at         DateTime?           @db.Timestamp(0)
+  tpatiposauditorias tpatiposauditorias? @relation(fields: [tpaid], references: [tpaid], onUpdate: Restrict, map: "audauditorias_tpaid_foreign")
+  usuusuarios        usuusuarios?        @relation(fields: [usuid], references: [usuid], onUpdate: Restrict, map: "audauditorias_usuid_foreign")
+}
+
+model master_distribuidoras {
+  id                  Int         @id @default(autoincrement()) @db.UnsignedInt
+  codigo_dt           String?     @db.VarChar(255)
+  region              String?     @db.VarChar(100)
+  supervisor          String?     @db.VarChar(255)
+  localidad           String?     @db.VarChar(255)
+  nomb_dt             String?     @db.VarChar(255)
+  check_venta         String?     @db.VarChar(10)
+  nomb_cliente        String?     @db.VarChar(255)
+  latitud             String?     @db.VarChar(255)
+  longitud            String?     @db.VarChar(255)
+  oficina_two         String?     @db.VarChar(255)
+  subcanal            String?     @db.VarChar(255)
+  sap_solicitante     String?     @db.VarChar(255)
+  sap_destinatario    String?     @db.VarChar(255)
+  diferencial         String?     @db.VarChar(255)
+  canal_atencion      String?     @db.VarChar(255)
+  cod_solicitante     String?     @db.VarChar(255)
+  cod_destinatario    String?     @db.VarChar(255)
+  canal_trade         String?     @db.VarChar(255)
+  created_at          DateTime?   @default(now())
+  updated_at          DateTime?   @db.Timestamp(0)
+}
+
+model master_productos {
+  id                  Int         @id @default(autoincrement()) @db.UnsignedInt
+  cod_producto        String?     @db.VarChar(255)
+  nomb_producto       String?     @db.VarChar(255)
+  division            String?     @db.VarChar(255)
+  sector              String?     @db.VarChar(255)
+  categoria           String?     @db.VarChar(255)
+  subcategoria        String?     @db.VarChar(255)
+  segmento            String?     @db.VarChar(255)
+  presentacion        String?     @db.VarChar(255)
+  peso                String?     @db.VarChar(255)
+  paquetexbulto       String?     @db.VarChar(255)
+  unidadxpqte         String?     @db.VarChar(255)
+  metroxund           String?     @db.VarChar(255)
+  ean13               String?     @db.VarChar(255)
+  ean14               String?     @db.VarChar(255)
+  minund              String?     @db.VarChar(255)
+  estado              String?     @db.VarChar(255)
+  marco               String?     @db.VarChar(255)
+  created_at          DateTime?   @default(now())
+  updated_at          DateTime?   @db.Timestamp(0)
+  proid               master_productos_so[]
+}
+
+model master_productos_so {
+  id                            Int         @id @default(autoincrement()) @db.UnsignedInt
+  proid                         Int?        @db.UnsignedInt
+  codigo_distribuidor           String?     @db.VarChar(255)
+  fecha                         String?     @db.VarChar(255)
+  nro_factura                   String?     @db.VarChar(255)
+  codigo_cliente                String?     @db.VarChar(255)
+  ruc                           String?     @db.VarChar(255)
+  razon_social                  String?     @db.VarChar(255)
+  mercado_categoria_tipo        String?     @db.VarChar(255)
+  codigo_vendedor_distribuidor  String?     @db.VarChar(255)
+  dni_vendedor_distribuidor     String?     @db.VarChar(255)
+  nombre_vendedor_distribuidor  String?     @db.VarChar(255)
+  codigo_producto               String?     @db.VarChar(255)
+  descripcion_producto          String?     @db.VarChar(255)
+  cantidad                      String?     @db.VarChar(255)
+  unidad_medida                 String?     @db.VarChar(255)
+  precio_unitario               String?     @db.VarChar(255)
+  precio_total_sin_igv          String?     @db.VarChar(255)
+  desde                         String?     @db.VarChar(255)
+  created_at                    DateTime?   @default(now())
+  updated_at                    DateTime?   @db.Timestamp(0)
+  master_productos              master_productos?   @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "master_productos_id_foreign")
+}
