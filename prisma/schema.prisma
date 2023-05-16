@@ -182,6 +182,9 @@ model master_distribuidoras {
   canal_trade         String?     @db.VarChar(255)
   created_at          DateTime?   @default(now())
   updated_at          DateTime?   @db.Timestamp(0)
+
+  master_productos_so  master_productos_so[]
+  ventas_so            ventas_so[]
 }
 
 model master_productos {
@@ -211,21 +214,26 @@ model master_productos {
 model master_productos_so {
   id                            Int         @id @default(autoincrement()) @db.UnsignedInt
   proid                         Int?        @db.UnsignedInt
+  m_dt_id                       Int?        @db.UnsignedInt
   codigo_distribuidor           String?     @db.VarChar(255)
   codigo_producto               String?     @db.VarChar(255)
   descripcion_producto          String?     @db.VarChar(255)
   precio_unitario               String?     @db.VarChar(255)
   ruc                           String?     @db.VarChar(50)
   desde                         String?     @db.VarChar(50)
+  s_ytd                         String?     @db.VarChar(50)
+  s_mtd                         String?     @db.VarChar(50)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
-  master_productos              master_productos?   @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "master_productos_so_id_foreign")
+  master_productos              master_productos?        @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "master_productos_so_id_foreign")
+  master_distribuidoras         master_distribuidoras?   @relation(fields: [m_dt_id], references: [id], onUpdate: Restrict, map: "master_distribuidoras_m_dt_id_foreign")
   ventas_so                     ventas_so[]
 }
 
 model ventas_so {
   id                            Int         @id @default(autoincrement()) @db.UnsignedInt
   pro_so_id                     Int?        @db.UnsignedInt
+  m_dt_id                       Int?        @db.UnsignedInt
   codigo_distribuidor           String?     @db.VarChar(255)
   fecha                         String?     @db.VarChar(255)
   nro_factura                   String?     @db.VarChar(255)
@@ -245,4 +253,5 @@ model ventas_so {
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
   master_productos_so           master_productos_so?   @relation(fields: [pro_so_id], references: [id], onUpdate: Restrict, map: "ventas_so_id_foreign")
+  master_distribuidoras         master_distribuidoras?   @relation(fields: [m_dt_id], references: [id], onUpdate: Restrict, map: "master_distribuidoras_m_dt_id_ventas_so_foreign")
 }

@@ -8,7 +8,39 @@ controller.MetMostrarHomologados = async (req, res) => {
 
     try{
 
+        const productos_hml = await prisma.master_productos_so.findMany({
+            where: {
+                proid : {
+                    not: null
+                }
+            },
+            select: {
+                master_distribuidoras: {
+                    select: {
+                        nomb_dt: true,
+                        region : true
+                    }
+                },
+                master_productos: {
+                    select: {
+                        cod_producto : true,
+                        nomb_producto : true
+                    }
+                },
+                
+            },
+            id : true,
+            codigo_producto : true,
+            descripcion_producto : true,
+            desde : true
+        })
         
+        res.status(200)
+        res.json({
+            message : 'Productos homologados obtenidos correctamente',
+            data    : productos_hml,
+            respuesta : true
+        })
 
     }catch(error){
         console.log(error)
