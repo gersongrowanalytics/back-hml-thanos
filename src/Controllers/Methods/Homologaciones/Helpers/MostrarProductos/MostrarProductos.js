@@ -1,4 +1,6 @@
 const controller = {}
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 
 controller.MetMostrarProductos = async (req, res) => {
 
@@ -6,7 +8,7 @@ controller.MetMostrarProductos = async (req, res) => {
 
     try{
 
-        const products = prisma.master_productos.findMany({
+        const products = await prisma.master_productos.findMany({
             orderBy: {
                 created_at: 'desc'
             },
