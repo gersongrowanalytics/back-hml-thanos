@@ -8,7 +8,7 @@ const permissionMiddleware = require('../../Middleware/permissionMiddleware')
 // Controllers
 const ValDTManuales = require('../../Controllers/Validations/CargaArchivos/DTManuales/ValDTManuales')
 const ValMasterClientes = require('../../Controllers/Validations/CargaArchivos/MasterClientes/ValMasterClientes')
-const ValMasterDT = require('../../Controllers/Validations/CargaArchivos/MasterDT/ValMasterDT')
+const ValMasterDT = require('../../Controllers/Validations/CargaArchivos/MasterMateriales/ValMasterMateriales')
 
 
 const protectedRoutes = express.Router();
@@ -28,7 +28,7 @@ protectedRoutes.post('/master-clientes', ValMasterClientes.ValMasterClientes)
 // **** **** **** **** **** //
 // RUTAS CARGAR MASTER DISTRIBUIDORAS
 // **** **** **** **** **** //
-protectedRoutes.post('/master-distribuidoras', ValMasterDT.ValMasterDT)
+protectedRoutes.post('/master-distribuidoras', ValMasterDT.ValMasterMateriales)
 
 router.use('/carga-archivos', protectedRoutes);
 

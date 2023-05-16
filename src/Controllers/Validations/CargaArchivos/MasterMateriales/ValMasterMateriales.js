@@ -1,13 +1,13 @@
 const controller = {}
-const MasterDTController = require('../../../Methods/CargaArchivos/MasterDT/MasterDT')
+const MasterDTController = require('../../../Methods/CargaArchivos/MasterDT/MasterMateriales')
 
-controller.ValMasterDT = async (req, res) => {
+controller.ValMasterMateriales = async (req, res) => {
 
     const {  } = req.body;
 
     try{
 
-        MasterDTController.MetMasterDT(req, res)
+        MasterDTController.MetMasterMateriales(req, res)
 
     }catch(error){
         console.log(error)
