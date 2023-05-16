@@ -13,6 +13,8 @@ controller.MetMostrarNoHomologados = async (req, res) => {
                 proid: null
             }
         })
+
+        productosSinProid.map((pro, index) => productosSinProid[index]['key'] = index)
         
         res.status(200)
         res.json({
