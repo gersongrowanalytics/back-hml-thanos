@@ -13,6 +13,7 @@ controller.MetMostrarProductos = async (req, res) => {
                 created_at: 'desc'
             },
             select: {
+                id            : true,
                 cod_producto  : true,
                 nomb_producto : true
             }

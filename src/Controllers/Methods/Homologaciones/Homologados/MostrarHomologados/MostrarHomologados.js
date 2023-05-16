@@ -28,14 +28,15 @@ controller.MetMostrarHomologados = async (req, res) => {
                         nomb_producto : true
                     }
                 },
-                
+                id : true,
+                codigo_producto : true,
+                descripcion_producto : true,
+                desde : true,
+                hasta : true
             },
-            id : true,
-            codigo_producto : true,
-            descripcion_producto : true,
-            desde : true,
-            hasta : true
         })
+
+        productos_hml.map((pro, index) => productos_hml[index]['key'] = index)
         
         res.status(200)
         res.json({
