@@ -23,9 +23,11 @@ controller.MetMostrarNoHomologados = async (req, res) => {
                     }
                 },
                 id : true,
+                codigo_distribuidor : true,
                 codigo_producto: true,
                 descripcion_producto : true,
                 desde : true,
+                hasta : true,
                 s_ytd : true,
                 s_mtd : true
             },

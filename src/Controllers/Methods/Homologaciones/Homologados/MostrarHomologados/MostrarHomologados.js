@@ -17,6 +17,7 @@ controller.MetMostrarHomologados = async (req, res) => {
             select: {
                 master_distribuidoras: {
                     select: {
+                        codigo_dt: true,
                         nomb_dt: true,
                         region : true
                     }
@@ -32,7 +33,8 @@ controller.MetMostrarHomologados = async (req, res) => {
             id : true,
             codigo_producto : true,
             descripcion_producto : true,
-            desde : true
+            desde : true,
+            hasta : true
         })
         
         res.status(200)

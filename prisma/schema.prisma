@@ -221,6 +221,7 @@ model master_productos_so {
   precio_unitario               String?     @db.VarChar(255)
   ruc                           String?     @db.VarChar(50)
   desde                         String?     @db.VarChar(50)
+  hasta                         String?     @db.VarChar(50)
   s_ytd                         String?     @db.VarChar(50)
   s_mtd                         String?     @db.VarChar(50)
   created_at                    DateTime?   @default(now())
