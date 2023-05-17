@@ -3,6 +3,8 @@ const XLSX = require('xlsx')
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const moment = require('moment');
+const ObtenerProductosSO = require('../Helpers/ObtenerProductosSO')
+const AsignarDTVentasSO = require('../Helpers/AsignarDTVentasSO')
 
 controller.MetDTManuales = async (req, res) => {
 
@@ -56,9 +58,12 @@ controller.MetDTManuales = async (req, res) => {
                 //     }
                 // }
 
+                const pk_venta_so = row[properties[0]].toString() + row[properties[10]].toString()
+
                 data.push({
                     pro_so_id                       : null,
                     m_dt_id                         : null,
+                    pk_venta_so                     : pk_venta_so,
                     codigo_distribuidor             : row[properties[0]] ?  row[properties[0]].toString() : '',
                     fecha                           : row[properties[1]] ?  row[properties[1]].toString() : '',
                     nro_factura                     : row[properties[2]] ?  row[properties[2]].toString() : '',
@@ -83,9 +88,14 @@ controller.MetDTManuales = async (req, res) => {
                 data
             })
 
+            const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
+            const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+
+            console.log("rpta_obtener_products_so");
+            console.log(rpta_obtener_products_so);
         }else{
             message_logs.forEach((message) => {
-                console.log(message)
+                // console.log(message)
             })
         }
         
@@ -94,10 +104,11 @@ controller.MetDTManuales = async (req, res) => {
         })
 
     }catch(error){
+        console.log("error catch:")
         console.log(error)
         res.status(500)
         res.json({
-            message : 'Lo sentimos hubo un error al momento de ...',
+            message : 'Lo sentimos hubo un error al momento de cargar las dt manuales',
             devmsg  : error
         })
     }
