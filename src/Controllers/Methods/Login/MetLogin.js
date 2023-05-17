@@ -1,7 +1,8 @@
 const controller = {}
 
 const bcryptjs = require('bcryptjs')
-const {PrismaClient} = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client')
+const crypto = require('crypto')
 const prisma = new PrismaClient()
 
 controller.MetLogin = async (user, req_usucontrasenia, res) => {
@@ -10,9 +11,9 @@ controller.MetLogin = async (user, req_usucontrasenia, res) => {
 
     if(checkPassword){
 
-        const token = generateRandomToken(25)
+        const token = generateRandomToken(30)
 
-        const updateToken = await prisma.usuusuarios.update({
+        await prisma.usuusuarios.update({
             where: {
                 usuid: user.usuid,
             },
@@ -45,10 +46,9 @@ controller.MetLogin = async (user, req_usucontrasenia, res) => {
 }
 
 const generateRandomToken = (length) => {
-    const randomBytes = new Uint8Array(length);
-    crypto.getRandomValues(randomBytes);
-    return Array.from(randomBytes, byte => ('0' + byte.toString(16)).slice(-2)).join('');
-};
+    const randomBytes = crypto.randomBytes(length)
+    return randomBytes.toString('hex')
+}
   
 
 module.exports = controller
