@@ -42,7 +42,7 @@ controller.MetCrearUsuarios = async (req, res) => {
             })
         }
 
-        const token_user = generateRandomToken(30)
+        const token_user = crypto.randomBytes(30).toString('hex')
 
         let usu = await prisma.usuusuarios.findFirst({
             where : {
@@ -85,10 +85,5 @@ controller.MetCrearUsuarios = async (req, res) => {
         })
     }
 }
-
-const generateRandomToken = (length) => {
-    const randomBytes = crypto.randomBytes(length)
-    return randomBytes.toString('hex')
-};
 
 module.exports = controller

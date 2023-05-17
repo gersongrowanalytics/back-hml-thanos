@@ -11,7 +11,7 @@ controller.MetLogin = async (user, req_usucontrasenia, res) => {
 
     if(checkPassword){
 
-        const token = generateRandomToken(30)
+        const token = crypto.randomBytes(30).toString('hex')
 
         await prisma.usuusuarios.update({
             where: {
@@ -33,9 +33,6 @@ controller.MetLogin = async (user, req_usucontrasenia, res) => {
             user : user
         })
         res.status(200).end()
-
-        
-
     }else{
         res.status(500)
         res.json({
@@ -44,11 +41,5 @@ controller.MetLogin = async (user, req_usucontrasenia, res) => {
         }).end()
     }
 }
-
-const generateRandomToken = (length) => {
-    const randomBytes = crypto.randomBytes(length)
-    return randomBytes.toString('hex')
-}
-  
 
 module.exports = controller
