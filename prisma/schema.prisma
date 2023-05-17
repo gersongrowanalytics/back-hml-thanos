@@ -235,6 +235,7 @@ model ventas_so {
   id                            Int         @id @default(autoincrement()) @db.UnsignedInt
   pro_so_id                     Int?        @db.UnsignedInt
   m_dt_id                       Int?        @db.UnsignedInt
+  pk_venta_so                   String?     @db.VarChar(255)
   codigo_distribuidor           String?     @db.VarChar(255)
   fecha                         String?     @db.VarChar(255)
   nro_factura                   String?     @db.VarChar(255)

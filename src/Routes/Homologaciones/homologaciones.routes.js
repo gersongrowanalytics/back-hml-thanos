@@ -25,7 +25,7 @@ protectedRoutes.get('/get-master-products', ValMosProController.ValMostrarProduc
 // RUTAS HOMOLOGACIONES
 // **** **** **** **** **** //
 protectedRoutes.get('/get-approved-products', ValMosHomController.ValMostrarHomologados)
-protectedRoutes.get('/upload-approved', ValActHomController.ValActualizarHomologados)
+protectedRoutes.post('/upload-approved', ValActHomController.ValActualizarHomologados)
 
 // **** **** **** **** **** //
 // RUTAS NO HOMOLOGACIONES
