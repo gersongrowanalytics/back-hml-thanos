@@ -17,69 +17,77 @@ controller.MetDTManuales = async (req, res) => {
         const cod_products  = []
         const data          = [];
 
-        for await (const row of rows){
+        let num_fila = 0
+        let properties = Object.keys(rows[0])
 
-            let properties = Object.keys(rows[0])
+        const { validFile, message_logs } = controller.ValidateCellsRequired(rows, properties)
 
-            let cod_prod_xlsx =  row[properties[10]] ? row[properties[10]].toString().trim() : null
+        if(validFile){
 
-            let pro_so_id_excel = null
+            for await (const row of rows){
 
-            if(cod_prod_xlsx){
+                // num_fila = num_fila + 1
 
-                let cod_prod_find = cod_products.find(pro => pro.cod_prod == cod_prod_xlsx)
+                // let cod_prod_xlsx =  row[properties[10]] ? row[properties[10]].toString().trim() : null
+                // let pro_so_id_excel = null
+                // if(cod_prod_xlsx){
 
-                if(cod_prod_find){
-                    pro_so_id_excel = cod_prod_find.proid
-                }else{
-                    let cod_prod = await prisma.master_productos_so.findMany({
-                        where : {
-                            codigo_producto : cod_prod_xlsx
-                        },
-                        select : {
-                            id      : true,
-                            proid   : true,
-                            desde   : true
-                        },
-                    })
+                //     let cod_prod_find = cod_products.find(pro => pro.cod_prod == cod_prod_xlsx)
 
-                    let row_data = await controller.GetLastDate(cod_prod)
+                //     if(cod_prod_find){
+                //         pro_so_id_excel = cod_prod_find.proid
+                //     }else{
+                //         let cod_prod = await prisma.master_productos_so.findMany({
+                //             where : {
+                //                 codigo_producto : cod_prod_xlsx
+                //             },
+                //             select : {
+                //                 id      : true,
+                //                 proid   : true,
+                //                 desde   : true
+                //             },
+                //         })
 
-                    pro_so_id_excel = cod_prod ? row_data.proid : null
+                //         let row_data = await controller.GetLastDate(cod_prod)
 
-                    cod_products.push(row_data)
-                }
+                //         pro_so_id_excel = cod_prod ? row_data.proid : null
+
+                //         cod_products.push(row_data)
+                //     }
+                // }
+
+                data.push({
+                    pro_so_id                       : null,
+                    m_dt_id                         : null,
+                    codigo_distribuidor             : row[properties[0]] ?  row[properties[0]].toString() : '',
+                    fecha                           : row[properties[1]] ?  row[properties[1]].toString() : '',
+                    nro_factura                     : row[properties[2]] ?  row[properties[2]].toString() : '',
+                    codigo_cliente                  : row[properties[3]] ?  row[properties[3]].toString() : '',
+                    ruc                             : row[properties[4]] ?  row[properties[4]].toString() : '',
+                    razon_social                    : row[properties[5]] ?  row[properties[5]].toString() : '',
+                    mercado_categoria_tipo          : row[properties[6]] ?  row[properties[6]].toString() : '',
+                    codigo_vendedor_distribuidor    : row[properties[7]] ?  row[properties[7]].toString() : '',
+                    dni_vendedor_distribuidor       : row[properties[8]] ?  row[properties[8]].toString() : '',
+                    nombre_vendedor_distribuidor    : row[properties[9]] ? row[properties[9]].toString() : '',
+                    codigo_producto                 : row[properties[10]] ? row[properties[10]].toString() : '',
+                    descripcion_producto            : row[properties[11]] ? row[properties[11]].toString() : '',
+                    cantidad                        : row[properties[12]] ? row[properties[12]].toString() : '',
+                    unidad_medida                   : row[properties[13]] ? row[properties[13]].toString() : '',
+                    precio_unitario                 : row[properties[14]] === 0 ? '0' : row[properties[14]].toString(),
+                    precio_total_sin_igv            : row[properties[15]] === 0 ? '0' : row[properties[15]].toString()
+                })
             }
 
-            data.push({
-                pro_so_id                       : pro_so_id_excel,
-                codigo_distribuidor             : row[properties[0]] ?  row[properties[0]].toString() : '',
-                fecha                           : row[properties[1]] ?  row[properties[1]].toString() : '',
-                nro_factura                     : row[properties[2]] ?  row[properties[2]].toString() : '',
-                codigo_cliente                  : row[properties[3]] ?  row[properties[3]].toString() : '',
-                ruc                             : row[properties[4]] ?  row[properties[4]].toString() : '',
-                razon_social                    : row[properties[5]] ?  row[properties[5]].toString() : '',
-                mercado_categoria_tipo          : row[properties[6]] ?  row[properties[6]].toString() : '',
-                codigo_vendedor_distribuidor    : row[properties[7]] ?  row[properties[7]].toString() : '',
-                dni_vendedor_distribuidor       : row[properties[8]] ?  row[properties[8]].toString() : '',
-                nombre_vendedor_distribuidor    : row[properties[9]] ? row[properties[9]].toString() : '',
-                codigo_producto                 : row[properties[10]] ? row[properties[10]].toString() : '',
-                descripcion_producto            : row[properties[11]] ? row[properties[11]].toString() : '',
-                cantidad                        : row[properties[12]] ? row[properties[12]].toString() : '',
-                unidad_medida                   : row[properties[13]] ? row[properties[13]].toString() : '',
-                precio_unitario                 : row[properties[14]] ? row[properties[14]].toString() : '',
-                precio_total_sin_igv            : row[properties[15]] ? row[properties[15]].toString() : '',
+            await prisma.ventas_so.deleteMany({})
+            await prisma.ventas_so.createMany({
+                data
+            })
+
+        }else{
+            message_logs.forEach((message) => {
+                console.log(message)
             })
         }
-
-        console.log(data)
-        console.log(cod_products)
-        console.log(veces_consulta)
-        // await prisma.ventas_so.createMany({
-        //     data
-        // });
-
-        // console.log(data)
         
         res.status(200).json({
             message : 'Datos cargas exitosamente',
@@ -92,6 +100,31 @@ controller.MetDTManuales = async (req, res) => {
             message : 'Lo sentimos hubo un error al momento de ...',
             devmsg  : error
         })
+    }
+}
+
+controller.ValidateCellsRequired = (rows, properties) => {
+
+    let columns_required = [0, 1, 3, 7, 10, 11, 12, 13, 14, 15]
+    let message_logs = []
+    rows.forEach((row, index_row) => {
+
+        columns_required.forEach((col) => {
+            if(col == 15 || col == 14 || col == 12){
+                if(row[properties[col]] === ''){
+                    message_logs.push(`El campo ${properties[col]} tiene un valor no valido en la fila ${index_row+2} => ${row[properties[col]]}`)
+                }    
+            }else{
+                if(row[properties[col]] == ''){
+                    message_logs.push(`El campo ${properties[col]} tiene un valor no valido en la fila ${index_row+2} => ${row[properties[col]]}`)
+                }    
+            }
+        })
+    });
+
+    return {
+        validFile       : message_logs.length > 0 ? false : true,
+        message_logs    : message_logs 
     }
 }
 

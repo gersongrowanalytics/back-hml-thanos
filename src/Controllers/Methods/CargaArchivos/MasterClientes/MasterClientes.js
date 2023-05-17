@@ -53,6 +53,8 @@ controller.MetMasterClientes = async (req, res) => {
 
         );
 
+        await prisma.master_distribuidoras.deleteMany({})
+
         await prisma.master_distribuidoras.createMany({
             data
         });

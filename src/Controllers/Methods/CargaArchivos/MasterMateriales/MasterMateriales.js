@@ -40,6 +40,8 @@ controller.MetMasterMateriales = async (req, res) => {
 
         );
 
+        await prisma.master_productos.deleteMany({})
+
         await prisma.master_productos.createMany({
             data
         });
