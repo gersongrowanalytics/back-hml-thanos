@@ -16,7 +16,7 @@ controller.MetRegistrarHomologacion = async (req, res) => {
 
         if(req_envio_otros == true){
 
-            await productos_so_ids.map(async (so_id) => {
+            for await (let so_id of productos_so_ids){
                 await prisma.master_productos_so.update({
                     where: {
                         id : so_id
@@ -25,8 +25,8 @@ controller.MetRegistrarHomologacion = async (req, res) => {
                     data: {
                         proid : producto_hml_id
                     }
-                })    
-            })
+                })
+            }
 
         }else{
             await prisma.master_productos_so.update({
