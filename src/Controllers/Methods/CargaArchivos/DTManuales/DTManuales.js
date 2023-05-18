@@ -10,9 +10,23 @@ controller.MetDTManuales = async (req, res) => {
 
     const file          = req.files.carga_manual
     
-    const workbook      = XLSX.read(file.data)
-    const rows          = XLSX.utils.sheet_to_json(workbook.Sheets['data'], {defval:""})
-    const format_date   = "DD/MM/YYYY";
+    if (!file) {
+        res.status(500)
+        return res.json({
+            message : 'No se ha subido ningún archivo'
+        })
+    }
+
+    const workbook = XLSX.read(file.data)
+    if(!workbook.Sheets['data']){
+        res.status(500)
+        return res.json({
+            message : 'Lo sentimos no se encontro la hoja con nombre data'
+        })
+    }
+
+    const rows        = XLSX.utils.sheet_to_json(workbook.Sheets['data'], {defval:""})
+    const format_date = "DD/MM/YYYY";
 
     try{
         
@@ -23,6 +37,37 @@ controller.MetDTManuales = async (req, res) => {
         let properties = Object.keys(rows[0])
 
         const { validFile, message_logs } = controller.ValidateCellsRequired(rows, properties)
+
+
+        // ******************
+        // VARIABLES DE VALIDACIONES
+        // ******************
+
+        let add_dt_manuales = true
+        let messages_error_cod_dt = false
+        let messages_error_fecha = false
+        let messages_error_cod_cliente = false
+        let messages_error_cod_vendedor = false
+        let messages_error_cod_producto = false
+        let messages_error_desc_producto = false
+        let messages_error_cantidad = false
+        let messages_error_und_medida = false
+        let messages_error_precio_unitario = false
+        let messages_error_precio_total = false
+
+        let messages_error_rucs = false
+        let messages_error_dnis = false
+        let messages_error_cantidad_number = false
+        let messages_error_precio_unitario_number = false
+        let messages_error_precio_total_number = false
+
+        let messages_error = []
+
+        // ******************
+        // DATA PARA BORRAR
+        // ******************
+
+        let borrar_data = []
 
         if(validFile){
 
@@ -58,6 +103,187 @@ controller.MetDTManuales = async (req, res) => {
                 //     }
                 // }
 
+                if(!row[properties[0]]){
+                    add_dt_manuales = false
+                    if(!messages_error_cod_dt){
+                        messages_error_cod_dt = true
+                        messages_error.push("Lo sentimos, algunos códigos de distribuidor se encuentran vacios")
+                    }
+                }else{
+
+                    const fechaJavaScript = XLSX.SSF.parse_date_code(row[properties[1]]);
+
+                    const fecha_mes = fechaJavaScript.m <= 9 ?"0"+fechaJavaScript.m.toString() :fechaJavaScript.m.toString();
+                    const fecha_capturada = fechaJavaScript.y.toString()+"-"+fecha_mes.toString()
+
+                    let existe_cod = false
+                    borrar_data.map((dat) => {
+                        if(dat.cod_dt == row[properties[0]] && dat.fecha == fecha_capturada ){
+                            existe_cod = true
+                        }
+                    })
+
+                    if(existe_cod == false){
+                        borrar_data.push({
+                            cod_dt : row[properties[0]],
+                            fecha : fecha_capturada
+                        })
+                    }
+                }
+
+                let fecha_capturada
+                if(!row[properties[1]]){
+                    add_dt_manuales = false
+                    if(!messages_error_fecha){
+                        messages_error_fecha = true
+                        messages_error.push("Lo sentimos, algunas fechas se encuentran vacios")
+                    }
+                }else{
+                    const fechaJavaScript = XLSX.SSF.parse_date_code(row[properties[1]]);
+
+                    const fecha_mes = fechaJavaScript.m <= 9 ?"0"+fechaJavaScript.m.toString() :fechaJavaScript.m.toString();
+                    fecha_capturada = fechaJavaScript.y.toString()+"-"+fecha_mes.toString()
+
+                    let existe_fec = false
+                    borrar_data.map((dat) => {
+                        if(dat.cod_dt == row[properties[0]] && dat.fecha == fecha_capturada){
+                            existe_fec = true
+                        }
+                    })
+
+                    if(existe_fec == false){
+                        borrar_data.push({
+                            cod_dt : row[properties[0]],
+                            fecha : fecha_capturada
+                        })
+                    }
+                }
+
+                if(!row[properties[3]]){
+                    add_dt_manuales = false
+                    if(!messages_error_cod_cliente){
+                        messages_error_cod_cliente = true
+                        messages_error.push("Lo sentimos, algunos códigos de cliente se encuentran vacios")
+                    }
+                }
+
+                if(!row[properties[7]]){
+                    add_dt_manuales = false
+                    if(!messages_error_cod_vendedor){
+                        messages_error_cod_vendedor = true
+                        messages_error.push("Lo sentimos, algunos códigos de vendedor se encuentran vacios")
+                    }
+                }
+
+                if(!row[properties[10]]){
+                    add_dt_manuales = false
+                    if(!messages_error_cod_producto){
+                        messages_error_cod_producto = true
+                        messages_error.push("Lo sentimos, algunos códigos de producto se encuentran vacios")
+                    }
+                }
+
+                if(!row[properties[11]]){
+                    add_dt_manuales = false
+                    if(!messages_error_desc_producto){
+                        messages_error_desc_producto = true
+                        messages_error.push("Lo sentimos, algunas descripciones de producto se encuentran vacios")
+                    }
+                }
+
+                if(!row[properties[12]]){
+                    add_dt_manuales = false
+                    if(!messages_error_cantidad){
+                        messages_error_cantidad = true
+                        messages_error.push("Lo sentimos, algunas cantidades se encuentran vacios")
+                    }
+                }
+
+                if(!row[properties[13]]){
+                    add_dt_manuales = false
+                    if(!messages_error_und_medida){
+                        messages_error_und_medida = true
+                        messages_error.push("Lo sentimos, algunas und de medida se encuentran vacios")
+                    }
+                }
+                
+                // if(!row[properties[14]]){
+                //     add_dt_manuales = false
+                //     if(!messages_error_precio_unitario){
+                //         messages_error_precio_unitario = true
+                //         messages_error.push("Lo sentimos, algunos precios unitario se encuentran vacios")
+                //     }
+                // }
+
+                // if(!row[properties[15]]){
+                //     add_dt_manuales = false
+                //     if(!messages_error_precio_total){
+                //         messages_error_precio_total = true
+                //         messages_error.push("Lo sentimos, algunos precios totales se encuentran vacios")
+                //     }
+                // }
+
+                // VALIDACIONES DE COLUMNAS
+
+                if(row[properties[4]]){
+                    if(row[properties[4]].toString().length != 11){
+                        add_dt_manuales = false
+                        if(!messages_error_rucs){
+                            messages_error_rucs = true
+                            messages_error.push("Lo sentimos, algunos de los ruc no cumplen con los requisitos de 11 digitos: ")
+                        }
+                    }
+                }
+                
+                if(row[properties[8]]){
+                    if(row[properties[8]].toString().length != 8){
+                        add_dt_manuales = false
+                        if(!messages_error_dnis){
+                            messages_error_dnis = true
+                            messages_error.push("Lo sentimos, algunos de los dni no cumplen con los requisitos de 8 digitos")
+                        }
+                    }
+                }
+
+                if(row[properties[12]]){
+
+                    const row_cantidad = row[properties[12]]
+
+                    if( typeof row_cantidad !== 'number' ){
+                        add_dt_manuales = false
+                        if(!messages_error_cantidad_number){
+                            messages_error_cantidad_number = true
+                            messages_error.push("Lo sentimos, algunas cantidades no son numericas")
+                        }
+                    }
+                }
+
+                if(row[properties[14]]){
+
+                    const row_precio_unitario = row[properties[14]]
+
+                    if( typeof row_precio_unitario !== 'number' ){
+                        add_dt_manuales = false
+                        if(!messages_error_precio_unitario_number){
+                            messages_error_precio_unitario_number = true
+                            messages_error.push("Lo sentimos, algunos precios unitarios no son numericos")
+                        }
+                    }
+                }
+
+                if(row[properties[15]]){
+
+                    const row_precio_total = row[properties[15]]
+
+                    if( typeof row_precio_total !== 'number' ){
+                        add_dt_manuales = false
+                        if(!messages_error_precio_total_number){
+                            messages_error_precio_total_number = true
+                            messages_error.push("Lo sentimos, algunos precios totales no son numericos")
+                        }
+                    }
+                }
+
                 const pk_venta_so = row[properties[0]].toString() + row[properties[10]].toString()
 
                 data.push({
@@ -65,7 +291,7 @@ controller.MetDTManuales = async (req, res) => {
                     m_dt_id                         : null,
                     pk_venta_so                     : pk_venta_so,
                     codigo_distribuidor             : row[properties[0]] ?  row[properties[0]].toString() : '',
-                    fecha                           : row[properties[1]] ?  row[properties[1]].toString() : '',
+                    fecha                           : fecha_capturada ?  fecha_capturada.toString() : '',
                     nro_factura                     : row[properties[2]] ?  row[properties[2]].toString() : '',
                     codigo_cliente                  : row[properties[3]] ?  row[properties[3]].toString() : '',
                     ruc                             : row[properties[4]] ?  row[properties[4]].toString() : '',
@@ -83,31 +309,51 @@ controller.MetDTManuales = async (req, res) => {
                 })
             }
 
-            await prisma.ventas_so.deleteMany({})
+            if(!add_dt_manuales){
+                res.status(500)
+                return res.json({
+                    message : 'Lo sentimos se encontraron algunas observaciones',
+                    messages_error : messages_error
+                })
+            }            
+            
+            for await (const dat of borrar_data ){
+
+                await prisma.ventas_so.deleteMany({
+                    where: {
+                        fecha: {
+                            startsWith: dat.fecha
+                        },
+                        codigo_distribuidor: dat.cod_dt
+                    }
+                })
+            }
+
             await prisma.ventas_so.createMany({
                 data
             })
 
+            // console.log(borrar_data);
+            // console.log(borrar_fechas);
+
             const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
             const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
 
-            console.log("rpta_obtener_products_so");
-            console.log(rpta_obtener_products_so);
+            
         }else{
             message_logs.forEach((message) => {
                 // console.log(message)
             })
         }
         
-        res.status(200).json({
-            message : 'Datos cargas exitosamente',
+        return res.status(200).json({
+            message : 'Las ventas manuales fueron cargadas correctamente',
         })
 
     }catch(error){
-        console.log("error catch:")
-        console.log(error)
+        console.log(error);
         res.status(500)
-        res.json({
+        return res.json({
             message : 'Lo sentimos hubo un error al momento de cargar las dt manuales',
             devmsg  : error
         })

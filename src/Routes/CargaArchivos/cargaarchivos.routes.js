@@ -26,9 +26,9 @@ protectedRoutes.post('/dt-manuales', ValDTManuales.ValDTManuales)
 protectedRoutes.post('/master-clientes', ValMasterClientes.ValMasterClientes)
 
 // **** **** **** **** **** //
-// RUTAS CARGAR MASTER DISTRIBUIDORAS
+// RUTAS CARGAR MASTER MATERIALES
 // **** **** **** **** **** //
-protectedRoutes.post('/master-distribuidoras', ValMasterDT.ValMasterMateriales)
+protectedRoutes.post('/master-materiales', ValMasterDT.ValMasterMateriales)
 
 router.use('/carga-archivos', protectedRoutes);
 
