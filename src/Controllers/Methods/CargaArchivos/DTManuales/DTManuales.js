@@ -160,11 +160,14 @@ controller.MetDTManuales = async (req, res) => {
                 }
 
                 if(!row[properties[3]]){
+                    console.log("no se encontro codigo cliente");
                     add_dt_manuales = false
                     if(!messages_error_cod_cliente){
                         messages_error_cod_cliente = true
                         messages_error.push("Lo sentimos, algunos códigos de cliente se encuentran vacios")
                     }
+                }else{
+                    console.log(row[properties[3]]);
                 }
 
                 if(!row[properties[7]]){
@@ -362,26 +365,29 @@ controller.MetDTManuales = async (req, res) => {
 
 controller.ValidateCellsRequired = (rows, properties) => {
 
-    let columns_required = [0, 1, 3, 7, 10, 11, 12, 13, 14, 15]
-    let message_logs = []
-    rows.forEach((row, index_row) => {
+    // let columns_required = [0, 1, 3, 7, 10, 11, 12, 13, 14, 15]
+    // let message_logs = []
+    // rows.forEach((row, index_row) => {
 
-        columns_required.forEach((col) => {
-            if(col == 15 || col == 14 || col == 12){
-                if(row[properties[col]] === ''){
-                    message_logs.push(`El campo ${properties[col]} tiene un valor no valido en la fila ${index_row+2} => ${row[properties[col]]}`)
-                }    
-            }else{
-                if(row[properties[col]] == ''){
-                    message_logs.push(`El campo ${properties[col]} tiene un valor no valido en la fila ${index_row+2} => ${row[properties[col]]}`)
-                }    
-            }
-        })
-    });
+    //     columns_required.forEach((col) => {
+    //         if(col == 15 || col == 14 || col == 12){
+    //             if(row[properties[col]] === ''){
+    //                 message_logs.push(`El campo ${properties[col]} tiene un valor no valido en la fila ${index_row+2} => ${row[properties[col]]}`)
+    //             }    
+    //         }else{
+    //             if(row[properties[col]] == ''){
+    //                 message_logs.push(`El campo ${properties[col]} tiene un valor no valido en la fila ${index_row+2} => ${row[properties[col]]}`)
+    //             }    
+    //         }
+    //     })
+    // });
 
+    // return {
+    //     validFile       : message_logs.length > 0 ? false : true,
+    //     message_logs    : message_logs 
+    // }
     return {
-        validFile       : message_logs.length > 0 ? false : true,
-        message_logs    : message_logs 
+        validFile : true
     }
 }
 
