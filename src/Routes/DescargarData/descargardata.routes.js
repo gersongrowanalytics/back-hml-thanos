@@ -32,11 +32,11 @@ protectedRoutes.get('/download-file/:type/:namefile', (req, res) => {
     let ubicacion = ""
 
     if(req_type == "products"){
-        ubicacion = "src/public/DescargarData/Maestra Productos/"+req_namefile
+        ubicacion = "public/DescargarData/Maestra Productos/"+req_namefile
     }else if(req_type == "distributors"){
-        ubicacion = "src/public/DescargarData/Maestra Clientes/"+req_namefile
+        ubicacion = "public/DescargarData/Maestra Clientes/"+req_namefile
     }else if(req_type == "products-so"){
-        ubicacion = "src/public/DescargarData/Homologaciones/"+req_namefile
+        ubicacion = "public/DescargarData/Homologaciones/"+req_namefile
     }
   
     res.download(ubicacion, (err) => {
