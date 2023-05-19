@@ -70,7 +70,8 @@ controller.MetDescargarMasterDistribuidoras = async (req, res) => {
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
 
         const nombre_excel = 'Maestra Distribuidoras-'+Math.random().toString(24).substr(2, 6)+'.xlsx';
-        const ubicacion_excel = 'src/public/DescargarData/Maestra Clientes/'+nombre_excel
+        // const ubicacion_excel = 'src/public/DescargarData/Maestra Clientes/'+nombre_excel
+        const ubicacion_excel = 'public/DescargarData/Maestra Clientes/'+nombre_excel
 
         XLSX.writeFile(workbook, ubicacion_excel)
 

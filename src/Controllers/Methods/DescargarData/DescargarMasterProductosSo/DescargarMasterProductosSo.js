@@ -95,7 +95,8 @@ controller.MetDescargarMasterProductosSo = async (req, res) => {
 
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
         const nombre_excel = 'Homologados-'+Math.random().toString(24).substr(2, 6)+'.xlsx' 
-        const ubicacion_excel = 'src/public/DescargarData/Homologaciones/'+nombre_excel
+        // const ubicacion_excel = 'src/public/DescargarData/Homologaciones/'+nombre_excel
+        const ubicacion_excel = 'public/DescargarData/Homologaciones/'+nombre_excel
 
         XLSX.writeFile(workbook, ubicacion_excel)
 
