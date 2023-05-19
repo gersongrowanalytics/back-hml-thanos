@@ -21,15 +21,15 @@ const protectedRoutes = express.Router();
 // RUTAS PRODUCTOS
 // **** **** **** **** **** //
 protectedRoutes.get('/get-products', ValMosPro.ValMostrarProductos)
-protectedRoutes.get('/create-product', ValCrePro.ValCrearProducto)
-protectedRoutes.get('/edit-product', ValEdiPro.ValEditarProducto)
+protectedRoutes.post('/create-product', ValCrePro.ValCrearProducto)
+protectedRoutes.post('/edit-product', ValEdiPro.ValEditarProducto)
 
 // **** **** **** **** **** //
 // RUTAS DISTRIBUIDORAS
 // **** **** **** **** **** //
 protectedRoutes.get('/get-distributors', ValMosDts.ValMostrarDistribuidoras)
-protectedRoutes.get('/create-distributors', ValCreDts.ValCrearDistribuidora)
-protectedRoutes.get('/edit-distributors', ValEdiDts.ValEditarDistribuidora)
+protectedRoutes.post('/create-distributors', ValCreDts.ValCrearDistribuidora)
+protectedRoutes.post('/edit-distributors', ValEdiDts.ValEditarDistribuidora)
 
 router.use('/administration', protectedRoutes);
 

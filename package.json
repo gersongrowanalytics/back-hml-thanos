@@ -23,6 +23,8 @@
   "dependencies": {
     "express-fileupload": "^1.4.0",
     "moment": "^2.29.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.3",
     "xlsx": "^0.18.5"
   }
 }

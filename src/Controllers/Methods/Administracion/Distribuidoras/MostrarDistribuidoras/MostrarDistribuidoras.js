@@ -8,7 +8,7 @@ controller.MetMostrarDistribuidoras = async (req, res) => {
 
     try{
 
-        const distributors = prisma.master_distribuidoras.findMany({
+        const distributors = await prisma.master_distribuidoras.findMany({
             orderBy: {
                 created_at: 'desc'
             }

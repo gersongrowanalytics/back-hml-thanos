@@ -6,6 +6,8 @@ const route = require('./Routes/index')
 const socketHandler = require('./Socket/socket');
 const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
+const fs = require('fs');
+const { swaggerDocs } = require('./Routes/api-docs')
 
 const app = express()
 app.use(cors());
@@ -35,4 +37,5 @@ socketHandler(io);
 
 server.listen(8002, () => {
     console.log('Express en Lineas en el puerto 8002')
+    swaggerDocs(app, 8002)
 })
