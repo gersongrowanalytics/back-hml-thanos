@@ -31,9 +31,35 @@ controller.MetDescargarMasterDistribuidoras = async (req, res) => {
             }
         })
 
+        let data_excel = []
+
+        master_distribuidoras.map((distribuidora) => {
+            data_excel.push({
+                "CodigoDistribuidor" : distribuidora.codigo_dt,
+                "Region" : distribuidora.region,
+                "Supervisor" : distribuidora.supervisor,
+                "Localidad" : distribuidora.localidad,
+                "NombreDistribuidor" : distribuidora.nomb_dt,
+                "CheckVentas" : distribuidora.check_venta,
+                "NombreCliente" : distribuidora.nomb_cliente,
+                "Latitud" : distribuidora.latitud,
+                "Longitud" : distribuidora.longitud,
+                "OFICINA2" : distribuidora.oficina_two,
+                "SUBCANAL" : distribuidora.subcanal,
+                "SAP_SOLICITANTE" : distribuidora.sap_solicitante,
+                "SAP_DESTINATARIO" : distribuidora.sap_destinatario,
+                "diferenciaL" : distribuidora.diferencial,
+                "Canal Atencion" : distribuidora.canal_atencion,
+                "COD_SOLICITANTE" : distribuidora.cod_solicitante,
+                "COD_DESTINATARIO" : distribuidora.cod_destinatario,
+                "CANAL_TRADE" : distribuidora.canal_trade
+            })
+        })
+
+        
         const encabezado = ['CodigoDistribuidor', 'Region', 'Supervisor', 'Localidad', 'NombreDistribuidor', 'CheckVentas', 'NombreCliente', 'Latitud', 'Longitud', 'OFICINA2', 'SUBCANAL', 'SAP_SOLICITANTE', 'SAP_DESTINATARIO', 'diferencial', 'Canal Atencion', 'COD_SOLICITANTE', 'COD_DESTINATARIO', 'CANAL_TRADE']
         const workbook = XLSX.utils.book_new()
-        const worksheet = XLSX.utils.json_to_sheet(master_distribuidoras, encabezado)
+        const worksheet = XLSX.utils.json_to_sheet(data_excel, encabezado)
 
         const columnas = [
             { wch: 30 },{ wch: 15 },{ wch: 20 },{ wch: 20 },{ wch: 30 },{ wch: 15 },{ wch: 35 },{ wch: 15 },{ wch: 15 },{ wch: 15 },{ wch: 15 },{ wch: 35 },{ wch: 35 },{ wch: 15 },{ wch: 20 },{ wch: 20 },{ wch: 20 },{ wch: 15 },
@@ -42,13 +68,17 @@ controller.MetDescargarMasterDistribuidoras = async (req, res) => {
         worksheet['!cols'] = columnas
 
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
-        const nombreArchivo = 'MasterDistribuidoras.xlsx'
-        XLSX.writeFile(workbook, nombreArchivo)
+
+        const nombre_excel = 'Maestra Distribuidoras-'+Math.random().toString(24).substr(2, 6)+'.xlsx';
+        const ubicacion_excel = 'src/public/DescargarData/Maestra Clientes/'+nombre_excel
+
+        XLSX.writeFile(workbook, ubicacion_excel)
 
         res.status(200)
         res.json({
             message : 'Se descargó exitosamente.',
-            respuesta : true
+            respuesta : true,
+            data : nombre_excel
         })
     }catch(error){
         console.log(error)

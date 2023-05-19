@@ -34,7 +34,6 @@ controller.MetDescargarMasterProductosSo = async (req, res) => {
                     }
                 }
             },
-            take: 1000,
             distinct: ['pro_so_id'],
         })
 
@@ -43,19 +42,20 @@ controller.MetDescargarMasterProductosSo = async (req, res) => {
             const { codigo_dt, nomb_dt, nomb_cliente } = ven.master_productos_so 
                 ? ven.master_productos_so.master_distribuidoras 
                 : {codigo_dt: null, nomb_dt: null, nomb_cliente: null}
-            const { cod_producto, nomb_producto } = ven.master_productos_so 
+            const { cod_producto, nomb_producto } = ven.master_productos_so.master_productos
                 ? ven.master_productos_so.master_productos 
                 : {cod_producto: null, nomb_producto: null}
 
             productos_hml_form.push({
-                codigo_dt: codigo_dt,
-                nomb_dt: nomb_dt,
-                nomb_cliente: nomb_cliente,
-                codigo_producto: ven.master_productos_so ? ven.master_productos_so.codigo_producto : null,
-                descripcion_producto: ven.master_productos_so ? ven.master_productos_so.descripcion_producto : null,
-                unidad_medida: ven.unidad_medida,
-                cod_producto: cod_producto,
-                nomb_producto: nomb_producto,
+                "COD_CLIENT_SI": codigo_dt,
+                "CLIENT_SI": nomb_dt,
+                "SUBSIDIARY": nomb_cliente,
+                "COD_MATERIAL_SO": ven.master_productos_so ? ven.master_productos_so.codigo_producto : null,
+                "MATERIAL_SO": ven.master_productos_so ? ven.master_productos_so.descripcion_producto : null,
+                "COD_UOM" : "",
+                "UOM": ven.unidad_medida,
+                "COD_MATERIAL_SI": cod_producto,
+                "MATERIAL_SI": nomb_producto,
             })
         })
 
@@ -94,14 +94,16 @@ controller.MetDescargarMasterProductosSo = async (req, res) => {
         // }
 
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
-        const nombreArchivo = 'MasterProductosSo.xlsx'
-        XLSX.writeFile(workbook, nombreArchivo)
+        const nombre_excel = 'Homologados-'+Math.random().toString(24).substr(2, 6)+'.xlsx' 
+        const ubicacion_excel = 'src/public/DescargarData/Homologaciones/'+nombre_excel
+
+        XLSX.writeFile(workbook, ubicacion_excel)
 
         res.status(200)
         res.json({
             message : 'Se descargó exitosamente.',
             respuesta : true,
-            ventas_so
+            data: nombre_excel
         })
         // res.download(nombreArchivo)
     }catch(error){

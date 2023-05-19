@@ -24,6 +24,29 @@ protectedRoutes.post('/distributors', ValDescargarMasterDistribuidoras.ValDescar
 protectedRoutes.post('/products', ValDescargarMasterProductos.ValDescargarMasterProductos)
 protectedRoutes.post('/products-so', ValDescargarMasterProductosSo.ValDescargarMasterProductosSo)
 
+protectedRoutes.get('/download-file/:type/:namefile', (req, res) => {
+
+    const req_type = req.params.type;
+    const req_namefile = req.params.namefile;
+    
+    let ubicacion = ""
+
+    if(req_type == "products"){
+        ubicacion = "src/public/DescargarData/Maestra Productos/"+req_namefile
+    }else if(req_type == "distributors"){
+        ubicacion = "src/public/DescargarData/Maestra Clientes/"+req_namefile
+    }else if(req_type == "products-so"){
+        ubicacion = "src/public/DescargarData/Homologaciones/"+req_namefile
+    }
+  
+    res.download(ubicacion, (err) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send('Ocurrió un error al descargar el archivo.');
+        }
+    });
+});
+
 
 router.use('/descargar-data', protectedRoutes);
 
