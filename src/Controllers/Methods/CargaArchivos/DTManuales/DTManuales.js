@@ -160,11 +160,14 @@ controller.MetDTManuales = async (req, res) => {
                 }
 
                 if(!row[properties[3]]){
+                    // console.log("no se encontro codigo cliente");
                     add_dt_manuales = false
                     if(!messages_error_cod_cliente){
                         messages_error_cod_cliente = true
                         messages_error.push("Lo sentimos, algunos códigos de cliente se encuentran vacios")
                     }
+                }else{
+                    // console.log(row[properties[3]]);
                 }
 
                 if(!row[properties[7]]){
@@ -226,21 +229,39 @@ controller.MetDTManuales = async (req, res) => {
                 // VALIDACIONES DE COLUMNAS
 
                 if(row[properties[4]]){
+
+                    const row_ruc = row[properties[4]]
+
                     if(row[properties[4]].toString().length != 11){
                         add_dt_manuales = false
                         if(!messages_error_rucs){
                             messages_error_rucs = true
-                            messages_error.push("Lo sentimos, algunos de los ruc no cumplen con los requisitos de 11 digitos: ")
+                            messages_error.push("Lo sentimos, algunos de los ruc no cumplen con los requisitos de 11 digitos")
+                        }
+                    }else if(typeof row_ruc !== 'number'){
+                        add_dt_manuales = false
+                        if(!messages_error_rucs){
+                            messages_error_rucs = true
+                            messages_error.push("Lo sentimos, algunos de los ruc no son númericos")
                         }
                     }
                 }
                 
                 if(row[properties[8]]){
+
+                    const row_dni = row[properties[8]]
+
                     if(row[properties[8]].toString().length != 8){
                         add_dt_manuales = false
                         if(!messages_error_dnis){
                             messages_error_dnis = true
                             messages_error.push("Lo sentimos, algunos de los dni no cumplen con los requisitos de 8 digitos")
+                        }
+                    }else if(typeof row_dni !== 'number'){
+                        add_dt_manuales = false
+                        if(!messages_error_dnis){
+                            messages_error_dnis = true
+                            messages_error.push("Lo sentimos, algunos de los dni no son númericos")
                         }
                     }
                 }
@@ -280,6 +301,18 @@ controller.MetDTManuales = async (req, res) => {
                         if(!messages_error_precio_total_number){
                             messages_error_precio_total_number = true
                             messages_error.push("Lo sentimos, algunos precios totales no son numericos")
+                        }
+                    }else{
+                        const row_cantidad = row[properties[12]]
+                        const row_precio = row[properties[14]]
+                        const precioTotal = Number(row_cantidad) * Number(row_precio)
+                        const dif_totales = precioTotal - row_precio_total
+                        if(dif_totales >= 1 || dif_totales <= -1){
+                            add_dt_manuales = false
+                            if(!messages_error_precio_total_number){
+                                messages_error_precio_total_number = true
+                                messages_error.push("Lo sentimos, algunos precios totales no cuadran con las cantidades y precios unitarios")
+                            }   
                         }
                     }
                 }
@@ -362,26 +395,29 @@ controller.MetDTManuales = async (req, res) => {
 
 controller.ValidateCellsRequired = (rows, properties) => {
 
-    let columns_required = [0, 1, 3, 7, 10, 11, 12, 13, 14, 15]
-    let message_logs = []
-    rows.forEach((row, index_row) => {
+    // let columns_required = [0, 1, 3, 7, 10, 11, 12, 13, 14, 15]
+    // let message_logs = []
+    // rows.forEach((row, index_row) => {
 
-        columns_required.forEach((col) => {
-            if(col == 15 || col == 14 || col == 12){
-                if(row[properties[col]] === ''){
-                    message_logs.push(`El campo ${properties[col]} tiene un valor no valido en la fila ${index_row+2} => ${row[properties[col]]}`)
-                }    
-            }else{
-                if(row[properties[col]] == ''){
-                    message_logs.push(`El campo ${properties[col]} tiene un valor no valido en la fila ${index_row+2} => ${row[properties[col]]}`)
-                }    
-            }
-        })
-    });
+    //     columns_required.forEach((col) => {
+    //         if(col == 15 || col == 14 || col == 12){
+    //             if(row[properties[col]] === ''){
+    //                 message_logs.push(`El campo ${properties[col]} tiene un valor no valido en la fila ${index_row+2} => ${row[properties[col]]}`)
+    //             }    
+    //         }else{
+    //             if(row[properties[col]] == ''){
+    //                 message_logs.push(`El campo ${properties[col]} tiene un valor no valido en la fila ${index_row+2} => ${row[properties[col]]}`)
+    //             }    
+    //         }
+    //     })
+    // });
 
+    // return {
+    //     validFile       : message_logs.length > 0 ? false : true,
+    //     message_logs    : message_logs 
+    // }
     return {
-        validFile       : message_logs.length > 0 ? false : true,
-        message_logs    : message_logs 
+        validFile : true
     }
 }
 
