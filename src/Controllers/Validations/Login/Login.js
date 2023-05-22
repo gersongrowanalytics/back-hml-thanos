@@ -32,21 +32,26 @@ controller.ValLogin = async (req, res) => {
                 return 
             }
             
-            const user_country = await prisma.paupaisesusuarios.findFirst({
-                where: {
-                    usuid : user.usuid,
-                    paiid : req_paiid
-                }
-            });
+            // ************************************************************
+            // VALIDACION PARA VER SI TIENE ACCESO AL PAIS
+            // ************************************************************
 
-            if(!user_country){
-                res.json({
-                    respuesta: false,
-                    message: 'No tiene acceso al país'})
-                res.status(500).end()
-            }else{
-                LoginController.MetLogin(user, req_usucontrasenia, res)
-            }
+            // const user_country = await prisma.paupaisesusuarios.findFirst({
+            //     where: {
+            //         usuid : user.usuid,
+            //         paiid : req_paiid
+            //     }
+            // });
+
+            // if(!user_country){
+            //     res.json({
+            //         respuesta: false,
+            //         message: 'No tiene acceso al país'})
+            //     res.status(500).end()
+            // }else{
+                // LoginController.MetLogin(user, req_usucontrasenia, res)
+            // }
+            LoginController.MetLogin(user, req_usucontrasenia, res)
 
         }catch(error){
             console.log(error)
