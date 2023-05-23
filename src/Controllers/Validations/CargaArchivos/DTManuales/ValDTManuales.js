@@ -125,8 +125,6 @@ controller.ValCellsFile = async (workbook) => {
                 let existe_cod = false
                 borrar_data.map((dat) => {
                     if(dat.cod_dt == row[properties[0]] && dat.fecha == fecha_capturada ){
-                        console.log('existe: ' + row[properties[0]])
-                        console.log('existe: ' + fecha_capturada)
                         existe_cod = true
                     }
                 })

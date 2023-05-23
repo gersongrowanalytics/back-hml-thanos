@@ -16,11 +16,7 @@ controller.ValMostrarDistribuidoras = async (req, res) => {
             message : 'Lo sentimos hubo un error al momento de ...',
             devmsg  : error
         })
-    }
-
-
-
-    
+    }    
 }
 
 

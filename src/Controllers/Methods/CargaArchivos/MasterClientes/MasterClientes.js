@@ -9,6 +9,10 @@ controller.MetMasterClientes = async (req, res) => {
 
     const file = req.files.maestra_cliente;
 
+    const {
+        req_delete_data
+    } = req.body
+
     if (!file) {
         res.status(500)
         return res.json({
@@ -87,7 +91,10 @@ controller.MetMasterClientes = async (req, res) => {
             return false
         }
 
-        await prisma.master_distribuidoras.deleteMany({})
+        if(req_delete_data == 'true'){
+            console.log('elimina clientees')
+            await prisma.master_distribuidoras.deleteMany({})
+        }
 
         await prisma.master_distribuidoras.createMany({
             data

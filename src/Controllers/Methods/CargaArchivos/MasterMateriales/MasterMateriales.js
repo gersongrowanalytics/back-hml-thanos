@@ -8,6 +8,10 @@ const AsignarDTVentasSO = require('../Helpers/AsignarDTVentasSO')
 controller.MetMasterMateriales = async (req, res) => {
 
     const file = req.files.maestra_producto
+
+    const {
+        req_delete_data
+    } = req.body
     
     const workbook  = XLSX.read(file.data)
 
@@ -79,8 +83,10 @@ controller.MetMasterMateriales = async (req, res) => {
             return false
         }
 
-        await prisma.master_productos.deleteMany({})
-        
+        if(req_delete_data == 'true'){
+            await prisma.master_productos.deleteMany({})
+        }
+
         await prisma.master_productos.create({
             data : {
                 id : 1,

@@ -8,20 +8,26 @@ const AsignarDTVentasSO = require('../Helpers/AsignarDTVentasSO')
 
 controller.MetDTManuales = async (req, res, data, delete_data) => {
 
+    const {
+        req_delete_data
+    } = req.body
+
     try{
 
         const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
 
-        for await (const dat of delete_data ){
-
-            await prisma.ventas_so.deleteMany({
-                where: {
-                    fecha: {
-                        startsWith: dat.fecha
-                    },
-                    codigo_distribuidor: dat.cod_dt
-                }
-            })
+        if(req_delete_data == 'true'){
+            for await (const dat of delete_data ){
+    
+                await prisma.ventas_so.deleteMany({
+                    where: {
+                        fecha: {
+                            startsWith: dat.fecha
+                        },
+                        codigo_distribuidor: dat.cod_dt
+                    }
+                })
+            }
         }
 
         await prisma.ventas_so.createMany({
