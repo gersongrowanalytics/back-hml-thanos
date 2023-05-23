@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 const XLSX = require('xlsx')
 const ObtenerProductosSO = require('../Helpers/ObtenerProductosSO')
 const AsignarDTVentasSO = require('../Helpers/AsignarDTVentasSO')
+const RemoveFileS3 = require('../../S3/RemoveFileS3')
 
 controller.MetMasterClientes = async (req, res) => {
 
@@ -102,6 +103,21 @@ controller.MetMasterClientes = async (req, res) => {
 
         const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
         const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+
+        const ARRAY_S3 = [
+            "hmlthanos/pe/tradicional/archivosgenerados/maestraclientes/", 
+            "hmlthanos/pe/tradicional/archivosgenerados/maaestraproductos/", 
+            "hmlthanos/pe/tradicional/archivosgenerados/homologaciones/"
+        ]
+
+        for await (s3 of ARRAY_S3) {
+            let reqUbi = {
+                body: {
+                    re_ubicacion_s3: s3
+                }
+            }
+            await RemoveFileS3.RemoveFileS3(reqUbi)
+        }
 
         res.status(200).json({
             message : 'La maestra de Clientes fue cargada correctamente',
