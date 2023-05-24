@@ -8,7 +8,7 @@ controller.MetCrearListaPrecio = async (req, res, data, dates_row) => {
         req_delete_data,
     } = req.body
 
-    let message     = 'Registro creado exitosamente'
+    let message     = 'Registros creados exitosamente'
     let status      = 200
     let respuesta   = true
 

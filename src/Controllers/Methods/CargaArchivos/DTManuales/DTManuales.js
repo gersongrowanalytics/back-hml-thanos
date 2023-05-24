@@ -55,7 +55,7 @@ controller.MetDTManuales = async (req, res, data, delete_data) => {
         
         return res.status(200).json({
             message : 'Las ventas manuales fueron cargadas correctamente',
-            messages_delete_data
+            messages_delete_data,
         })
 
     }catch(error){

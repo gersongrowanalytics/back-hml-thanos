@@ -4,6 +4,7 @@ const routes_approvals = require('./Homologaciones/homologaciones.routes')
 const routes_administration = require('./Administracion/administracion.routes')
 const routes_carga_archivos = require('./CargaArchivos/cargaarchivos.routes')
 const routes_administrar = require('./Administrar/administrar.routes')
+const routes_so         = require('./SO/so.routes')
 const routes_descargar_data = require('./DescargarData/descargardata.routes')
 const UserValidation = require('../Controllers/Validations/Login/ValUserValidation')
 const LogOut = require('../Controllers/Validations/Login/ValLogOut')
@@ -28,6 +29,7 @@ router.use(routes_approvals);
 router.use(routes_administration);
 router.use(routes_carga_archivos);
 router.use(routes_administrar);
+router.use(routes_so);
 router.use(routes_descargar_data);
 
 module.exports = router

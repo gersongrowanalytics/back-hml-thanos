@@ -24,7 +24,7 @@ controller.MetMostrarListaPrecio = async (req, res, data, dates_row) => {
         console.log(error)
         res.status(500)
         res.json({
-            message : 'Lo sentimos hubo un error al momento de ...',
+            message : 'Lo sentimos hubo un error al momento de obtener la lista de precios',
             devmsg  : error,
             respuesta: false
         })

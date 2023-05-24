@@ -218,7 +218,7 @@ model master_productos_so {
   codigo_distribuidor           String?     @db.VarChar(255)
   codigo_producto               String?     @db.VarChar(255)
   descripcion_producto          String?     @db.VarChar(255)
-  precio_unitario               String?     @db.VarChar(255)
+  precio_unitario               Decimal?    @db.Decimal(17,10)
   ruc                           String?     @db.VarChar(50)
   desde                         String?     @db.VarChar(50)
   hasta                         String?     @db.VarChar(50)
@@ -235,7 +235,11 @@ model ventas_so {
   id                            Int         @id @default(autoincrement()) @db.UnsignedInt
   pro_so_id                     Int?        @db.UnsignedInt
   m_dt_id                       Int?        @db.UnsignedInt
+  dia                           Int?        @db.UnsignedInt
+  mes                           Int?        @db.UnsignedInt
+  anio                          Int?        @db.UnsignedInt
   pk_venta_so                   String?     @db.VarChar(255)
+  pk_extractor_venta_so         String?     @db.VarChar(255)
   codigo_distribuidor           String?     @db.VarChar(255)
   fecha                         String?     @db.VarChar(255)
   nro_factura                   String?     @db.VarChar(255)
@@ -249,8 +253,9 @@ model ventas_so {
   codigo_producto               String?     @db.VarChar(255)
   descripcion_producto          String?     @db.VarChar(255)
   cantidad                      String?     @db.VarChar(255)
+  cod_unidad_medida             String?     @db.VarChar(255)
   unidad_medida                 String?     @db.VarChar(255)
-  precio_unitario               String?     @db.VarChar(255)
+  precio_unitario               Decimal     @db.Decimal(17,10)
   precio_total_sin_igv          String?     @db.VarChar(255)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
@@ -270,4 +275,16 @@ model lista_precio{
   estado                        String?   @db.VarChar(255)
   created_at                    DateTime? @default(now())
   updated_at                    DateTime? @db.Timestamp(0)
+}
+
+model master_precios{
+  id                            Int @id @default(autoincrement()) @db.UnsignedInt
+  date                          String?   @db.VarChar(255)
+  cg_two                        String?   @db.VarChar(255)
+  cod_material                  String?   @db.VarChar(255)
+  ex_changue_one                Decimal?  @db.Decimal(17,5)
+  ex_changue_two                Decimal?  @db.Decimal(17,5)
+  ex_changue_three              Decimal?  @db.Decimal(17,5)
+  ex_changue_four               Decimal?  @db.Decimal(17,5)
+  ex_changue_five               Decimal?  @db.Decimal(17,5)
 }
