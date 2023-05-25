@@ -122,17 +122,17 @@ controller.ValCellsFile = async (workbook) => {
             }
         }
 
-        let fecha = ''
+        let fecha       = ''
+        let fecha_dia   = ''
+        let fecha_mes   = ''
+        let fecha_anio  = ''
         if(row[properties[0]]){
 
-            console.log(typeof(row[properties[0]]))
-
-            console.log(row[properties[0]])
             const fechaJavaScript = XLSX.SSF.parse_date_code(row[properties[0]] + 1);
-            const fecha_mes = fechaJavaScript.m <= 9 ?"0"+fechaJavaScript.m.toString() :fechaJavaScript.m.toString();
-            const fecha_dia = fechaJavaScript.d <= 9 ?"0"+fechaJavaScript.d.toString() :fechaJavaScript.d.toString();
-
-            const fecha_capturada = fechaJavaScript.y.toString()+"-"+fecha_mes.toString()
+            fecha_mes = fechaJavaScript.m <= 9 ?"0"+fechaJavaScript.m.toString() :fechaJavaScript.m.toString();
+            fecha_dia = fechaJavaScript.d <= 9 ?"0"+fechaJavaScript.d.toString() :fechaJavaScript.d.toString();
+            fecha_anio = fechaJavaScript.y.toString()
+            const fecha_capturada = fecha_anio + "-" + fecha_mes.toString()
             const exist_date = dates_row.findIndex( dat => dat == fecha_capturada)
             fecha = fecha_capturada + "-" + fecha_dia
             
@@ -150,6 +150,9 @@ controller.ValCellsFile = async (workbook) => {
             ex_changue_three            : row[properties[5]] ?  row[properties[5]] : null,
             ex_changue_four             : row[properties[6]] ?  row[properties[6]] : null,
             ex_changue_five             : row[properties[7]] ?  row[properties[7]] : null,
+            dia                         : parseInt(fecha_dia),
+            mes                         : parseInt(fecha_mes),
+            anio                        : parseInt(fecha_anio),
         })
 
         num_row = num_row + 1

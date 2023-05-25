@@ -11,7 +11,8 @@ const ValMasterClientes = require('../../Controllers/Validations/CargaArchivos/M
 const ValMasterDT = require('../../Controllers/Validations/CargaArchivos/MasterMateriales/ValMasterMateriales')
 const ValMasterPrice = require('../../Controllers/Validations/CargaArchivos/MasterPrecios/ValMasterPrecios')
 const ValMasterPriceXlsx = require('../../Controllers/Validations/CargaArchivos/MasterPrecios/ValMasterPreciosXlsx')
-
+const ValInventories = require('../../Controllers/Validations/CargaArchivos/Inventarios/ValInventarios')
+const ValSellin = require('../../Controllers/Validations/CargaArchivos/Sellin/Sellin')
 
 const protectedRoutes = express.Router();
 // protectedRoutes.use(authMiddleware);
@@ -31,6 +32,16 @@ protectedRoutes.post('/master-clientes', ValMasterClientes.ValMasterClientes)
 // RUTAS CARGAR MASTER MATERIALES
 // **** **** **** **** **** //
 protectedRoutes.post('/master-materiales', ValMasterDT.ValMasterMateriales)
+
+// **** **** **** **** **** //
+// RUTAS CARGAR INVENTORIES
+// **** **** **** **** **** //
+protectedRoutes.post('/inventarios', ValInventories.ValIntenvarios)
+
+// **** **** **** **** **** //
+// RUTAS CARGAR SELLIN
+// **** **** **** **** **** //
+protectedRoutes.post('/sellin', ValSellin.ValSellin)
 
 // **** **** **** **** **** //
 // RUTAS CARGAR MASTER PRECIOS

@@ -185,6 +185,7 @@ model master_distribuidoras {
 
   master_productos_so  master_productos_so[]
   ventas_so            ventas_so[]
+  inventarios         inventarios[]
 }
 
 model master_productos {
@@ -209,6 +210,7 @@ model master_productos {
   created_at          DateTime?   @default(now())
   updated_at          DateTime?   @db.Timestamp(0)
   master_productos_so master_productos_so[]
+  sellin              sellin[]
 }
 
 model master_productos_so {
@@ -229,6 +231,7 @@ model master_productos_so {
   master_productos              master_productos?        @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "master_productos_so_id_foreign")
   master_distribuidoras         master_distribuidoras?   @relation(fields: [m_dt_id], references: [id], onUpdate: Restrict, map: "master_distribuidoras_m_dt_id_foreign")
   ventas_so                     ventas_so[]
+  inventarios                   inventarios[]
 }
 
 model ventas_so {
@@ -287,4 +290,66 @@ model master_precios{
   ex_changue_three              Decimal?  @db.Decimal(17,5)
   ex_changue_four               Decimal?  @db.Decimal(17,5)
   ex_changue_five               Decimal?  @db.Decimal(17,5)
+  dia                           Int?        @db.UnsignedInt
+  mes                           Int?        @db.UnsignedInt
+  anio                          Int?        @db.UnsignedInt
+  created_at                    DateTime?   @default(now())
+  updated_at                    DateTime?   @db.Timestamp(0)
+}
+
+
+model inventarios {
+  id                            Int         @id @default(autoincrement()) @db.UnsignedInt
+  pro_so_id                     Int?        @db.UnsignedInt
+  m_dt_id                       Int?        @db.UnsignedInt
+  dia                           Int?        @db.UnsignedInt
+  mes                           Int?        @db.UnsignedInt
+  anio                          Int?        @db.UnsignedInt
+  pk_venta_so                   String?     @db.VarChar(255)
+  pk_extractor_venta_so         String?     @db.VarChar(255)
+  codigo_distribuidor           String?     @db.VarChar(255)
+  fecha                         String?     @db.VarChar(255)
+  nro_factura                   String?     @db.VarChar(255)
+  codigo_cliente                String?     @db.VarChar(255)
+  ruc                           String?     @db.VarChar(255)
+  razon_social                  String?     @db.VarChar(255)
+  mercado_categoria_tipo        String?     @db.VarChar(255)
+  codigo_vendedor_distribuidor  String?     @db.VarChar(255)
+  dni_vendedor_distribuidor     String?     @db.VarChar(255)
+  nombre_vendedor_distribuidor  String?     @db.VarChar(255)
+  codigo_producto               String?     @db.VarChar(255)
+  descripcion_producto          String?     @db.VarChar(255)
+  cantidad                      String?     @db.VarChar(255)
+  cod_unidad_medida             String?     @db.VarChar(255)
+  unidad_medida                 String?     @db.VarChar(255)
+  precio_unitario               Decimal     @db.Decimal(17,10)
+  precio_total_sin_igv          String?     @db.VarChar(255)
+  created_at                    DateTime?   @default(now())
+  updated_at                    DateTime?   @db.Timestamp(0)
+  master_productos_so           master_productos_so?   @relation(fields: [pro_so_id], references: [id], onUpdate: Restrict, map: "inventarios_id_foreign")
+  master_distribuidoras         master_distribuidoras?   @relation(fields: [m_dt_id], references: [id], onUpdate: Restrict, map: "master_distribuidoras_m_dt_id_inventarios_foreign")
+}
+
+model sellin {
+  id                            Int         @id @default(autoincrement()) @db.UnsignedInt
+  fecha                         String      @db.VarChar(255)
+  codigo_cliente                String      @db.VarChar(255)
+  proid                         Int         @db.UnsignedInt
+  dia                           Int?        @db.UnsignedInt
+  mes                           Int?        @db.UnsignedInt
+  anio                          Int?        @db.UnsignedInt
+  metric_one                    Decimal     @db.Decimal(17,10)
+  metric_two                    Decimal     @db.Decimal(17,10)
+  metric_three                  Decimal     @db.Decimal(17,10)
+  metric_four                   Decimal?    @db.Decimal(17,10)
+  metric_five                   Decimal?    @db.Decimal(17,10)
+  metric_six                    Decimal?    @db.Decimal(17,10)
+  metric_seven                  Decimal?    @db.Decimal(17,10)
+  metric_eight                  Decimal?    @db.Decimal(17,10)
+  metric_nine                   Decimal?    @db.Decimal(17,10)
+  metric_teen                   Decimal?    @db.Decimal(17,10)
+  precio                        Decimal?    @db.Decimal(17,10)
+  created_at                    DateTime?   @default(now())
+  updated_at                    DateTime?   @db.Timestamp(0)
+  master_productos              master_productos?        @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "sellin_id_foreign")
 }

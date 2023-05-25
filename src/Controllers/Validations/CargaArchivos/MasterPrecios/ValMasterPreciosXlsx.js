@@ -123,19 +123,20 @@ controller.ValCellsFile = async (workbook) => {
         }
 
         let fecha = ''
+        let fechaJavaScript
+        let fecha_mes = ''     
+        let fecha_dia = ''
+        let fecha_anio = ''
+        let fecha_capturada
+        let exist_date
+        
         if(row[properties[0]]){
-
-            let fechaJavaScript
-            let fecha_mes      
-            let fecha_dia
-            let fecha_capturada
-            let exist_date
-
 
             if(typeof(row[properties[0]]) == 'number'){
                 fechaJavaScript = XLSX.SSF.parse_date_code(row[properties[0]]);
                 fecha_mes = fechaJavaScript.m <= 9 ?"0"+fechaJavaScript.m.toString() :fechaJavaScript.m.toString();
                 fecha_dia = fechaJavaScript.d <= 9 ?"0"+fechaJavaScript.d.toString() :fechaJavaScript.d.toString();
+                fecha_anio = fechaJavaScript.y.toString()
                 fecha_capturada = fechaJavaScript.y.toString()+"-"+fecha_mes.toString()
             }else{
 
@@ -163,6 +164,9 @@ controller.ValCellsFile = async (workbook) => {
             ex_changue_three            : row[properties[5]] ?  row[properties[5]] : null,
             ex_changue_four             : row[properties[6]] ?  row[properties[6]] : null,
             ex_changue_five             : row[properties[7]] ?  row[properties[7]] : null,
+            dia                         : parseInt(fecha_dia),
+            mes                         : parseInt(fecha_mes),
+            anio                        : parseInt(fecha_anio),
         })
 
         num_row = num_row + 1
