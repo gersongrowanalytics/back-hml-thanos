@@ -9,20 +9,26 @@ const RemoveFileS3 = require('../../S3/RemoveFileS3')
 
 controller.MetDTManuales = async (req, res, data, delete_data) => {
 
+    const {
+        req_delete_data
+    } = req.body
+
     try{
 
         const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
 
-        for await (const dat of delete_data ){
-
-            await prisma.ventas_so.deleteMany({
-                where: {
-                    fecha: {
-                        startsWith: dat.fecha
-                    },
-                    codigo_distribuidor: dat.cod_dt
-                }
-            })
+        if(req_delete_data == 'true'){
+            for await (const dat of delete_data ){
+    
+                await prisma.ventas_so.deleteMany({
+                    where: {
+                        fecha: {
+                            startsWith: dat.fecha
+                        },
+                        codigo_distribuidor: dat.cod_dt
+                    }
+                })
+            }
         }
 
         await prisma.ventas_so.createMany({
@@ -31,10 +37,25 @@ controller.MetDTManuales = async (req, res, data, delete_data) => {
 
         const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
         const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+
+        const ARRAY_S3 = [
+            "hmlthanos/pe/tradicional/archivosgenerados/maestraclientes/", 
+            "hmlthanos/pe/tradicional/archivosgenerados/maaestraproductos/", 
+            "hmlthanos/pe/tradicional/archivosgenerados/homologaciones/"
+        ]
+
+        for await (s3 of ARRAY_S3) {
+            let reqUbi = {
+                body: {
+                    re_ubicacion_s3: s3
+                }
+            }
+            await RemoveFileS3.RemoveFileS3(reqUbi)
+        }
         
         return res.status(200).json({
             message : 'Las ventas manuales fueron cargadas correctamente',
-            messages_delete_data
+            messages_delete_data,
         })
 
     }catch(error){

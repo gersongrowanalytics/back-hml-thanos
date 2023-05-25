@@ -14,6 +14,10 @@
           "description": "Products and distributor administration"
         },
         {
+          "name": "Sell-Out",
+          "description": "Sell-Out"
+        },
+        {
           "name": "Manage",
           "description": "Users manage"
         },
@@ -1533,6 +1537,222 @@
                 }
             }
         },
+        "/administration/create-list-price": {
+            "post": {
+                "tags": ["Administration"],
+                "summary": "Create list price",
+                "consumes": ["multipart/form-data"],
+                "parameters" : [
+                    {
+                        "name": "lista_precio",
+                        "in": "formData",
+                        "description": "Carga Manual",
+                        "required": true,
+                        "type": "file"
+                    }
+                ],
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_delete_data" : {
+                                        "type" : "string",
+                                        "example" : "true"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Registros creado exitosamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Registros creado exitosamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos se encontraron algunas observaciones",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de editar la distribuidora"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "notificaciones": {
+                                            "type": "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "columna" : {
+                                                        "type" : "string",
+                                                        "example" : "Territorio"
+                                                    },
+                                                    "notificaciones" : {
+                                                        "type" : "array",
+                                                        "items" : {
+                                                            "type" : "object",
+                                                            "properties" : {
+                                                                "msg" : {
+                                                                    "type" : "Lo sentimos, algunos códigos de Territorio se encuentran vacios, recordar que este campo es obligatorio"
+                                                                },
+                                                                "rows" : {
+                                                                    "type" : "array",
+                                                                    "example" : [3, 4]
+                                                                },
+                                                                "type" : {
+                                                                    "type" : "string",
+                                                                    "example" : "empty"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "messages_error" : {
+                                            "type" : "array",
+                                            "example" : [ "Lo sentimos, algunos códigos de Territorio se encuentran vacios, recordar que este campo es obligatorio",
+                                            "Lo sentimos, algunos códigos de ValorVenta se encuentran vacios, recordar que este campo es obligatorio"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/administration/get-list-price": {
+            "post": {
+                "tags": ["Administration"],
+                "summary": "Get list price",
+                "responses": {
+                    "200": {
+                        "description": "Lista de precios obtenidos correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lista de precios obtenidos correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data" : {
+                                            "type" : "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "id" : {
+                                                        "type" : "integer",
+                                                        "example" : 269
+                                                    },
+                                                    "zona" : {
+                                                        "type" : "string",
+                                                        "example" : "Lima"
+                                                    },
+                                                    "territorio" : {
+                                                        "type" : "string",
+                                                        "example" : "PeruDos"
+                                                    },
+                                                    "proid" : {
+                                                        "type" : "integer",
+                                                        "example" : 123132
+                                                    },
+                                                    "descripcion" : {
+                                                        "type" : "string",
+                                                        "example" : "Nombre"
+                                                    },
+                                                    "valor_venta" : {
+                                                        "type" : "string",
+                                                        "example" : "180.13"
+                                                    },
+                                                    "fecha_inicio" : {
+                                                        "type" : "string",
+                                                        "example" : "2012-12-22"
+                                                    },
+                                                    "fecha_fin" : {
+                                                        "type" : "string",
+                                                        "example" : "2012-12-22"
+                                                    },
+                                                    "estado" : {
+                                                        "type" : "string",
+                                                        "example" : "Vendido"
+                                                    },
+                                                    "created_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-05-23T14:13:59.893Z"
+                                                    },
+                                                    "updated_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-05-23T14:13:59.893Z"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de obtener la lista de precios",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de obtener la lista de precios"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/manage/create-users": {
             "post": {
                 "tags": ["Manage"],
@@ -1778,6 +1998,220 @@
                                         "devmsg": {
                                             "type": "array",
                                             "example" : ["Lo sentimos, algunos nombres de productos se encuentran vacios"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/descargar-data/products-approveds": {
+            "post": {
+                "tags": ["Download Data"],
+                "summary": "Download file products approveds",
+                "responses": {
+                    "200": {
+                        "description": "El archivo se descargó correctamente",
+                        "content" : {
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "format" : "binary",
+                                    "xml" : {
+                                        "name" : "datos.xlsx"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de descargar los productos homologados",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" :  "Lo sentimos hubo un error al momento de descargar los productos homologados"
+                                        },
+                                        "devmsg": {
+                                            "type": "array",
+                                            "example" : ["Error server"]
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/descargar-data/distributors": {
+            "post": {
+                "tags": ["Download Data"],
+                "summary": "Get url download file distribuitors",
+                "responses": {
+                    "200": {
+                        "description": "Se descargó exitosamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Se descargó exitosamente."
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "example" : "WwwUrlDistribuidorsCom"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de descargar.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" :  "Lo sentimos hubo un error al momento de descargar."
+                                        },
+                                        "devmsg": {
+                                            "type": "array",
+                                            "example" : ["Error server"]
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/descargar-data/products": {
+            "post": {
+                "tags": ["Download Data"],
+                "summary": "Get url download file products",
+                "responses": {
+                    "200": {
+                        "description": "Se descargó exitosamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Se descargó exitosamente."
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "example" : "WwwUrlProductsCom"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de descargar.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" :  "Lo sentimos hubo un error al momento de descargar."
+                                        },
+                                        "devmsg": {
+                                            "type": "array",
+                                            "example" : ["Error server"]
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/descargar-data/products-so": {
+            "post": {
+                "tags": ["Download Data"],
+                "summary": "Get url download file products approved",
+                "responses": {
+                    "200": {
+                        "description": "Se descargó exitosamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Se descargó exitosamente."
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "example" : "WwwUrlProductsApprovedCom"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de descargar.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" :  "Lo sentimos hubo un error al momento de descargar."
+                                        },
+                                        "devmsg": {
+                                            "type": "array",
+                                            "example" : ["Error server"]
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
                                         }
                                     }
                                 }
@@ -2251,6 +2685,103 @@
                                         "message": {
                                             "type": "string",
                                             "example" : "Lo sentimos hubo un error al momento de ..."
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/so/get-info": {
+            "post": {
+                "tags": ["Sell-Out"],
+                "summary": "Get info about SO",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_anio" : {
+                                        "type" : "integer",
+                                        "example": 2022
+                                    },
+                                    "req_mes" : {
+                                        "type" : "integer",
+                                        "example": 5
+                                    },
+                                    "req_dia" : {
+                                        "type" : "integer",
+                                        "example": 14
+                                    },
+                                    "req_pk_extractor_ventas_so" : {
+                                        "type" : "string",
+                                        "example": "LALIBERTAD.01.2626354480046PQTPQT"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Información de SellOut obtenida con éxito",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message" : {
+                                            "type": "string",
+                                            "example" : "Información de SellOut obtenida con éxito"
+                                        },
+                                        "respuesta" : {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data" : {
+                                            "type" : "object",
+                                            "properties" : {
+                                                "maximo" : {
+                                                    "type" : "string",
+                                                    "example" : "35343534"
+                                                },
+                                                "minimo" : {
+                                                    "type" : "string",
+                                                    "example" : "3534"
+                                                },
+                                                "promedio" : {
+                                                    "type" : "string",
+                                                    "example" : "353423"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al obtener la información de Sell Out",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al obtener la información de Sell Out"
                                         },
                                         "devmsg": {
                                             "type": "string",

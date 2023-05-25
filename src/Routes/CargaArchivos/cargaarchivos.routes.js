@@ -9,6 +9,8 @@ const permissionMiddleware = require('../../Middleware/permissionMiddleware')
 const ValDTManuales = require('../../Controllers/Validations/CargaArchivos/DTManuales/ValDTManuales')
 const ValMasterClientes = require('../../Controllers/Validations/CargaArchivos/MasterClientes/ValMasterClientes')
 const ValMasterDT = require('../../Controllers/Validations/CargaArchivos/MasterMateriales/ValMasterMateriales')
+const ValMasterPrice = require('../../Controllers/Validations/CargaArchivos/MasterPrecios/ValMasterPrecios')
+const ValMasterPriceXlsx = require('../../Controllers/Validations/CargaArchivos/MasterPrecios/ValMasterPreciosXlsx')
 
 
 const protectedRoutes = express.Router();
@@ -29,6 +31,23 @@ protectedRoutes.post('/master-clientes', ValMasterClientes.ValMasterClientes)
 // RUTAS CARGAR MASTER MATERIALES
 // **** **** **** **** **** //
 protectedRoutes.post('/master-materiales', ValMasterDT.ValMasterMateriales)
+
+// **** **** **** **** **** //
+// RUTAS CARGAR MASTER PRECIOS
+// **** **** **** **** **** //
+protectedRoutes.post('/master-precios', function(req, res){
+
+    if(req.files.master_precios['mimetype'] == 'text/csv'){
+        ValMasterPrice.ValMasterPrecios(req, res)
+    }else if(req.files.master_precios['mimetype'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
+        ValMasterPriceXlsx.ValMasterPreciosXlsx(req, res)
+    }else{
+        res.status(500).json({
+            response    : false,
+            message     :'Archivo no valido'
+        })
+    }
+})
 
 router.use('/carga-archivos', protectedRoutes);
 

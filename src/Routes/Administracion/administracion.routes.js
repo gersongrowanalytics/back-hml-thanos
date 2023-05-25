@@ -12,6 +12,8 @@ const ValCrePro = require('../../Controllers/Validations/Administracion/Producto
 const ValEdiPro = require('../../Controllers/Validations/Administracion/Productos/EditarProducto/ValEditarProducto')
 const ValEdiDts = require('../../Controllers/Validations/Administracion/Distribuidoras/EditarDistribuidora/ValEditarDistribuidora')
 const ValCreDts = require('../../Controllers/Validations/Administracion/Distribuidoras/CrearDistribuidora/ValCrearDistribuidora')
+const ValCreLpr = require('../../Controllers/Validations/Administracion/ListaPrecio/CrearListaPrecio/ValListaPrecio')
+const ValMosLpr = require('../../Controllers/Validations/Administracion/ListaPrecio/MostrarListaPrecio/MostrarListaPrecio')
 
 const protectedRoutes = express.Router();
 // protectedRoutes.use(authMiddleware);
@@ -30,6 +32,12 @@ protectedRoutes.post('/edit-product', ValEdiPro.ValEditarProducto)
 protectedRoutes.get('/get-distributors', ValMosDts.ValMostrarDistribuidoras)
 protectedRoutes.post('/create-distributors', ValCreDts.ValCrearDistribuidora)
 protectedRoutes.post('/edit-distributors', ValEdiDts.ValEditarDistribuidora)
+
+// **** **** **** **** **** //
+// RUTAS LISTA PRECIO
+// **** **** **** **** **** //
+protectedRoutes.post('/create-list-price', ValCreLpr.ValCrearListaPrecio)
+protectedRoutes.post('/get-list-price', ValMosLpr.ValMostrarListaPrecio)
 
 router.use('/administration', protectedRoutes);
 

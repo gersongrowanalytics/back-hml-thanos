@@ -18,11 +18,6 @@ controller.ValMasterMateriales = async (req, res) => {
             devmsg  : error
         })
     }
-
-
-
-    
 }
-
 
 module.exports = controller

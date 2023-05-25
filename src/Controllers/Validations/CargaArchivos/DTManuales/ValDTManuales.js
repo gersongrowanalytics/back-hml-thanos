@@ -125,8 +125,6 @@ controller.ValCellsFile = async (workbook) => {
                 let existe_cod = false
                 borrar_data.map((dat) => {
                     if(dat.cod_dt == row[properties[0]] && dat.fecha == fecha_capturada ){
-                        console.log('existe: ' + row[properties[0]])
-                        console.log('existe: ' + fecha_capturada)
                         existe_cod = true
                     }
                 })
@@ -247,28 +245,40 @@ controller.ValCellsFile = async (workbook) => {
             }
         }
 
-        const pk_venta_so = row[properties[0]].toString() + row[properties[10]].toString()
+        let cod_unidad_medida   = row[properties[13]].toString().substring(0,3)
+        let unidad_medida       = row[properties[13]].toString()
+        let precio_unitario     = row[properties[15]]/row[properties[12]]
+
+        const pk_venta_so           = row[properties[0]].toString() + row[properties[10]].toString().trim()
+        const pk_extractor_venta_so = row[properties[0]].toString() + row[properties[10]].toString().trim() + cod_unidad_medida + unidad_medida
+
+        const fechaJavaScript = XLSX.SSF.parse_date_code(row[properties[1]])
 
         data.push({
             pro_so_id                       : null,
             m_dt_id                         : null,
             pk_venta_so                     : pk_venta_so,
-            codigo_distribuidor             : row[properties[0]] ?  row[properties[0]].toString() : '',
-            fecha                           : fecha_capturada ?  fecha_capturada.toString() : '',
-            nro_factura                     : row[properties[2]] ?  row[properties[2]].toString() : '',
-            codigo_cliente                  : row[properties[3]] ?  row[properties[3]].toString() : '',
-            ruc                             : row[properties[4]] ?  row[properties[4]].toString() : '',
-            razon_social                    : row[properties[5]] ?  row[properties[5]].toString() : '',
-            mercado_categoria_tipo          : row[properties[6]] ?  row[properties[6]].toString() : '',
-            codigo_vendedor_distribuidor    : row[properties[7]] ?  row[properties[7]].toString() : '',
-            dni_vendedor_distribuidor       : row[properties[8]] ?  row[properties[8]].toString() : '',
-            nombre_vendedor_distribuidor    : row[properties[9]] ? row[properties[9]].toString() : '',
-            codigo_producto                 : row[properties[10]] ? row[properties[10]].toString() : '',
-            descripcion_producto            : row[properties[11]] ? row[properties[11]].toString() : '',
-            cantidad                        : row[properties[12]] ? row[properties[12]].toString() : '',
-            unidad_medida                   : row[properties[13]] ? row[properties[13]].toString() : '',
-            precio_unitario                 : row[properties[14]] === 0 ? '0' : row[properties[14]].toString(),
-            precio_total_sin_igv            : row[properties[15]] === 0 ? '0' : row[properties[15]].toString()
+            pk_extractor_venta_so           : pk_extractor_venta_so,
+            codigo_distribuidor             : row[properties[0]]    ?  row[properties[0]].toString() : '',
+            fecha                           : fecha_capturada       ?  fecha_capturada.toString() : '',
+            nro_factura                     : row[properties[2]]    ?  row[properties[2]].toString() : '',
+            codigo_cliente                  : row[properties[3]]    ?  row[properties[3]].toString().trim() : '',
+            ruc                             : row[properties[4]]    ?  row[properties[4]].toString() : '',
+            razon_social                    : row[properties[5]]    ?  row[properties[5]].toString().trim() : '',
+            mercado_categoria_tipo          : row[properties[6]]    ?  row[properties[6]].toString() : '',
+            codigo_vendedor_distribuidor    : row[properties[7]]    ?  row[properties[7]].toString() : '',
+            dni_vendedor_distribuidor       : row[properties[8]]    ?  row[properties[8]].toString() : '',
+            nombre_vendedor_distribuidor    : row[properties[9]]    ? row[properties[9]].toString() : '',
+            codigo_producto                 : row[properties[10]]   ? row[properties[10]].toString().trim() : '',
+            descripcion_producto            : row[properties[11]]   ? row[properties[11]].toString() : '',
+            cantidad                        : row[properties[12]]   ? row[properties[12]].toString() : '',
+            cod_unidad_medida               : cod_unidad_medida,
+            unidad_medida                   : unidad_medida,
+            precio_unitario                 : precio_unitario,
+            precio_total_sin_igv            : row[properties[15]] === 0 ? '0' : row[properties[15]].toString(),
+            dia                             : fechaJavaScript.d,
+            mes                             : fechaJavaScript.m,
+            anio                            : fechaJavaScript.y,
         })
 
         num_row = num_row + 1
