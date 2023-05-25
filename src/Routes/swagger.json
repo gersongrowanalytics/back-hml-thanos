@@ -1,0 +1,2272 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Documentation HML THANOS"
+    },
+    "tags": [
+        {
+          "name": "Auth",
+          "description": "Authentication users"
+        },
+        {
+          "name": "Administration",
+          "description": "Products and distributor administration"
+        },
+        {
+          "name": "Manage",
+          "description": "Users manage"
+        },
+        {
+          "name": "File upload",
+          "description": "File Uploads"
+        },
+        {
+          "name": "Download Data",
+          "description": "Download files"
+        },
+        {
+          "name": "Approvals",
+          "description": "Approved and not approved"
+        }
+    ],
+    "paths": {
+        "/protected/validation-user": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Validation user",
+                "parameters" : [
+                    {
+                        "in" : "header",
+                        "name" : "usutoken",
+                        "required" : true,
+                        "schema" : {
+                            "type" : "string"
+                        },
+                        "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjg0Mjc2Njc4LCJleHAiOjE2ODQzNjMwNzh9.uU5Ht8u5XluRjP4XVABXBkJksH_o6TgRfZSpJOFUwMw"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario Validado Correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Usuario Validado Correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "usu": {
+                                            "type": "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "usuid" : {
+                                                        "type" : "integer",
+                                                        "example" : 1
+                                                    },
+                                                    "tpuid" : {
+                                                        "type" : "integer",
+                                                        "example" : 2
+                                                    },
+                                                    "perid" : {
+                                                        "type" : "integer",
+                                                        "example" : 1
+                                                    },
+                                                    "estid" : {
+                                                        "type" : "integer",
+                                                        "example" : 2
+                                                    },
+                                                    "usucumpleanios" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "usufechaincorporacion" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : ""
+                                                    },
+                                                    "usutelefono" : {
+                                                        "type" : "string",
+                                                        "example" : "12131441"
+                                                    },
+                                                    "usuimagen" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "usuusuario" : {
+                                                        "type" : "string",
+                                                        "example" : "usuario@gmail.com"
+                                                    },
+                                                    "usuarea" : {
+                                                        "type" : "string",
+                                                        "example" : "Marketing"
+                                                    },
+                                                    "usucorreo" : {
+                                                        "type" : "string",
+                                                        "example" : "usuario@gmail.com"
+                                                    },
+                                                    "usucorreopersonal" : {
+                                                        "type" : "string",
+                                                        "example" : "usuario@gmail.com"
+                                                    },
+                                                    "usucontrasena" : {
+                                                        "type" : "string",
+                                                        "example" : "micontrasenia"
+                                                    },
+                                                    "usutoken" : {
+                                                        "type" : "string",
+                                                        "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OTYsImlhdCI6MTY4MDMwMzMwNSwiZXhwIjoxNjgwMzg5NzA1fQ.sJ5IKE9Eo_CDoNKpILBZTk1uEnNtNLlSysNSzmroOt0"
+                                                    },
+                                                    "usupaistodos" : {
+                                                        "type" : "boolean",
+                                                        "example" : true
+                                                    },
+                                                    "usupermisosespeciales" : {
+                                                        "type" : "boolean",
+                                                        "example" : true
+                                                    },
+                                                    "usuaceptoterminos" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : ""
+                                                    },
+                                                    "usucerrosesion" : {
+                                                        "type" : "boolean",
+                                                        "example" : false
+                                                    },
+                                                    "usufechalogin" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : ""
+                                                    },
+                                                    "usucierreautomatico" : {
+                                                        "type" : "boolean",
+                                                        "example" : false
+                                                    },
+                                                    "usufechacaducidad" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : ""
+                                                    },
+                                                    "usuabreviacion" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "usubackground" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "created_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    },
+                                                    "updated_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400" : {
+                        "description" : "Ha ocurrido un error al identificar al usuario",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al identificar al usuario"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404" : {
+                        "description" : "Usuario no encontrado",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Usuario no encontrado"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/public/log-in": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Login user",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_usucorreo" : {
+                                        "type" : "string",
+                                        "example": "usuario@gmail.com"
+                                    },
+                                    "req_paiid" : {
+                                        "type" : "integer",
+                                        "example": 2
+                                    },
+                                    "req_usucontrasenia" : {
+                                        "type" : "string",
+                                        "example": "micontrasenia"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario logeado con éxito",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Usuario logeado con éxito"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "auth_token": {
+                                            "type": "string",
+                                            "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ODUsImlhdCI6MTY4MDI5NzIyMiwiZXhwIjoxNjgwMzgzNjIyfQ.evJPz1UIg1aSkm2TFatZzZjg0RdasjfK_M53HAN4P2E"
+                                        },
+                                        "user": {
+                                            "type": "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "usuid" : {
+                                                        "type" : "integer",
+                                                        "example" : 1
+                                                    },
+                                                    "tpuid" : {
+                                                        "type" : "integer",
+                                                        "example" : 2
+                                                    },
+                                                    "perid" : {
+                                                        "type" : "integer",
+                                                        "example" : 1
+                                                    },
+                                                    "estid" : {
+                                                        "type" : "integer",
+                                                        "example" : 2
+                                                    },
+                                                    "usucumpleanios" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "usufechaincorporacion" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : ""
+                                                    },
+                                                    "usutelefono" : {
+                                                        "type" : "string",
+                                                        "example" : "12131441"
+                                                    },
+                                                    "usuimagen" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "usuusuario" : {
+                                                        "type" : "string",
+                                                        "example" : "usuario@gmail.com"
+                                                    },
+                                                    "usuarea" : {
+                                                        "type" : "string",
+                                                        "example" : "Marketing"
+                                                    },
+                                                    "usucorreo" : {
+                                                        "type" : "string",
+                                                        "example" : "usuario@gmail.com"
+                                                    },
+                                                    "usucorreopersonal" : {
+                                                        "type" : "string",
+                                                        "example" : "usuario@gmail.com"
+                                                    },
+                                                    "usucontrasena" : {
+                                                        "type" : "string",
+                                                        "example" : "micontrasenia"
+                                                    },
+                                                    "usutoken" : {
+                                                        "type" : "string",
+                                                        "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OTYsImlhdCI6MTY4MDMwMzMwNSwiZXhwIjoxNjgwMzg5NzA1fQ.sJ5IKE9Eo_CDoNKpILBZTk1uEnNtNLlSysNSzmroOt0"
+                                                    },
+                                                    "usupaistodos" : {
+                                                        "type" : "boolean",
+                                                        "example" : true
+                                                    },
+                                                    "usupermisosespeciales" : {
+                                                        "type" : "boolean",
+                                                        "example" : true
+                                                    },
+                                                    "usuaceptoterminos" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : ""
+                                                    },
+                                                    "usucerrosesion" : {
+                                                        "type" : "boolean",
+                                                        "example" : false
+                                                    },
+                                                    "usufechalogin" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : ""
+                                                    },
+                                                    "usucierreautomatico" : {
+                                                        "type" : "boolean",
+                                                        "example" : false
+                                                    },
+                                                    "usufechacaducidad" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : ""
+                                                    },
+                                                    "usuabreviacion" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "usubackground" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "created_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    },
+                                                    "updated_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Las credenciales son incorrectas",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Las credenciales son incorrectas"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/protected/log-out": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Logout user",
+                "parameters" : [
+                    {
+                        "in" : "header",
+                        "name" : "usutoken",
+                        "required" : true,
+                        "schema" : {
+                            "type" : "string"
+                        },
+                        "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjg0Mjc2Njc4LCJleHAiOjE2ODQzNjMwNzh9.uU5Ht8u5XluRjP4XVABXBkJksH_o6TgRfZSpJOFUwMw"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "El usuario hizo logout",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "El usuario hizo logout"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos el usuario no pudo deslogearse",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos el usuario no pudo deslogearse"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/administration/get-products": {
+            "get": {
+                "tags": ["Administration"],
+                "summary": "Get products",
+                "responses": {
+                    "200": {
+                        "description": "Lista de productos obtenidos correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lista de productos obtenidos correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "id" : {
+                                                        "type" : "integer",
+                                                        "example" : 256
+                                                    },
+                                                    "cod_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "395971"
+                                                    },
+                                                    "nomb_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "SOAP DISPENSER EXCELLENCE 1ML-WWC/3:5"
+                                                    },
+                                                    "division" : {
+                                                        "type" : "string",
+                                                        "example" : "FDH"
+                                                    },
+                                                    "sector" : {
+                                                        "type" : "string",
+                                                        "example" : "08 DISPENSADORES FDH"
+                                                    },
+                                                    "categoria" : {
+                                                        "type" : "string",
+                                                        "example" : "OTROS AFH"
+                                                    },
+                                                    "subcategoria" : {
+                                                        "type" : "string",
+                                                        "example" : "DISPENSADORES"
+                                                    },
+                                                    "segmento" : {
+                                                        "type" : "string",
+                                                        "example" : "DISP. JAB"
+                                                    },
+                                                    "presentacion" : {
+                                                        "type" : "string",
+                                                        "example" : "MULTIFLEX"
+                                                    },
+                                                    "peso" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "paquetexbulto" : {
+                                                        "type" : "string",
+                                                        "example" : "1"
+                                                    },
+                                                    "unidadxpqte" : {
+                                                        "type" : "string",
+                                                        "example" : "1"
+                                                    },
+                                                    "metroxund" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "ean13" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "ean14" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "minund" : {
+                                                        "type" : "string",
+                                                        "example" : "1"
+                                                    },
+                                                    "estado" : {
+                                                        "type" : "string",
+                                                        "example" : "DESCONTINUADO"
+                                                    },
+                                                    "marco" : {
+                                                        "type" : "string",
+                                                        "example" : "ELITE PROF"
+                                                    },
+                                                    "created_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    },
+                                                    "updated_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Error al obtener los productos",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de ..."
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/administration/create-product": {
+            "post": {
+                "tags": ["Administration"],
+                "summary": "Create product",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_cod_producto" : {
+                                        "type" : "string",
+                                        "example": "360374"
+                                    },
+                                    "req_nomb_producto" : {
+                                        "type" : "string",
+                                        "example": "ELITE ECOLOGICO UH PLUS 500m X 4"
+                                    },
+                                    "req_division" : {
+                                        "type" : "string",
+                                        "example": "FDH"
+                                    },
+                                    "req_sector" : {
+                                        "type" : "string",
+                                        "example": "12 HIGIÉNICOS FDH"
+                                    },
+                                    "req_categoria" : {
+                                        "type" : "string",
+                                        "example": "TISSUE Y PAÑOS"
+                                    },
+                                    "req_subcategoria" : {
+                                        "type" : "string",
+                                        "example": "TISSUE Y PAÑOS"
+                                    },
+                                    "req_segmento" : {
+                                        "type" : "string",
+                                        "example": "PLUS"
+                                    },
+                                    "req_presentacion" : {
+                                        "type" : "string",
+                                        "example": "ALTO METRAJE"
+                                    },
+                                    "req_peso" : {
+                                        "type" : "string",
+                                        "example": "3.855"
+                                    },
+                                    "req_paquetexbulto" : {
+                                        "type" : "string",
+                                        "example": "1"
+                                    },
+                                    "req_unidadxpqte" : {
+                                        "type" : "string",
+                                        "example": "4"
+                                    },
+                                    "req_metroxund" : {
+                                        "type" : "string",
+                                        "example": "500"
+                                    },
+                                    "req_ean13" : {
+                                        "type" : "string",
+                                        "example": "7759185001458"
+                                    },
+                                    "req_ean14" : {
+                                        "type" : "string",
+                                        "example": "7759185001458"
+                                    },
+                                    "req_minund" : {
+                                        "type" : "string",
+                                        "example": "4"
+                                    },
+                                    "req_estado" : {
+                                        "type" : "string",
+                                        "example": "ACTIVO"
+                                    },
+                                    "req_marco" : {
+                                        "type" : "string",
+                                        "example": "ELITE PROF"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "El producto ha sido creado correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "El producto ha sido creado correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "id" : {
+                                                        "type" : "integer",
+                                                        "example" : 256
+                                                    },
+                                                    "cod_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "395971"
+                                                    },
+                                                    "nomb_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "SOAP DISPENSER EXCELLENCE 1ML-WWC/3:5"
+                                                    },
+                                                    "division" : {
+                                                        "type" : "string",
+                                                        "example" : "FDH"
+                                                    },
+                                                    "sector" : {
+                                                        "type" : "string",
+                                                        "example" : "08 DISPENSADORES FDH"
+                                                    },
+                                                    "categoria" : {
+                                                        "type" : "string",
+                                                        "example" : "OTROS AFH"
+                                                    },
+                                                    "subcategoria" : {
+                                                        "type" : "string",
+                                                        "example" : "DISPENSADORES"
+                                                    },
+                                                    "segmento" : {
+                                                        "type" : "string",
+                                                        "example" : "DISP. JAB"
+                                                    },
+                                                    "presentacion" : {
+                                                        "type" : "string",
+                                                        "example" : "MULTIFLEX"
+                                                    },
+                                                    "peso" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "paquetexbulto" : {
+                                                        "type" : "string",
+                                                        "example" : "1"
+                                                    },
+                                                    "unidadxpqte" : {
+                                                        "type" : "string",
+                                                        "example" : "1"
+                                                    },
+                                                    "metroxund" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "ean13" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "ean14" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "minund" : {
+                                                        "type" : "string",
+                                                        "example" : "1"
+                                                    },
+                                                    "estado" : {
+                                                        "type" : "string",
+                                                        "example" : "DESCONTINUADO"
+                                                    },
+                                                    "marco" : {
+                                                        "type" : "string",
+                                                        "example" : "ELITE PROF"
+                                                    },
+                                                    "created_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    },
+                                                    "updated_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de crear el producto",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de crear el producto"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "submessage": {
+                                            "type": "string",
+                                            "example" : "Recomendamos revisar bien los campos enviandos"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/administration/edit-product": {
+            "post": {
+                "tags": ["Administration"],
+                "summary": "Edit product",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_id_prod" : {
+                                        "type" : "integer",
+                                        "example": 3
+                                    },
+                                    "req_cod_producto" : {
+                                        "type" : "string",
+                                        "example": "360374"
+                                    },
+                                    "req_nomb_producto" : {
+                                        "type" : "string",
+                                        "example": "ELITE ECOLOGICO UH PLUS 500m X 4"
+                                    },
+                                    "req_division" : {
+                                        "type" : "string",
+                                        "example": "FDH"
+                                    },
+                                    "req_sector" : {
+                                        "type" : "string",
+                                        "example": "12 HIGIÉNICOS FDH"
+                                    },
+                                    "req_categoria" : {
+                                        "type" : "string",
+                                        "example": "TISSUE Y PAÑOS"
+                                    },
+                                    "req_subcategoria" : {
+                                        "type" : "string",
+                                        "example": "TISSUE Y PAÑOS"
+                                    },
+                                    "req_segmento" : {
+                                        "type" : "string",
+                                        "example": "PLUS"
+                                    },
+                                    "req_presentacion" : {
+                                        "type" : "string",
+                                        "example": "ALTO METRAJE"
+                                    },
+                                    "req_peso" : {
+                                        "type" : "string",
+                                        "example": "3.855"
+                                    },
+                                    "req_paquetexbulto" : {
+                                        "type" : "string",
+                                        "example": "1"
+                                    },
+                                    "req_unidadxpqte" : {
+                                        "type" : "string",
+                                        "example": "4"
+                                    },
+                                    "req_metroxund" : {
+                                        "type" : "string",
+                                        "example": "500"
+                                    },
+                                    "req_ean13" : {
+                                        "type" : "string",
+                                        "example": "7759185001458"
+                                    },
+                                    "req_ean14" : {
+                                        "type" : "string",
+                                        "example": "7759185001458"
+                                    },
+                                    "req_minund" : {
+                                        "type" : "string",
+                                        "example": "4"
+                                    },
+                                    "req_estado" : {
+                                        "type" : "string",
+                                        "example": "ACTIVO"
+                                    },
+                                    "req_marco" : {
+                                        "type" : "string",
+                                        "example": "ELITE PROF"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "El producto ha sido creado correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "El producto ha sido creado correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404" : {
+                        "description" : "Lo sentimos el producto no se ha encontrada",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "mensaje": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos el producto no se ha encontrada"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "submessage": {
+                                            "type": "string",
+                                            "example" : "Recomendamos actualizar la tabla"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de crear el producto",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de editar el producto"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/administration/get-distributors": {
+            "get": {
+                "tags": ["Administration"],
+                "summary": "Get distributors",
+                "responses": {
+                    "200": {
+                        "description": "Lista de distribuidoras obtenidos correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lista de distribuidoras obtenidos correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "id" : {
+                                                        "type" : "integer",
+                                                        "example" : 1
+                                                    },
+                                                    "codigo_dt" : {
+                                                        "type" : "string",
+                                                        "example" : "20100239559.0"
+                                                    },
+                                                    "region" : {
+                                                        "type" : "string",
+                                                        "example" : "PROVINCIA"
+                                                    },
+                                                    "supervisor" : {
+                                                        "type" : "string",
+                                                        "example" : "ANTHONY QUIROZ"
+                                                    },
+                                                    "localidad" : {
+                                                        "type" : "string",
+                                                        "example" : "AREQUIPA"
+                                                    },
+                                                    "nomb_dt" : {
+                                                        "type" : "string",
+                                                        "example" : "MORAN_AREQUIPA"
+                                                    },
+                                                    "check_venta" : {
+                                                        "type" : "string",
+                                                        "example" : "1"
+                                                    },
+                                                    "nomb_cliente" : {
+                                                        "type" : "string",
+                                                        "example" : "201002395590 MORAN AREQUIPA"
+                                                    },
+                                                    "latitud" : {
+                                                        "type" : "string",
+                                                        "example" : "-164008"
+                                                    },
+                                                    "longitud" : {
+                                                        "type" : "string",
+                                                        "example" : "-715378"
+                                                    },
+                                                    "oficina_two" : {
+                                                        "type" : "string",
+                                                        "example" : "SUR 1"
+                                                    },
+                                                    "subcanal" : {
+                                                        "type" : "string",
+                                                        "example" : "TRADICIONAL"
+                                                    },
+                                                    "sap_solicitante" : {
+                                                        "type" : "string",
+                                                        "example" : "78969      MORAN DISTRIBUCIONES S.A."
+                                                    },
+                                                    "sap_destinatario" : {
+                                                        "type" : "string",
+                                                        "example" : "78969      MORAN DISTRIBUCIONES S.A."
+                                                    },
+                                                    "diferencial" : {
+                                                        "type" : "string",
+                                                        "example" : "T"
+                                                    },
+                                                    "canal_atencion" : {
+                                                        "type" : "string",
+                                                        "example" : "TRADICIONAL MIXTO"
+                                                    },
+                                                    "cod_solicitante" : {
+                                                        "type" : "string",
+                                                        "example" : "78969"
+                                                    },
+                                                    "cod_destinatario" : {
+                                                        "type" : "string",
+                                                        "example" : "78969"
+                                                    },
+                                                    "canal_trade" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "created_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    },
+                                                    "updated_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Error al obtener las distribuidoras",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de obtener las distribuidoras"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/administration/create-distributors": {
+            "post": {
+                "tags": ["Administration"],
+                "summary": "Create distribuitor",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_codigo_dt" : {
+                                        "type" : "string",
+                                        "example" : "20100239559.0"
+                                    },
+                                    "req_region" : {
+                                        "type" : "string",
+                                        "example" : "PROVINCIA"
+                                    },
+                                    "req_supervisor" : {
+                                        "type" : "string",
+                                        "example" : "ANTHONY QUIROZ"
+                                    },
+                                    "req_localidad" : {
+                                        "type" : "string",
+                                        "example" : "AREQUIPA"
+                                    },
+                                    "req_nomb_dt" : {
+                                        "type" : "string",
+                                        "example" : "MORAN_AREQUIPA"
+                                    },
+                                    "req_check_venta" : {
+                                        "type" : "string",
+                                        "example" : "1"
+                                    },
+                                    "req_nomb_cliente" : {
+                                        "type" : "string",
+                                        "example" : "201002395590 MORAN AREQUIPA"
+                                    },
+                                    "req_latitud" : {
+                                        "type" : "string",
+                                        "example" : "-164008"
+                                    },
+                                    "req_longitud" : {
+                                        "type" : "string",
+                                        "example" : "-715378"
+                                    },
+                                    "req_oficina_two" : {
+                                        "type" : "string",
+                                        "example" : "SUR 1"
+                                    },
+                                    "req_subcanal" : {
+                                        "type" : "string",
+                                        "example" : "TRADICIONAL"
+                                    },
+                                    "req_sap_solicitante" : {
+                                        "type" : "string",
+                                        "example" : "78969      MORAN DISTRIBUCIONES S.A."
+                                    },
+                                    "req_sap_destinatario" : {
+                                        "type" : "string",
+                                        "example" : "78969      MORAN DISTRIBUCIONES S.A."
+                                    },
+                                    "req_diferencial" : {
+                                        "type" : "string",
+                                        "example" : "T"
+                                    },
+                                    "req_canal_atencion" : {
+                                        "type" : "string",
+                                        "example" : "TRADICIONAL MIXTO"
+                                    },
+                                    "req_cod_solicitante" : {
+                                        "type" : "string",
+                                        "example" : "78969"
+                                    },
+                                    "req_cod_destinatario" : {
+                                        "type" : "string",
+                                        "example" : "78969"
+                                    },
+                                    "req_canal_trade" : {
+                                        "type" : "string",
+                                        "example" : ""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "La distribuidora ha sido creada correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "La distribuidora ha sido creada correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "id" : {
+                                                        "type" : "integer",
+                                                        "example" : 1
+                                                    },
+                                                    "codigo_dt" : {
+                                                        "type" : "string",
+                                                        "example" : "20100239559.0"
+                                                    },
+                                                    "region" : {
+                                                        "type" : "string",
+                                                        "example" : "PROVINCIA"
+                                                    },
+                                                    "supervisor" : {
+                                                        "type" : "string",
+                                                        "example" : "ANTHONY QUIROZ"
+                                                    },
+                                                    "localidad" : {
+                                                        "type" : "string",
+                                                        "example" : "AREQUIPA"
+                                                    },
+                                                    "nomb_dt" : {
+                                                        "type" : "string",
+                                                        "example" : "MORAN_AREQUIPA"
+                                                    },
+                                                    "check_venta" : {
+                                                        "type" : "string",
+                                                        "example" : "1"
+                                                    },
+                                                    "nomb_cliente" : {
+                                                        "type" : "string",
+                                                        "example" : "201002395590 MORAN AREQUIPA"
+                                                    },
+                                                    "latitud" : {
+                                                        "type" : "string",
+                                                        "example" : "-164008"
+                                                    },
+                                                    "longitud" : {
+                                                        "type" : "string",
+                                                        "example" : "-715378"
+                                                    },
+                                                    "oficina_two" : {
+                                                        "type" : "string",
+                                                        "example" : "SUR 1"
+                                                    },
+                                                    "subcanal" : {
+                                                        "type" : "string",
+                                                        "example" : "TRADICIONAL"
+                                                    },
+                                                    "sap_solicitante" : {
+                                                        "type" : "string",
+                                                        "example" : "78969      MORAN DISTRIBUCIONES S.A."
+                                                    },
+                                                    "sap_destinatario" : {
+                                                        "type" : "string",
+                                                        "example" : "78969      MORAN DISTRIBUCIONES S.A."
+                                                    },
+                                                    "diferencial" : {
+                                                        "type" : "string",
+                                                        "example" : "T"
+                                                    },
+                                                    "canal_atencion" : {
+                                                        "type" : "string",
+                                                        "example" : "TRADICIONAL MIXTO"
+                                                    },
+                                                    "cod_solicitante" : {
+                                                        "type" : "string",
+                                                        "example" : "78969"
+                                                    },
+                                                    "cod_destinatario" : {
+                                                        "type" : "string",
+                                                        "example" : "78969"
+                                                    },
+                                                    "canal_trade" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "created_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    },
+                                                    "updated_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-02-20T15:58:45.000Z"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de crear el producto",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de crear el producto"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/administration/edit-distributors": {
+            "post": {
+                "tags": ["Administration"],
+                "summary": "Edit distribuitor",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_id_dt" : {
+                                        "type" : "integer",
+                                        "example" : 4
+                                    },
+                                    "req_codigo_dt" : {
+                                        "type" : "string",
+                                        "example" : "20100239559.0"
+                                    },
+                                    "req_region" : {
+                                        "type" : "string",
+                                        "example" : "PROVINCIA"
+                                    },
+                                    "req_supervisor" : {
+                                        "type" : "string",
+                                        "example" : "ANTHONY QUIROZ"
+                                    },
+                                    "req_localidad" : {
+                                        "type" : "string",
+                                        "example" : "AREQUIPA"
+                                    },
+                                    "req_nomb_dt" : {
+                                        "type" : "string",
+                                        "example" : "MORAN_AREQUIPA"
+                                    },
+                                    "req_check_venta" : {
+                                        "type" : "string",
+                                        "example" : "1"
+                                    },
+                                    "req_nomb_cliente" : {
+                                        "type" : "string",
+                                        "example" : "201002395590 MORAN AREQUIPA"
+                                    },
+                                    "req_latitud" : {
+                                        "type" : "string",
+                                        "example" : "-164008"
+                                    },
+                                    "req_longitud" : {
+                                        "type" : "string",
+                                        "example" : "-715378"
+                                    },
+                                    "req_oficina_two" : {
+                                        "type" : "string",
+                                        "example" : "SUR 1"
+                                    },
+                                    "req_subcanal" : {
+                                        "type" : "string",
+                                        "example" : "TRADICIONAL"
+                                    },
+                                    "req_sap_solicitante" : {
+                                        "type" : "string",
+                                        "example" : "78969      MORAN DISTRIBUCIONES S.A."
+                                    },
+                                    "req_sap_destinatario" : {
+                                        "type" : "string",
+                                        "example" : "78969      MORAN DISTRIBUCIONES S.A."
+                                    },
+                                    "req_diferencial" : {
+                                        "type" : "string",
+                                        "example" : "T"
+                                    },
+                                    "req_canal_atencion" : {
+                                        "type" : "string",
+                                        "example" : "TRADICIONAL MIXTO"
+                                    },
+                                    "req_cod_solicitante" : {
+                                        "type" : "string",
+                                        "example" : "78969"
+                                    },
+                                    "req_cod_destinatario" : {
+                                        "type" : "string",
+                                        "example" : "78969"
+                                    },
+                                    "req_canal_trade" : {
+                                        "type" : "string",
+                                        "example" : ""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "La distribuidora ha sido editada correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "La distribuidora ha sido editada correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404" : {
+                        "description" : "Lo sentimos la distribuidora no se ha encontrada",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "mensaje": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos la distribuidora no se ha encontrada"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "submessage": {
+                                            "type": "string",
+                                            "example" : "Recomendamos actualizar la tabla"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de editar la distribuidora",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de editar la distribuidora"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/manage/create-users": {
+            "post": {
+                "tags": ["Manage"],
+                "summary": "Create user",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "per_nombre" : {
+                                        "type" : "string",
+                                        "example" : "Nombre"
+                                    },
+                                    "per_apellido_paterno" : {
+                                        "type" : "string",
+                                        "example" : "ApPaterno"
+                                    },
+                                    "per_apellido_materno" : {
+                                        "type" : "string",
+                                        "example" : "ApMaterno"
+                                    },
+                                    "tpu_id" : {
+                                        "type" : "integer",
+                                        "example" : 1
+                                    },
+                                    "est_id" : {
+                                        "type" : "integer",
+                                        "example" : 1
+                                    },
+                                    "usu_usuario" : {
+                                        "type" : "string",
+                                        "example" : "usuario@gmail.com"
+                                    },
+                                    "usu_correo" : {
+                                        "type" : "string",
+                                        "example" : "usuario@gmail.com"
+                                    },
+                                    "usu_contrasenia" : {
+                                        "type" : "string",
+                                        "example" : "micontrasenia"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "El usuario ya ha sido creado anteriormente.",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "El usuario ya ha sido creado anteriormente."
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de..",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de.."
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carga-archivos/dt-manuales": {
+            "post": {
+                "tags": ["File upload"],
+                "summary": "Upload data manual",
+                "consumes": ["multipart/form-data"],
+                "parameters" : [
+                    {
+                        "name": "carga_manual",
+                        "in": "formData",
+                        "description": "Carga Manual",
+                        "required": true,
+                        "type": "file"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Las ventas manuales fueron cargadas correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Las ventas manuales fueron cargadas correctamente"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos se encontraron algunas observaciones",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos se encontraron algunas observaciones"
+                                        },
+                                        "devmsg": {
+                                            "type": "array",
+                                            "example" : ["Lo sentimos, algunos precios totales no cuadran con las cantidades y precios unitarios"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carga-archivos/master-clientes": {
+            "post": {
+                "tags": ["File upload"],
+                "summary": "Upload file clients",
+                "consumes": ["multipart/form-data"],
+                "parameters" : [
+                    {
+                        "name": "maestra_cliente",
+                        "in": "formData",
+                        "description": "Data clients",
+                        "required": true,
+                        "type": "file"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "La maestra de Clientes fue cargada correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "La maestra de Clientes fue cargada correctamente"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos se encontraron algunas observaciones",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos se encontraron algunas observaciones"
+                                        },
+                                        "devmsg": {
+                                            "type": "array",
+                                            "example" : ["Lo sentimos, algunos nombres de productos se encuentran vacios"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carga-archivos/master-materiales": {
+            "post": {
+                "tags": ["File upload"],
+                "summary": "Upload file materials",
+                "consumes": ["multipart/form-data"],
+                "parameters" : [
+                    {
+                        "name": "maestra_producto",
+                        "in": "formData",
+                        "description": "Data products",
+                        "required": true,
+                        "type": "file"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "La maestra de Materiales fue cargada correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "La maestra de Materiales fue cargada correctamente"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos se encontraron algunas observaciones",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos se encontraron algunas observaciones"
+                                        },
+                                        "devmsg": {
+                                            "type": "array",
+                                            "example" : ["Lo sentimos, algunos nombres de productos se encuentran vacios"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/descargar-data/download-file/{type}/{namefile}": {
+            "get": {
+                "tags": ["Download Data"],
+                "summary": "Download file",
+                "responses": {
+                    "200": {
+                        "description": "El archivo se descargó correctamente"
+                    },
+                    "500" : {
+                        "description" : "Ocurrió un error al descargar el archivo."
+                    }
+                }
+            }
+        },
+        "/approvals/get-master-products": {
+            "get": {
+                "tags": ["Approvals"],
+                "summary": "Get master products",
+                "responses": {
+                    "200": {
+                        "description": "Lista de productos obtenidos correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lista de productos obtenidos correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items" : {
+                                                "type" :"object",
+                                                "properties" : {
+                                                    "id" : {
+                                                        "type" : "integer",
+                                                        "example" : 1
+                                                    },
+                                                    "cod_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "360374"
+                                                    },
+                                                    "nomb_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "PH ELITE ECOLOGICO UH PLUS 500m X 4"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de consultas los productos",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de consultas los productos"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approvals/get-approved-products": {
+            "get": {
+                "tags": ["Approvals"],
+                "summary": "Get approved products",
+                "responses": {
+                    "200": {
+                        "description": "Productos homologados obtenidos correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Productos homologados obtenidos correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items" : {
+                                                "type" :"object",
+                                                "properties" : {
+                                                    "master_distribuidoras" : {
+                                                        "type" : "object",
+                                                        "properties" : {
+                                                            "codigo_dt" : {
+                                                                "type" : "string",
+                                                                "example" : "LALIBERTAD.01.262635"
+                                                            },
+                                                            "nomb_dt" : {
+                                                                "type" : "string",
+                                                                "example" : "ALVAREZ BOHL - TRUJILLO"
+                                                            },
+                                                            "region" : {
+                                                                "type" : "string",
+                                                                "example" : "PROVINCIA"
+                                                            }
+                                                        }
+                                                    },
+                                                    "master_productos" : {
+                                                        "type" : "object",
+                                                        "properties" : {
+                                                            "cod_producto" : {
+                                                                "type" : "string",
+                                                                "example" : "360442"
+                                                            },
+                                                            "nomb_producto" : {
+                                                                "type" : "string",
+                                                                "example" : "SE ELITE DOB EN 4 PLUS 100X24 30X30"
+                                                            }
+                                                        }
+                                                    },
+                                                    "id" : {
+                                                        "type" : "integer",
+                                                        "example" : 1
+                                                    },
+                                                    "codigo_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "4480037"
+                                                    },
+                                                    "descripcion_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "SERVILLETA ELIT INST CORTD CLS x300"
+                                                    },
+                                                    "desde" : {
+                                                        "type" : "string",
+                                                        "example" : "2023-05-18"
+                                                    },
+                                                    "hasta" : {
+                                                        "type" : "string",
+                                                        "example" : "2023-05-18"
+                                                    },
+                                                    "key" : {
+                                                        "type" : "integer",
+                                                        "example" : 0
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de mostrar los productos homologados",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de mostrar los productos homologados"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approvals/upload-approved": {
+            "post": {
+                "tags": ["Approvals"],
+                "summary": "Upload approvals",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "producto_so_id" : {
+                                        "type" : "integer",
+                                        "example" : 3
+                                    },
+                                    "producto_hml_id" : {
+                                        "type" : "integer",
+                                        "example" : 1
+                                    },
+                                    "req_desde" : {
+                                        "type" : "string",
+                                        "example" : "2023-05-18"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "El producto ha sido actualizado correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "El producto ha sido actualizado correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos no se encontro el producto seleccionado, recomendamos actualizar la pagina",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos no se encontro el producto seleccionado, recomendamos actualizar la pagina"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approvals/get-non-approved-products": {
+            "post": {
+                "tags": ["Approvals"],
+                "summary": "Get non approved products",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "producto_so_id" : {
+                                        "type" : "integer",
+                                        "example" : 3
+                                    },
+                                    "producto_hml_id" : {
+                                        "type" : "integer",
+                                        "example" : 1
+                                    },
+                                    "req_desde" : {
+                                        "type" : "string",
+                                        "example" : "2023-05-18"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Productos no homologados obtenidos correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Productos no homologados obtenidos correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data" : {
+                                            "type" : "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "master_distribuidoras" : {
+                                                        "type" : "object",
+                                                        "properties" : {
+                                                            "nomb_dt" : {
+                                                                "type" : "string",
+                                                                "example" : "ALVAREZ BOHL - TRUJILLO"
+                                                            },
+                                                            "region" : {
+                                                                "type" : "string",
+                                                                "example" : "PROVINCIA"
+                                                            }
+                                                        }
+                                                    },
+                                                    "id" : {
+                                                        "type" : "integer",
+                                                        "example" : 2
+                                                    },
+                                                    "codigo_distribuidor" : {
+                                                        "type" : "string",
+                                                        "example" : "LALIBERTAD.01.262635"
+                                                    },
+                                                    "codigo_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "4480046"
+                                                    },
+                                                    "descripcion_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "PAP HIGINI RENDIPEL PRO DH 6x115mt"
+                                                    },
+                                                    "desde" : {
+                                                        "type" : "string",
+                                                        "example" : "2023-05-18"
+                                                    },
+                                                    "hasta" : {
+                                                        "type" : "string",
+                                                        "example" : "2023-05-18"
+                                                    },
+                                                    "s_ytd" : {
+                                                        "type" : "string",
+                                                        "example" : "0"
+                                                    },
+                                                    "s_mtd" : {
+                                                        "type" : "string",
+                                                        "example" : "0"
+                                                    },
+                                                    "key" : {
+                                                        "type" : "integer",
+                                                        "example" : 0
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de ...",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de ..."
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approvals/register-product": {
+            "post": {
+                "tags": ["Approvals"],
+                "summary": "Register product",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "producto_so_id" : {
+                                        "type" : "integer",
+                                        "example": 1
+                                    },
+                                    "producto_hml_id" : {
+                                        "type" : "integer",
+                                        "example": 2
+                                    },
+                                    "req_envio_otros" : {
+                                        "type" : "boolean",
+                                        "example": true
+                                    },
+                                    "productos_so_ids" : {
+                                        "type" : "array",
+                                        "example": [1, 2, 3]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "El producto ha sido homologado correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "El producto ha sido homologado correctamente"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de ...",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de ..."
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
