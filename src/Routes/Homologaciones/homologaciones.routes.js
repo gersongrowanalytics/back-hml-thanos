@@ -11,6 +11,14 @@ const ValMosHomController = require('../../Controllers/Validations/Homologacione
 const ValMosProController = require('../../Controllers/Validations/Homologaciones/Helpers/MostrarProductos/ValMostrarProductos')
 const ValRegHomController = require('../../Controllers/Validations/Homologaciones/NoHomologados/RegistrarHomologacion/ValRegistrarHomologacion')
 const ValActHomController = require('../../Controllers/Validations/Homologaciones/Homologados/ActualizarHomologados/ValActualizarHomologados')
+const ValActProHom = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/ActualizarHomologacion')
+const ValMosNoHomMasterController = require('../../Controllers/Validations/Homologaciones/NoHomologados/MostrarNoHomologadosMaster/MostrarNoHomologadosMaster')
+const ValMosPaqBulProController = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/PaquetexBultoProducto/PaquetexBultoProducto')
+const ValObtenerInfoSI = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/SI/InfoSI/InfoSI')
+const ValObtenerInfoSO = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/SO/InfoSO/InfoSO')
+const ValObtenerInfoMasterPrecios   = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/MasterPrecios/ValInfoMasterPrecios')
+const ValObtenerInfoInvController = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/Inventarios/InfoInventarios/InfoInventarios')
+
 
 const protectedRoutes = express.Router();
 // protectedRoutes.use(authMiddleware);
@@ -32,6 +40,16 @@ protectedRoutes.post('/upload-approved', ValActHomController.ValActualizarHomolo
 // **** **** **** **** **** //
 protectedRoutes.post('/get-non-approved-products', ValMosNoHomController.ValMostrarNoHomologados)
 protectedRoutes.post('/register-product', ValRegHomController.ValRegistrarHomologacion)
+protectedRoutes.post('/update-non-approved-products', ValActProHom.ValActualizarHomologacion)
+protectedRoutes.post('/get-non-approved-product', ValMosNoHomMasterController.ValMostrarNoHomologadosMaster)
+protectedRoutes.post('/get-paqxbul-product', ValMosPaqBulProController.ValObtenerPaquetexBultoProduto)
+
+protectedRoutes.post('/get-si', ValObtenerInfoSI.ValObtenerInfoSI)
+protectedRoutes.post('/get-so', ValObtenerInfoSO.ValObtenerInfoSO)
+protectedRoutes.post('/get-inv', ValObtenerInfoInvController.ValInfoInventarios)
+
+protectedRoutes.post('/get-master-price', ValObtenerInfoMasterPrecios.ValObtenerInfoMasterPrecios)
+
 
 router.use('/approvals', protectedRoutes);
 

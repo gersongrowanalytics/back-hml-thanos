@@ -215,17 +215,28 @@ model master_productos {
 
 model master_productos_so {
   id                            Int         @id @default(autoincrement()) @db.UnsignedInt
-  proid                         Int?        @db.UnsignedInt
+  proid                         Int?        @db.UnsignedInt   //Retornar
   m_dt_id                       Int?        @db.UnsignedInt
+  pk_venta_so                   String?     @db.VarChar(255)
+  pk_extractor_venta_so         String?     @db.VarChar(255)
   codigo_distribuidor           String?     @db.VarChar(255)
   codigo_producto               String?     @db.VarChar(255)
+  cod_unidad_medida             String?     @db.VarChar(255)
+  unidad_medida                 String?     @db.VarChar(255)
   descripcion_producto          String?     @db.VarChar(255)
   precio_unitario               Decimal?    @db.Decimal(17,10)
   ruc                           String?     @db.VarChar(50)
   desde                         String?     @db.VarChar(50)
   hasta                         String?     @db.VarChar(50)
   s_ytd                         String?     @db.VarChar(50)
-  s_mtd                         String?     @db.VarChar(50)
+  s_mtd                         String?     @db.VarChar(50) //Retornar
+  unidad_minima                 String?     @db.VarChar(50)
+  combo                         Boolean     @default(false)
+  cod_unidad_medida_hml         String?     @db.VarChar(50)
+  unidad_medida_hml             String?     @db.VarChar(50)
+  coeficiente                   String?     @db.VarChar(50)
+  unidad_minima_unitaria        String?     @db.VarChar(50)
+  bonificado                    Boolean     @default(false)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
   master_productos              master_productos?        @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "master_productos_so_id_foreign")

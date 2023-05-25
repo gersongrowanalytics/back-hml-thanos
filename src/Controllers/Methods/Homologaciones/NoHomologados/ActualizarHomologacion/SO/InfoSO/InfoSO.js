@@ -44,8 +44,6 @@ controller.MetObtenerInfoSO = async ( req, res ) => {
             consulta = {...consulta, OR : consulta_days}
         }
 
-        console.log(consulta)
-
         data_filtro = await prisma.ventas_so.aggregate({
             _avg :{
                 precio_unitario : true

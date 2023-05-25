@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const XLSX = require('xlsx')
 
-const SellinController = require('../../../Methods/CargaArchivos/Sellin/Sellin')
+const SellinController = require('../../../../Methods/CargaArchivos/SI/CargaSellin/Sellin')
 
 controller.ValSellin = async (req, res) => {
 
@@ -143,9 +143,7 @@ controller.ValCellsFile = async (workbook) => {
             })
 
             if(existe_fec == false){
-                borrar_data.push({
-                    fecha : fecha_capturada
-                })
+                borrar_data.push(fecha_capturada)
             }
         }
         
@@ -214,6 +212,7 @@ controller.ValCellsFile = async (workbook) => {
         data.push({
             fecha                   : fecha,
             codigo_cliente          : row[properties[1]]    ?   row[properties[1]].toString() : '',
+            // proid                   : 1,
             proid                   : proid,
             metric_one              : metric_one,
             metric_two              : metric_two,

@@ -1,5 +1,5 @@
 const controller = {}
-ObtenerInfoMasterPreciosController = require('../../../Methods/CargaArchivos/MasterPrecios/InfoMasterPrecios')
+ObtenerInfoMasterPreciosController = require('../../../../../Methods/Homologaciones/NoHomologados/ActualizarHomologacion/MasterPrecios/InfoMasterPrecios')
 
 controller.ValObtenerInfoMasterPrecios = async (req, res) => {
 

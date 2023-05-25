@@ -20,7 +20,7 @@ controller.MetObtenerProductosSO = async () => {
                 precio_unitario : true,
                 ruc : true
             },
-            distinct: ['pk_venta_so']
+            distinct: ['pk_extractor_venta_so']
         });
 
         let new_data_master_productos_so = []

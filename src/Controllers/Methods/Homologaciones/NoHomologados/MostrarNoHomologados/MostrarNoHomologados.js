@@ -36,9 +36,9 @@ controller.MetMostrarNoHomologados = async (req, res) => {
             },
             orderBy: {
                 updated_at: 'desc'
-            }
+            },
+            distinct : ['pk_venta_so']
         })
-
 
         productosSinProid.map((pro, index) => productosSinProid[index]['key'] = index)
         

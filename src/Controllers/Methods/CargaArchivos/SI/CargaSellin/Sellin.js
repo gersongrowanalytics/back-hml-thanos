@@ -18,7 +18,7 @@ controller.MetSellin = async (req, res, data, delete_data) => {
                 await prisma.sellin.deleteMany({
                     where: {
                         fecha: {
-                            startsWith: dat.fecha
+                            startsWith: dat
                         },
                     }
                 })
@@ -50,10 +50,10 @@ controller.SellinOverWrittern = (messages_dts) => {
     const messages_delete_date = []
 
     messages_dts.forEach( msg => {
-        let index_msg_dts = messages_delete_date.findIndex( date => date == msg.fecha)
+        let index_msg_dts = messages_delete_date.findIndex( date => date == msg)
 
         if(index_msg_dts == -1){
-            messages_delete_date.push(msg.fecha)
+            messages_delete_date.push(msg)
         }
     });
 

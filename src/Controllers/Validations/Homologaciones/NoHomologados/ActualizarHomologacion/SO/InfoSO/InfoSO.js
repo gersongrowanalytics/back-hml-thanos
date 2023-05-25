@@ -1,5 +1,5 @@
 const controller = {}
-const ObtenerInfoSOController = require('../../../Methods/SO/InfoSO/InfoSO')
+const ObtenerInfoSOController = require('../../../../../../Methods/Homologaciones/NoHomologados/ActualizarHomologacion/SO/InfoSO/InfoSO')
 
 controller.ValObtenerInfoSO = async (req, res) => {
 
