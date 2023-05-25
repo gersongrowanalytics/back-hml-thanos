@@ -14,6 +14,8 @@ controller.MetMostrarProductos = async (req, res) => {
             }
         })
 
+        products.map((pro, index) => products[index]['key'] = index)
+
         res.json({
             message: 'Lista de productos obtenidos correctamente',
             data : products,
