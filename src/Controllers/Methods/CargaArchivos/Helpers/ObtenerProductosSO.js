@@ -12,13 +12,16 @@ controller.MetObtenerProductosSO = async () => {
                 pro_so_id: null
             },
             select: {
+                pk_extractor_venta_so: true,
                 pk_venta_so: true,
                 m_dt_id : true,
                 codigo_distribuidor : true,
                 codigo_producto : true,
                 descripcion_producto : true,
                 precio_unitario : true,
-                ruc : true
+                ruc : true,
+                cod_unidad_medida : true,
+                unidad_medida : true
             },
             distinct: ['pk_extractor_venta_so']
         });
@@ -28,6 +31,8 @@ controller.MetObtenerProductosSO = async () => {
         distinct_ventas_so.map((venta_so) => {
             new_data_master_productos_so.push({
                 m_dt_id : venta_so.m_dt_id,
+                pk_extractor_venta_so : venta_so.pk_extractor_venta_so,
+                pk_venta_so : venta_so.pk_venta_so,
                 codigo_distribuidor : venta_so.codigo_distribuidor,
                 codigo_producto : venta_so.codigo_producto,
                 descripcion_producto : venta_so.descripcion_producto,
@@ -37,6 +42,8 @@ controller.MetObtenerProductosSO = async () => {
                 hasta : formattedDate,
                 s_ytd : "0",
                 s_mtd : "0",
+                cod_unidad_medida : venta_so.cod_unidad_medida,
+                unidad_medida : venta_so.unidad_medida
             })
         })
         

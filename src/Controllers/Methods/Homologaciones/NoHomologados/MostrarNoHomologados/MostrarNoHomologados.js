@@ -19,17 +19,24 @@ controller.MetMostrarNoHomologados = async (req, res) => {
                 master_distribuidoras: {
                     select: {
                         nomb_dt: true,
-                        region : true
+                        region : true,
+                        codigo_dt : true
                     }
                 },
                 id : true,
+                m_dt_id : true,
                 codigo_distribuidor : true,
                 codigo_producto: true,
                 descripcion_producto : true,
                 desde : true,
                 hasta : true,
                 s_ytd : true,
-                s_mtd : true
+                s_mtd : true,
+                pk_venta_so: true,
+                pk_extractor_venta_so: true,
+                cod_unidad_medida : true,
+                unidad_medida : true,
+                ruc : true
             },
             where: {
                 proid : null

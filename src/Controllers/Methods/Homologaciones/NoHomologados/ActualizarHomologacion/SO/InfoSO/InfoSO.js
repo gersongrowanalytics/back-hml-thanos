@@ -21,26 +21,47 @@ controller.MetObtenerInfoSO = async ( req, res ) => {
 
         if(req_anio && req_type_year){
 
+            console.log("Consulta anio !!");
             let consulta_year = []
-            req_anio.forEach( year => {
-                consulta_year.push({ AND : [ { anio : year }, { pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
-            });
 
+            if(req_anio.length > 0){
+                console.log("consula mas de un anio");
+                req_anio.forEach( year => {
+                    consulta_year.push({ AND : [ { anio : year }, { pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
+                });
+            }else{
+                console.log("consula ningun anio");
+                consulta_year.push({ AND : [{ pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
+            }
+
+            console.log("consulta: ---");
+            console.log(consulta);
             consulta = {...consulta, OR : consulta_year}
         }else  if(req_mes && req_type_month){
 
             let consulta_month = []
-            req_mes.forEach( mes => {
-                consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month }, { pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
-            });
+
+            if(req_mes.length > 0){
+                req_mes.forEach( mes => {
+                    consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month }, { pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
+                });
+            }else{
+                consulta_month.push({ AND : [ { pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
+            }
 
             consulta = {...consulta, OR : consulta_month}
         }else if(req_dia && req_type_day){
 
             let consulta_days = []
-            req_dia.forEach( days => {
-                consulta_days.push({ AND : [ { anio : days.year }, { mes : days.month }, { dia :  days.day}, { pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
-            });
+
+            if(req_dia.length > 0){
+                req_dia.forEach( days => {
+                    consulta_days.push({ AND : [ { anio : days.year }, { mes : days.month }, { dia :  days.day}, { pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
+                });
+            }else{
+                consulta_days.push({ AND : [{ pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
+            }
+            
             consulta = {...consulta, OR : consulta_days}
         }
 

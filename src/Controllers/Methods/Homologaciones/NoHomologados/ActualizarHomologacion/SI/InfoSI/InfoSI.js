@@ -21,26 +21,34 @@ controller.MetObtenerInfoSI = async (req, res) => {
         if(req_anio && req_type_year){
 
             let consulta_year = []
-            req_anio.forEach( year => {
-                consulta_year.push({ AND : [ { anio : year } ] })
-            });
-            consulta = {...consulta, OR : consulta_year}
+
+            if(req_anio.length > 0){
+                req_anio.forEach( year => {
+                    consulta_year.push({ AND : [ { anio : year } ] })
+                });
+                consulta = {...consulta, OR : consulta_year}
+            }
 
         }else  if(req_mes && req_type_month){
 
             let consulta_month = []
-            req_mes.forEach( mes => {
-                consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month } ] })
-            });
+            if(req_mes.length > 0){
+                req_mes.forEach( mes => {
+                    consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month } ] })
+                });
+                consulta = {...consulta, OR : consulta_month}
+            }
 
-            consulta = {...consulta, OR : consulta_month}
         }else if(req_dia && req_type_day){
 
             let consulta_days = []
-            req_dia.forEach( days => {
-                consulta_days.push({ AND : [ { anio : days.year }, { mes : days.month }, { dia :  days.day}] })
-            });
-            consulta = {...consulta, OR : consulta_days}
+
+            if(req_dia.length > 0){
+                req_dia.forEach( days => {
+                    consulta_days.push({ AND : [ { anio : days.year }, { mes : days.month }, { dia :  days.day}] })
+                });
+                consulta = {...consulta, OR : consulta_days}
+            }
         }
 
 

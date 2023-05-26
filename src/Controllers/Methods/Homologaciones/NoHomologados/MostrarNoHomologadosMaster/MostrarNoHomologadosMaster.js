@@ -16,6 +16,7 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
                 pk_venta_so : req_pk_venta_so
             },
             select : {
+                id : true,
                 proid                   : true,
                 m_dt_id                 : true,
                 pk_venta_so             : true,
@@ -53,9 +54,11 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
 
             mpso.push({
                 proid: null,
+                id: null,
                 m_dt_id: mpso[0]['m_dt_id'],
                 pk_venta_so: mpso[0]['pk_venta_so'],
-                pk_extractor_venta_so: mpso[0]['pk_venta_so'].toString() + mpso[0]['cod_unidad_medida'].toString() + mpso[0]['unidad_medida'],
+                // pk_extractor_venta_so: mpso[0]['pk_venta_so'].toString() + mpso[0]['cod_unidad_medida'].toString() + mpso[0]['unidad_medida'],
+                pk_extractor_venta_so: mpso[0]['pk_venta_so'].toString() + invo.cod_unidad_medida.toString() + invo.unidad_medida.toString(),
                 codigo_distribuidor: mpso[0]['codigo_distribuidor'],
                 codigo_producto: mpso[0]['codigo_producto'],
                 cod_unidad_medida : invo.cod_unidad_medida,

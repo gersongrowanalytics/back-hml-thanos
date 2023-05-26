@@ -24,18 +24,26 @@ controller.MetInfoMasterPrecios = async (req, res) => {
         if(req_anio && req_type_year){
 
             let consulta_year = []
-            req_anio.forEach( year => {
-                consulta_year.push({ AND : [ { anio : year }, { cod_material : req_cod_material} ] })
-            });
+            if(req_anio.length > 0){
+                req_anio.forEach( year => {
+                    consulta_year.push({ AND : [ { anio : year }, { cod_material : req_cod_material} ] })
+                });
+            }else{
+                consulta_year.push({ AND : [ { cod_material : req_cod_material} ] })
+            }
             consulta = {...consulta, OR : consulta_year}
         }
 
         if(req_mes && req_type_month){
 
             let consulta_month = []
-            req_mes.forEach( mes => {
-                consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month }, { cod_material : req_cod_material} ] })
-            });
+            if(req_mes.length > 0){
+                req_mes.forEach( mes => {
+                    consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month }, { cod_material : req_cod_material} ] })
+                });
+            }else{
+                consulta_month.push({ AND : [ { cod_material : req_cod_material} ] })
+            }
 
             consulta = {...consulta, OR : consulta_month}
         }
@@ -43,9 +51,13 @@ controller.MetInfoMasterPrecios = async (req, res) => {
         if(req_dia && req_type_day){
 
             let consulta_days = []
-            req_dia.forEach( days => {
-                consulta_days.push({ AND : [ { anio : days.year }, { mes : days.month }, { dia :  days.day}, { cod_material : req_cod_material} ] })
-            });
+            if(req_dia.length > 0){
+                req_dia.forEach( days => {
+                    consulta_days.push({ AND : [ { anio : days.year }, { mes : days.month }, { dia :  days.day}, { cod_material : req_cod_material} ] })
+                });
+            }else{
+                consulta_days.push({ AND : [ { cod_material : req_cod_material} ] })
+            }
             consulta = {...consulta, OR : consulta_days}
         }
 
