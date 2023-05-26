@@ -53,26 +53,30 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
 
             const invo = await ObtenerInfoInventarioController.MetInfoInventariosProductosNoHomologados(req_pk_venta_so, false)
 
-            mpso.push({
-                proid: null,
-                id: null,
-                m_dt_id: mpso[0]['m_dt_id'],
-                pk_venta_so: mpso[0]['pk_venta_so'],
-                // pk_extractor_venta_so: mpso[0]['pk_venta_so'].toString() + mpso[0]['cod_unidad_medida'].toString() + mpso[0]['unidad_medida'],
-                pk_extractor_venta_so: mpso[0]['pk_venta_so'].toString() + invo.cod_unidad_medida.toString() + invo.unidad_medida.toString(),
-                codigo_distribuidor: mpso[0]['codigo_distribuidor'],
-                codigo_producto: mpso[0]['codigo_producto'],
-                cod_unidad_medida : invo.cod_unidad_medida,
-                unidad_medida : invo.unidad_medida,
-                descripcion_producto : mpso[0]['descripcion_producto'],
-                precio_unitario : 0,
-                ruc : 0,
-                desde : "2023-05-15 00:00:00",
-                hasta : "2023-05-17 00:00:00",
-                s_ytd : 0,
-                s_mtd : 0,
-                inventario : invo
-            })
+            if(invo){
+
+                mpso.push({
+                    proid: null,
+                    id: null,
+                    m_dt_id: mpso[0]['m_dt_id'],
+                    pk_venta_so: mpso[0]['pk_venta_so'],
+                    // pk_extractor_venta_so: mpso[0]['pk_venta_so'].toString() + mpso[0]['cod_unidad_medida'].toString() + mpso[0]['unidad_medida'],
+                    pk_extractor_venta_so: mpso[0]['pk_venta_so'].toString() + invo.cod_unidad_medida.toString() + invo.unidad_medida.toString(),
+                    codigo_distribuidor: mpso[0]['codigo_distribuidor'],
+                    codigo_producto: mpso[0]['codigo_producto'],
+                    cod_unidad_medida : invo.cod_unidad_medida,
+                    unidad_medida : invo.unidad_medida,
+                    descripcion_producto : mpso[0]['descripcion_producto'],
+                    precio_unitario : 0,
+                    ruc : 0,
+                    desde : "2023-05-15 00:00:00",
+                    hasta : "2023-05-17 00:00:00",
+                    s_ytd : 0,
+                    s_mtd : 0,
+                    inventario : invo
+                })
+            }
+
         }
 
         res.status(200).json({

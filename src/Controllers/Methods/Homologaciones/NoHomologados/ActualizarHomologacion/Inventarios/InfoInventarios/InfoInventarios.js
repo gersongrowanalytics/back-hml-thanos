@@ -123,7 +123,7 @@ controller.MetInfoInventariosProductosNoHomologados = async ( pk_query, pk_extra
             }
         })
         let data
-        if(inv && invo){
+        if(invo && inv){
             data = {
                 maximo              : inv._max.precio_unitario,
                 minimo              : inv._min.precio_unitario,
@@ -133,7 +133,7 @@ controller.MetInfoInventariosProductosNoHomologados = async ( pk_query, pk_extra
             }
         }
 
-        return data
+        return inv && invo ? data : false 
 
     }catch(err){
         console.log(err)
