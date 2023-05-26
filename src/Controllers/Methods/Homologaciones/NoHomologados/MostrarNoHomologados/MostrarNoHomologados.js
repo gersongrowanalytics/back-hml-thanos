@@ -29,7 +29,8 @@ controller.MetMostrarNoHomologados = async (req, res) => {
                 desde : true,
                 hasta : true,
                 s_ytd : true,
-                s_mtd : true
+                s_mtd : true,
+                pk_venta_so: true
             },
             where: {
                 proid : null

@@ -22,9 +22,10 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                                 bonificado              : dhm.req_bonificado
                             }
             }
+            const idmpso = parseInt(dhm.req_id)
             const mpse = await prisma.master_productos_so.update({
                 where : {
-                    id : dhm.req_id
+                    id : idmpso
                 },
                 data : data_mpso
             })
