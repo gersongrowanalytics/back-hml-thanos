@@ -18,6 +18,7 @@ const ValObtenerInfoSI = require('../../Controllers/Validations/Homologaciones/N
 const ValObtenerInfoSO = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/SO/InfoSO/InfoSO')
 const ValObtenerInfoMasterPrecios   = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/MasterPrecios/ValInfoMasterPrecios')
 const ValObtenerInfoInvController = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/Inventarios/InfoInventarios/InfoInventarios')
+const ValActualizarInventarios = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/Inventarios/ActualizarInventario/ActualizarInventario')
 
 
 const protectedRoutes = express.Router();
@@ -47,6 +48,8 @@ protectedRoutes.post('/get-paqxbul-product', ValMosPaqBulProController.ValObtene
 protectedRoutes.post('/get-si', ValObtenerInfoSI.ValObtenerInfoSI)
 protectedRoutes.post('/get-so', ValObtenerInfoSO.ValObtenerInfoSO)
 protectedRoutes.post('/get-inv', ValObtenerInfoInvController.ValInfoInventarios)
+
+protectedRoutes.post('/update-inv', ValActualizarInventarios.ValActualizarInventario)
 
 protectedRoutes.post('/get-master-price', ValObtenerInfoMasterPrecios.ValObtenerInfoMasterPrecios)
 

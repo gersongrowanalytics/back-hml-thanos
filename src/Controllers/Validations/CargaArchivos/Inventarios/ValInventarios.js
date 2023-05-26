@@ -75,7 +75,8 @@ controller.ValCellsFile = async (workbook) => {
 
     const cod_dts = await prisma.master_distribuidoras.findMany({
         select : {
-            codigo_dt : true
+            codigo_dt   : true,
+            id          : true
         }
     })
 
@@ -111,6 +112,7 @@ controller.ValCellsFile = async (workbook) => {
         let fecha_dia
         let fecha_mes
         let fecha_anio
+        let id_cod_dt
 
         if(!row[properties[0]]){
             add_inventories = false
@@ -120,9 +122,13 @@ controller.ValCellsFile = async (workbook) => {
             
 
             if(cod_dts.findIndex(dts => dts.codigo_dt == row[properties[0]]) == -1){
+                add_inventories = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[0]['name'])
                 controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'distributor not found', row[properties[0]])
             }else{
+
+                let dts = cod_dts.find(dts => dts.codigo_dt == row[properties[0]])
+                id_cod_dt = dts.id
 
 
                 if(typeof(row[properties[1]]) == 'string'){
@@ -258,10 +264,9 @@ controller.ValCellsFile = async (workbook) => {
         const pk_venta_so           = row[properties[0]].toString() + row[properties[10]].toString().trim()
         const pk_extractor_venta_so = row[properties[0]].toString() + row[properties[10]].toString().trim() + cod_unidad_medida + unidad_medida
 
-
         data.push({
             pro_so_id                       : null,
-            m_dt_id                         : null,
+            m_dt_id                         : id_cod_dt,
             pk_venta_so                     : pk_venta_so,
             pk_extractor_venta_so           : pk_extractor_venta_so,
             codigo_distribuidor             : row[properties[0]]    ?  row[properties[0]].toString() : '',
