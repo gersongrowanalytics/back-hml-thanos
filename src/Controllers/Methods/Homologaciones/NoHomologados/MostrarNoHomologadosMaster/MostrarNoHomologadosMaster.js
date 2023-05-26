@@ -40,7 +40,8 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
         let exist_inv = false
         for await (const mps of mpso ){
             let inv = await ObtenerInfoInventarioController.MetInfoInventariosProductosNoHomologados(mps.pk_extractor_venta_so, true)
-            if(inv?.length > 0){
+            // if(inv?.length > 0){
+            if(inv){
                 exist_inv = true
                 mps['inventario'] = inv
             }else{
