@@ -30,7 +30,7 @@ controller.MetMasterPrecios = async (req, res, data, dates_row) => {
 
         res.status(200)
         res.json({
-            message     : 'La data de maestra precios fue cargada con éxito',
+            message     : 'La data de Maestro precios fue cargada con éxito',
             response    : true
         })
 

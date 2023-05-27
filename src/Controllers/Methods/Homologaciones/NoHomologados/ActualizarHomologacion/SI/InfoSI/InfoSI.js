@@ -70,9 +70,9 @@ controller.MetObtenerInfoSI = async (req, res) => {
                 response : true,
                 message : "Información de Sell In obtenida con éxito",
                 data : {
-                    maximo      : data_filtro._max.precio,
-                    minimo      : data_filtro._min.precio,
-                    promedio    : data_filtro._avg.precio,
+                    maximo      : data_filtro._max.precio ? data_filtro._max.precio : 0,
+                    minimo      : data_filtro._min.precio ? data_filtro._min.precio : 0,
+                    promedio    : data_filtro._avg.precio ? data_filtro._avg.precio : 0,
                 },
             })
 

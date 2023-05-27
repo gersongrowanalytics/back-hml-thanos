@@ -30,7 +30,7 @@ controller.MetSellin = async (req, res, data, delete_data) => {
         })
 
         res.status(200).json({
-            message : 'Los datos de inventarios fueron cargados correctamente',
+            message : 'Los datos de Sell In fueron cargados correctamente',
             messages_delete_data,
         })
 
@@ -38,7 +38,7 @@ controller.MetSellin = async (req, res, data, delete_data) => {
         console.log(error);
         res.status(500)
         return res.json({
-            message : 'Lo sentimos hubo un error al momento de cargar el inventario',
+            message : 'Lo sentimos hubo un error al momento de cargar el Sellin',
             devmsg  : error
         })
     }
