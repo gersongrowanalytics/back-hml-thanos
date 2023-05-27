@@ -7,6 +7,7 @@ const permissionMiddleware = require('../../Middleware/permissionMiddleware')
 
 // Controllers
 const ValMosNoHomController = require('../../Controllers/Validations/Homologaciones/NoHomologados/MostrarNoHomologados/ValMostrarNoHomologados')
+const ValMostrarUniqueNoHomologadoController = require('../../Controllers/Validations/Homologaciones/NoHomologados/MostrarNoHomologados/ValMostrarUniqueNoHomologado')
 const ValMosHomController = require('../../Controllers/Validations/Homologaciones/Homologados/MostrarHomologados/ValMostrarHomologados')
 const ValMosProController = require('../../Controllers/Validations/Homologaciones/Helpers/MostrarProductos/ValMostrarProductos')
 const ValRegHomController = require('../../Controllers/Validations/Homologaciones/NoHomologados/RegistrarHomologacion/ValRegistrarHomologacion')
@@ -39,6 +40,7 @@ protectedRoutes.post('/upload-approved', ValActHomController.ValActualizarHomolo
 // RUTAS NO HOMOLOGACIONES
 // **** **** **** **** **** //
 protectedRoutes.post('/get-non-approved-products', ValMosNoHomController.ValMostrarNoHomologados)
+protectedRoutes.post('/get-unique-non-approved-product', ValMostrarUniqueNoHomologadoController.ValMostrarUniqueNoHomologado)
 protectedRoutes.post('/register-product', ValRegHomController.ValRegistrarHomologacion)
 protectedRoutes.post('/update-non-approved-products', ValActProHom.ValActualizarHomologacion)
 protectedRoutes.post('/get-non-approved-product', ValMosNoHomMasterController.ValMostrarNoHomologadosMaster)
