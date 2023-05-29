@@ -8,12 +8,6 @@ controller.MetMostrarNoHomologados = async (req, res) => {
 
     try{
 
-        // const productosSinProid = await prisma.master_productos_so.findMany({
-        //     where: {
-        //         proid: null
-        //     }
-        // })
-
         const productosSinProid = await prisma.master_productos_so.findMany({
             select: {
                 master_distribuidoras: {
@@ -47,8 +41,9 @@ controller.MetMostrarNoHomologados = async (req, res) => {
             distinct : ['pk_venta_so']
         })
 
-        productosSinProid.map((pro, index) => productosSinProid[index]['key'] = index)
+        productosSinProid.map((pro, index) => productosSinProid[index]['key']  = index)
         
+            
         res.status(200)
         res.json({
             message : 'Productos no homologados obtenidos correctamente',

@@ -7,7 +7,8 @@ const ObtenerInfoInventarioController = require('../../../../Methods/Homologacio
 controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
 
     const {
-        req_pk_venta_so
+        req_pk_venta_so,
+        req_combo
     } = req.body
 
     try{

@@ -83,9 +83,9 @@ controller.MetObtenerInfoSO = async ( req, res ) => {
                 response : true,
                 message : "Información de Sell Out obtenida con éxito",
                 data : {
-                    maximo      : data_filtro._max.precio_unitario,
-                    minimo      : data_filtro._min.precio_unitario,
-                    promedio    : data_filtro._avg.precio_unitario,
+                    maximo      : data_filtro._max.precio_unitario ? data_filtro._max.precio_unitario : 0,
+                    minimo      : data_filtro._min.precio_unitario ? data_filtro._min.precio_unitario : 0,
+                    promedio    : data_filtro._avg.precio_unitario ? data_filtro._avg.precio_unitario : 0,
                 },
             })
 
