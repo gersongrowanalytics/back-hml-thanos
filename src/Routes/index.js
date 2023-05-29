@@ -7,6 +7,7 @@ const routes_administrar = require('./Administrar/administrar.routes')
 const routes_descargar_data = require('./DescargarData/descargardata.routes')
 const UserValidation = require('../Controllers/Validations/Login/ValUserValidation')
 const LogOut = require('../Controllers/Validations/Login/ValLogOut')
+const routes_status = require('./Status/status.routes')
 const authMiddleware = require('../Middleware/authMiddleware')
 const permissionMiddleware = require('../Middleware/permissionMiddleware')
 
@@ -29,5 +30,6 @@ router.use(routes_administration);
 router.use(routes_carga_archivos);
 router.use(routes_administrar);
 router.use(routes_descargar_data);
+router.use(routes_status);
 
 module.exports = router
