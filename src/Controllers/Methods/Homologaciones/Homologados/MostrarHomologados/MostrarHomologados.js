@@ -32,11 +32,14 @@ controller.MetMostrarHomologados = async (req, res) => {
                 codigo_producto : true,
                 descripcion_producto : true,
                 desde : true,
-                hasta : true
+                hasta : true,
+                combo: true,
+                pk_venta_so: true
             },
             orderBy: {
                 updated_at: 'desc'
-            }
+            },
+            distinct : ['pk_venta_so']
         })
 
         productos_hml.map((pro, index) => productos_hml[index]['key'] = index)

@@ -5,13 +5,31 @@ const moment = require('moment')
 
 controller.MetActualizarHomologacion = async ( req, res ) => {
 
-    const {
+    let {
         req_datos_homologados,
         req_select_product_so,
         req_rango_fecha
     } = req.body
 
     try{
+
+        let dataNoRepetida = []
+        req_datos_homologados.map((item, index) => {
+            let hayRepetidos = false
+            dataNoRepetida.map((data) => {
+                if(item.req_id == data.req_id){
+                    hayRepetidos = true
+                }
+            })
+            if(hayRepetidos){
+                item.req_id = null
+                dataNoRepetida.push(item)
+            }else{
+                dataNoRepetida.push(item)
+            }
+        })
+
+        req_datos_homologados = dataNoRepetida
 
         for await (const dhm of req_datos_homologados ){
             let data_mpso = { proid : dhm.req_id_producto_homologado, unidad_minima: dhm.req_unidad_minima_homologado }
@@ -25,6 +43,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                                 bonificado              : dhm.req_bonificado,
                                 desde                   : moment(req_rango_fecha.desde).format('YYYY-MM-DD').toString(),
                                 hasta                   : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
+                                cod_unidad_medida   : dhm.req_cod_unidad_medida
                             }
             }
             if(dhm.req_id){
@@ -44,7 +63,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             pk_extractor_venta_so : req_select_product_so.pk_extractor_venta_so,
                             codigo_distribuidor : req_select_product_so.codigo_distribuidor,
                             codigo_producto : req_select_product_so.codigo_producto,
-                            cod_unidad_medida : req_select_product_so.cod_unidad_medida,
+                            cod_unidad_medida : dhm.req_cod_unidad_medida,
                             unidad_medida : req_select_product_so.unidad_medida,
                             descripcion_producto : req_select_product_so.descripcion_producto,
                             precio_unitario : 0, // EVALUAR
@@ -71,7 +90,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             pk_extractor_venta_so : req_select_product_so.pk_extractor_venta_so,
                             codigo_distribuidor : req_select_product_so.codigo_distribuidor,
                             codigo_producto : req_select_product_so.codigo_producto,
-                            cod_unidad_medida : req_select_product_so.cod_unidad_medida,
+                            cod_unidad_medida : dhm.req_cod_unidad_medida,
                             unidad_medida : req_select_product_so.unidad_medida,
                             descripcion_producto : req_select_product_so.descripcion_producto,
                             precio_unitario : 0, // EVALUAR
