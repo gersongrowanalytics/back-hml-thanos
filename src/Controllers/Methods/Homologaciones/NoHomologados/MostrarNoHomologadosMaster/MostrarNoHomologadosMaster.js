@@ -80,6 +80,12 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
 
         }
 
+        mpso.map((dat, pos) => {
+            if(mpso[pos]['codigo_distribuidor'] == 'LALIBERTAD.01.262635'){
+                mpso[pos]['codigo_distribuidor'] = 'ALVAREZ BOHL - TRUJILLO'
+            }
+        })
+
         res.status(200).json({
             response    : true,
             message     : 'Información de producto no homologado obtenida con éxito',
