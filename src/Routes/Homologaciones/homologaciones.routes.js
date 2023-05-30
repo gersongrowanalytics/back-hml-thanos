@@ -14,6 +14,7 @@ const ValRegHomController = require('../../Controllers/Validations/Homologacione
 const ValActHomController = require('../../Controllers/Validations/Homologaciones/Homologados/ActualizarHomologados/ValActualizarHomologados')
 const ValActProHom = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/ActualizarHomologacion')
 const ValMosNoHomMasterController = require('../../Controllers/Validations/Homologaciones/NoHomologados/MostrarNoHomologadosMaster/MostrarNoHomologadosMaster')
+const ValMostrarHomologadosMasterController = require('../../Controllers/Validations/Homologaciones/Homologados/MostrarHomologadosMaster/MostrarHomologadosMaster')
 const ValMosPaqBulProController = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/PaquetexBultoProducto/PaquetexBultoProducto')
 const ValObtenerInfoSI = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/SI/InfoSI/InfoSI')
 const ValObtenerInfoSO = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/SO/InfoSO/InfoSO')
@@ -35,6 +36,7 @@ protectedRoutes.get('/get-master-products', ValMosProController.ValMostrarProduc
 // **** **** **** **** **** //
 protectedRoutes.get('/get-approved-products', ValMosHomController.ValMostrarHomologados)
 protectedRoutes.post('/upload-approved', ValActHomController.ValActualizarHomologados)
+protectedRoutes.post('/get-approved-product', ValMostrarHomologadosMasterController.ValMostrarHomologadosMaster)
 
 // **** **** **** **** **** //
 // RUTAS NO HOMOLOGACIONES
