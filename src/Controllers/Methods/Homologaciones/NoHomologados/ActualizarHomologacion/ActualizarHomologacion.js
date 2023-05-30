@@ -1,12 +1,14 @@
 const controller = {}
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+const moment = require('moment')
 
 controller.MetActualizarHomologacion = async ( req, res ) => {
 
     const {
         req_datos_homologados,
-        req_select_product_so
+        req_select_product_so,
+        req_rango_fecha
     } = req.body
 
     try{
@@ -20,7 +22,9 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                                 unidad_medida_hml       : dhm.req_unidad_medida_homologado,
                                 coeficiente             : dhm.req_coeficiente,
                                 unidad_minima_unitaria  : dhm.req_unidad_minima_unitario,
-                                bonificado              : dhm.req_bonificado
+                                bonificado              : dhm.req_bonificado,
+                                desde                   : moment(req_rango_fecha.desde).format('YYYY-MM-DD').toString(),
+                                hasta                   : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
                             }
             }
             if(dhm.req_id){
@@ -45,8 +49,8 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             descripcion_producto : req_select_product_so.descripcion_producto,
                             precio_unitario : 0, // EVALUAR
                             ruc : req_select_product_so.ruc,
-                            desde : req_select_product_so.desde,
-                            hasta : req_select_product_so.hasta,
+                            desde : moment(req_rango_fecha.desde).format('YYYY-MM-DD').toString(),
+                            hasta : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
                             s_ytd : "0",
                             s_mtd : "0",
                             unidad_minima : dhm.req_unidad_minima_homologado,
@@ -72,8 +76,8 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             descripcion_producto : req_select_product_so.descripcion_producto,
                             precio_unitario : 0, // EVALUAR
                             ruc : req_select_product_so.ruc,
-                            desde : req_select_product_so.desde,
-                            hasta : req_select_product_so.hasta,
+                            desde : moment(req_rango_fecha.desde).format('YYYY-MM-DD').toString(),
+                            hasta : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
                             s_ytd : "0",
                             s_mtd : "0",
                             unidad_minima : dhm.req_unidad_minima_homologado,
