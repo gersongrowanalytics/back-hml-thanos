@@ -403,12 +403,56 @@ model fecfechas {
   espestadospendientes          espestadospendientes[]
 }
 
+model zonzonas {
+  zonid                         Int         @id @default(autoincrement()) @db.UnsignedInt
+  zonnombre                     String      @db.VarChar(255)
+  zonorden                      String      @db.VarChar(255)
+  created_at                    DateTime?   @default(now())
+  updated_at                    DateTime?   @db.Timestamp(0)
+  cliclientes                   cliclientes[]
+}
+
+model cliclientes{
+  cliid                         Int         @id @default(autoincrement()) @db.UnsignedInt
+  clinombre                     String      @db.VarChar(255)
+  clicodigo                     String?     @db.VarChar(255)
+  clicodigoshipto               String?     @db.VarChar(255)
+  clishipto                     String?     @db.VarChar(255)
+  clihml                        String?     @db.VarChar(255)
+  clisuchml                     String?     @db.VarChar(255)
+  clidepartamento               String?     @db.VarChar(255)
+  cligrupohml                   String?     @db.VarChar(255)
+  clitv                         String?     @db.VarChar(255)
+  clizona                       String?     @db.VarChar(255)
+  cliregion                     String?     @db.VarChar(255)
+  clicanal                      String?     @db.VarChar(255)
+  clitipoatencion               String?     @db.VarChar(255)
+  clicanalatencion              String?     @db.VarChar(255)
+  clisegmentoclientefinal       String?     @db.VarChar(255)
+  clisubsegmento                String?     @db.VarChar(255)
+  clisegmentoregional           String?     @db.VarChar(255)
+  cligerenteregional            String?     @db.VarChar(255)
+  cligerentezona                String?     @db.VarChar(255)
+  cliejecutivo                  String?     @db.VarChar(255)
+  cliidentificadoraplicativo    String?     @db.VarChar(255)
+  cliclientesac                 String?     @db.VarChar(255)
+  cliclientegrupo               String?     @db.VarChar(255)
+  zonid                         Int?        @db.UnsignedInt
+  clizonacodigo                 Int?        @db.UnsignedInt
+  clibloqueado                  Boolean     @default(false)
+  created_at                    DateTime?   @default(now())
+  updated_at                    DateTime?   @db.Timestamp(0)
+  espestadospendientes          espestadospendientes[]
+  zonzonas                      zonzonas?  @relation(fields: [zonid], references: [zonid], onUpdate: Restrict, map: "cliclientes_zonid_foreign")
+}
+
 model espestadospendientes {
   espid                         Int         @id @default(autoincrement()) @db.UnsignedInt
   fecid                         Int         @db.UnsignedInt
   perid                         Int         @db.UnsignedInt
   tprid                         Int         @db.UnsignedInt
   areid                         Int         @db.UnsignedInt
+  cliid                         Int?        @db.UnsignedInt
   espfechaprogramado            DateTime?   @db.Date
   espchacargareal               DateTime?   @db.Date
   espfechactualizacion          DateTime?   @db.Date
@@ -416,10 +460,10 @@ model espestadospendientes {
   espresponsable                String      @db.VarChar(255)
   espdiaretraso                 String      @db.VarChar(255)
   esporden                      Boolean     @default(false)
-  cliid                         Int?
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
   fecfechas                     fecfechas?  @relation(fields: [fecid], references: [fecid], onUpdate: Restrict, map: "espestadospendientes_fecid_foreign")
   perpersonas                   perpersonas?  @relation(fields: [perid], references: [perid], onUpdate: Restrict, map: "espestadospendientes_perid_foreign")
   areareasestados               areareasestados?  @relation(fields: [areid], references: [areid], onUpdate: Restrict, map: "espestadospendientes_areid_foreign")
+  cliclientes                   cliclientes?  @relation(fields: [cliid], references: [cliid], onUpdate: Restrict, map: "espestadospendientes_cliid_foreign")
 }
