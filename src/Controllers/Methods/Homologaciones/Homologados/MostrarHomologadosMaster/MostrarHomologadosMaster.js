@@ -38,6 +38,11 @@ controller.MetObtenerHomologadosMaster = async ( req, res ) => {
                 coeficiente             : true,
                 unidad_minima_unitaria  : true,
                 bonificado              : true,
+                master_productos: {
+                    select: {
+                        nomb_producto : true
+                    }
+                },
             },
             orderBy: {
                 pk_extractor_venta_so: 'desc'
