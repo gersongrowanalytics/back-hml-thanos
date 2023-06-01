@@ -374,18 +374,6 @@ model tprtipospromociones{
   areareasestados               areareasestados[]
 }
 
-model areareasestados{
-  areid                         Int         @id @default(autoincrement()) @db.UnsignedInt
-  tprid                         Int         @db.UnsignedInt
-  areicono                      String      @db.VarChar(255)
-  arenombre                     String      @db.VarChar(255)
-  areporcentaje                 String      @db.VarChar(255)
-  fecid                         Int?
-  created_at                    DateTime?   @default(now())
-  updated_at                    DateTime?   @db.Timestamp(0)
-  espestadospendientes          espestadospendientes[]
-  tprtipospromociones           tprtipospromociones?  @relation(fields: [tprid], references: [tprid], onUpdate: Restrict, map: "areareasestados_tprid_foreign")
-}
 
 model fecfechas {
   fecid                         Int         @id @default(autoincrement()) @db.UnsignedInt
@@ -401,6 +389,19 @@ model fecfechas {
   updated_at                    DateTime?   @db.Timestamp(0)
   fecmesabierto                 Boolean     @default(false)
   espestadospendientes          espestadospendientes[]
+}
+
+model areareasestados{
+  areid                         Int         @id @default(autoincrement()) @db.UnsignedInt
+  tprid                         Int         @db.UnsignedInt
+  areicono                      String      @db.VarChar(255)
+  arenombre                     String      @db.VarChar(255)
+  areporcentaje                 String      @db.VarChar(255)
+  fecid                         Int?        @db.UnsignedInt
+  created_at                    DateTime?   @default(now())
+  updated_at                    DateTime?   @db.Timestamp(0)
+  espestadospendientes          espestadospendientes[]
+  tprtipospromociones           tprtipospromociones?  @relation(fields: [tprid], references: [tprid], onUpdate: Restrict, map: "areareasestados_tprid_foreign")
 }
 
 model zonzonas {
@@ -448,18 +449,19 @@ model cliclientes{
 
 model espestadospendientes {
   espid                         Int         @id @default(autoincrement()) @db.UnsignedInt
-  fecid                         Int         @db.UnsignedInt
-  perid                         Int         @db.UnsignedInt
-  tprid                         Int         @db.UnsignedInt
-  areid                         Int         @db.UnsignedInt
+  fecid                         Int?         @db.UnsignedInt
+  perid                         Int?         @db.UnsignedInt
+  tprid                         Int?         @db.UnsignedInt
+  espdts                        Boolean?    @default(false)
+  areid                         Int?         @db.UnsignedInt
   cliid                         Int?        @db.UnsignedInt
   espfechaprogramado            DateTime?   @db.Date
   espchacargareal               DateTime?   @db.Date
   espfechactualizacion          DateTime?   @db.Date
-  espbasedato                   String      @db.VarChar(255)
-  espresponsable                String      @db.VarChar(255)
-  espdiaretraso                 String      @db.VarChar(255)
-  esporden                      Boolean     @default(false)
+  espbasedato                   String?      @db.VarChar(255)
+  espresponsable                String?      @db.VarChar(255)
+  espdiaretraso                 String?      @db.VarChar(255)
+  esporden                      Boolean?     @default(false)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
   fecfechas                     fecfechas?  @relation(fields: [fecid], references: [fecid], onUpdate: Restrict, map: "espestadospendientes_fecid_foreign")

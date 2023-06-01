@@ -7,6 +7,8 @@ const permissionMiddleware = require('../../Middleware/permissionMiddleware')
 
 // Controllers
 const ValMostrarEstadoPendiente = require('../../Controllers/Validations/Status/EstadoPendiente/MostrarEstadoPendiente')
+const ValActualizarStatusHomologacion = require('../../Controllers/Validations/Status/EstadoPendiente/ActualizarStatusHomologacion')
+const ValCrearAmbienteStatus = require('../../Controllers/Validations/Status/CrearAmbienteStatus/CrearAmbienteStatus')
 
 
 const protectedRoutes = express.Router();
@@ -14,10 +16,11 @@ const protectedRoutes = express.Router();
 
 
 // **** **** **** **** **** //
-// RUTAS STAUS
+// RUTAS STATUS
 // **** **** **** **** **** //
 protectedRoutes.post('/show/pending-states', ValMostrarEstadoPendiente.ValMostrarEstadoPendiente)
-
+protectedRoutes.post('/edit/status-approval', ValActualizarStatusHomologacion.ValActualizarStatusHomologacion)
+protectedRoutes.post('/config/create-environment', ValCrearAmbienteStatus.ValCrearAmbienteStatus)
 
 router.use('/status', protectedRoutes);
 

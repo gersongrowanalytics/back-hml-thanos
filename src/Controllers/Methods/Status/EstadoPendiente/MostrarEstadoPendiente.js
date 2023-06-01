@@ -6,7 +6,6 @@ const prisma = new PrismaClient()
 controller.MetMostrarEstadoPendiente = async ( req, res ) => {
 
     let {
-        date_initial,
         date_final
     } = req.body
 
@@ -14,200 +13,132 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
 
         let date_one    = ""
         let date_two    = ""
-        let data        = []
-        let esps_dts    = []
         let query_eps   = {}
+        let ares        = []
+        let arr_dts     = []
 
         if(date_final != null){
             date_final = moment(date_final).format("YYYY-MM");
         }else{
             date_final = null
         }
+        date_final = moment(date_final).format("YYYY-MM");
 
-        const tprs  = await prisma.tprtipospromociones.findMany({})
+        query_eps = {...query_eps, fecfecha: { lte : date_final+'-01'}}
 
-        let index_tpr = 0
+        const fec = await prisma.fecfechas.findFirst({
+            where : {
+                fecfecha : new Date(`${date_final}-01`)
+            }
+        })
 
-        if(date_final == null){
-            query_eps = {...query_eps, espid : 0}
-        }else{
-            query_eps = {...query_eps, fecfecha: date_final+'-01'}
-        }
+        if(fec){
 
-        for await (const tpr of tprs ){
-
-            let ares = await prisma.espestadospendientes.findMany({
-                select : {
-                    areareasestados : {
-                        select : {
-                            areid               : true,
-                            areicono            : true,
-                            arenombre           : true,
-                            areporcentaje       : true,
-                            tprtipospromociones : true
-                        },
-                    },
-                    fecfechas : true,
-                    
+            ares = await prisma.areareasestados.findMany({
+                where : {
+                    fecid : fec.fecid
                 },
-                // where : query_eps,
-                distinct: ['areid'],
+                distinct : ['areid']
             })
 
-            ares = ares.filter(are => are.areareasestados.tprtipospromociones.tprid == tpr.tprid)
 
-            if(ares.length > 0){
+            let index_are = 0
+            for await (const are of ares){
 
-                let aresn = [ [], [], [], [], [] ]
-
-                let index_ares = 0
-
-                for await (const are of ares ){
-                    
-                    const esps = await prisma.espestadospendientes.findMany({
-                        where : {
-                            areid : are.areareasestados.areid
-                        },
-                        select : {
-                            perpersonas : {
-                                select : {
-                                    pernombrecompleto   : true,
-                                    pernombre           : true,
-                                    perapellidopaterno  : true,
-                                    perapellidomaterno  : true,
-                                }
-                            },
-                            espid               : true,
-                            espfechaprogramado  : true,
-                            espchacargareal     : true,
-                            espfechactualizacion: true,
-                            espbasedato         : true,
-                            espresponsable      : true,
-                            espdiaretraso       : true,
-                        }
-                    })
-
-                    esps.forEach((esp, index_esp)=> {
-
-                        let day_late = esp.espdiaretraso
-
-                        if(esp.espfechactualizacion == null){
-
-                            date_two    = moment(esp.espfechaprogramado)
-                            date_one    = moment()
-                            
-                            if(date_one > date_two){
-                                let diff_days_date_one_two = date_one.diff(date_two, 'days')
-                                
-                                if( diff_days_date_one_two > 0){
-                                    day_late = diff_days_date_one_two
-                                }else{
-                                    day_late = '0'
-                                }
-                            }else{
-                                day_late = '0'
-                            }
-                        }
-
-                        esps[index_esp]['espdiaretraso'] = day_late
-                    })
-
-                    ares[index_ares]['esps'] = esps
-
-                    if(are.areareasestados.arenombre == 'SAC Sell Out Detalle'){
-                        aresn[3]    = ares[index_ares]
-                    }else if(are.areareasestados.arenombre == 'SAC Sell Out'){
-                        aresn[2]    = ares[index_ares]
-                    }else if(are.areareasestados.arenombre == 'SAC Sell In'){
-                        aresn[1]    = ares[index_ares]
-                    }else if(are.areareasestados.arenombre == 'Revenue'){
-                        aresn[0]    = ares[index_ares]
-                    }else if(are.areareasestados.arenombre == 'SAC ADM'){
-                        aresn[4]    = ares[index_ares]
-                    }else{
-                        aresn[5]    = ares[index_ares]
-                    }
-
-                    index_ares = index_ares + 1
-
-                }
-
-                tprs[index_tpr]['ares'] = aresn
-
-                if(index_tpr == 0){
-                    tprs[index_tpr]['seleccionado'] = true
-                }
-
-                esps_dts = await prisma.espestadospendientes.findMany({
+                const esps = await prisma.espestadospendientes.findMany({
+                    where : {
+                        areid : are.areid
+                    },
                     select : {
-                        perpersonas : true,
-                        areareasestados : {
+                        perpersonas : {
                             select : {
-                                tprtipospromociones : true,
-                                arenombre : true
+                                pernombrecompleto   : true,
+                                pernombre           : true,
+                                perapellidopaterno  : true,
+                                perapellidomaterno  : true,
                             }
                         },
-                        espdiaretraso : true,
-                        espfechactualizacion : true,
-                        espfechaprogramado : true,
-                        fecfechas : true,
-                        cliclientes : {
+                        fecid                   : true,
+                        espid                   : true,
+                        espfechaprogramado      : true,
+                        espchacargareal         : true,
+                        espfechactualizacion    : true,
+                        espbasedato             : true,
+                        espresponsable          : true,
+                        esporden                : true,
+                        espdiaretraso           : true,
+                        espdts                  : true,
+                        cliclientes             : {
                             select : {
-                                zonzonas : true
+                                clitv       : true,
+                                clihml      : true,
+                                clisuchml   : true,
+                                zonzonas    : true
                             }
                         }
                     },
                 })
 
-                esps_dts = esps_dts.filter(esp => 
-                                            esp.areareasestados.tprtipospromociones.tprid == tpr.tprid 
-                                            && esp.areareasestados.arenombre == 'SAC Sell Out Detalle' 
-                                            && esp.fecfechas.fecfecha == date_final+'-01'
-                                        )
+                ares[index_are]['esps'] = esps
+                index_are = index_are + 1
+            }
 
-                esps_dts.forEach( (esp_dts, index_esp_dts) => {
+            ares.forEach((are, index_are) => {
+                let arr_no_dts  = []
+                are.esps.forEach((esp, index_esp) => {
                     
-                    let day_late = esp_dts.espdiaretraso
+                    let day_late = esp.espdiaretraso
 
-                    if(esp_dts.espfechactualizacion == null){
+                    if(esp.espfechactualizacion == null){
 
+                        date_two    = moment(esp.espfechaprogramado)
                         date_one    = moment()
-                        date_two    = moment(esp_dts.espfechaprogramado)
-
-                        if(date_one == date_two){
-                            day_late = '0'
-                        }else{
-                            if(date_one > date_two){
-                                let diff_days_date_one_two = date_one.diff(date_two, 'days')
-                                
-                                if( diff_days_date_one_two > 0){
-                                    day_late = diff_days_date_one_two
-                                }else{
-                                    day_late = '0'
-                                }
+                        
+                        if(date_one > date_two){
+                            let diff_days_date_one_two = date_one.diff(date_two, 'days')
+                            
+                            if( diff_days_date_one_two > 0){
+                                day_late = diff_days_date_one_two
                             }else{
                                 day_late = '0'
                             }
+                        }else{
+                            day_late = '0'
                         }
                     }
+                    
+                    ares[index_are]['esps'][index_esp]['espdiaretraso'] = day_late
+                    
+                    if(are.arenombre == 'Ventas' && esp.espdts == false){
+                        arr_no_dts.push(esp)
+                    }else if(are.arenombre == 'Ventas' && esp.espdts == true){
 
-                    esps_dts[index_esp_dts]['espdiaretraso'] = day_late
-                });
+                        arr_dts.push(esp)
+                    }
+                })
+                if(are.arenombre == 'Ventas'){
+                    ares[index_are]['esps'] = arr_no_dts
 
-            }
 
-            index_tpr = index_tpr + 1
+                    ares[index_are]['esps'] = ares[index_are]['esps'].sort(function (a, b){
+                        return a.espbasedato < b.espbasedato ? 1 : -1
+                    })
+                }
+            });
+
+            arr_dts.forEach((ndts, index_ndts) => {
+                arr_dts[index_ndts]['key'] = index_ndts + 1
+            });
+
+
         }
-
-        data = tprs
 
         res.status(200).json({
             response    : true,
             messagge    : 'Se obtuvo el estado pendiente de status con éxito',
-            date1       : date_one, 
-            date2       : date_two,
-            datos       : data,
-            espsDistribuidoras : esps_dts
+            espsDistribuidoras : arr_dts,
+            datos: ares,
+
         })
 
     }catch(err){
