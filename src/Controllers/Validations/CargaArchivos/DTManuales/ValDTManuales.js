@@ -3,6 +3,7 @@ const XLSX = require('xlsx')
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const DTManualesController = require('../../../Methods/CargaArchivos/DTManuales/DTManuales')
+const DTManualesMasterClientesGrowController = require('../../../Methods/CargaArchivos/DTManuales/DTManualesMasterClientesGrow')
 
 controller.ValDTManuales = async (req, res) => {
 
@@ -19,7 +20,7 @@ controller.ValDTManuales = async (req, res) => {
             })
         }
 
-        const { messages_error, add_dt_manuales, borrar_data, data } = await controller.ValCellsFile(workbook)
+        const { messages_error, add_dt_manuales, borrar_data, data, codcli_esp, cods_dts } = await controller.ValCellsFile(workbook)
 
         const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg));
 
@@ -33,7 +34,7 @@ controller.ValDTManuales = async (req, res) => {
 
             })
         }
-
+        
         DTManualesController.MetDTManuales(req, res, data, borrar_data)
 
     }catch(error){
@@ -75,7 +76,8 @@ controller.ValCellsFile = async (workbook) => {
 
     const cod_dts = await prisma.master_distribuidoras.findMany({
         select : {
-            codigo_dt : true
+            codigo_dt   : true,
+            id          : true
         }
     })
 
@@ -84,6 +86,12 @@ controller.ValCellsFile = async (workbook) => {
     let borrar_data     = []
     const data          = []
     const verify_cells  = [3, 7, 10, 11, 12, 13]
+    const codcli_esp    = []
+
+    const mcl_grow_local    = []
+    const mcl_nogrow_local  = []
+
+    const cods_dts      = []
 
     const columns_name = [
         { value   : 0, name    : 'CodigoDistribuidor' },
@@ -96,16 +104,18 @@ controller.ValCellsFile = async (workbook) => {
         { value   : 7, name    : 'CodigoVendedorDistribuidor' },
         { value   : 8, name    : 'DNIVendedorDistribuidor' },
         { value   : 9, name    : 'NombreVendedorDistribuidor' },
-        { value   : 10, name    : 'CodigoProducto' },
-        { value   : 11, name    : 'DescripcionProducto' },
-        { value   : 12, name    : 'Cantidad' },
-        { value   : 13, name    : 'UnidadDeMedida' },
-        { value   : 14, name    : 'PrecioUnitario' },
-        { value   : 15, name    : 'PrecioTotalSinIGV' },
+        { value   : 10, name   : 'CodigoProducto' },
+        { value   : 11, name   : 'DescripcionProducto' },
+        { value   : 12, name   : 'Cantidad' },
+        { value   : 13, name   : 'UnidadDeMedida' },
+        { value   : 14, name   : 'PrecioUnitario' },
+        { value   : 15, name   : 'PrecioTotalSinIGV' },
     ]
 
     let num_row = 1
     for await (const row of rows){
+
+        let m_dt_id = null
 
         if(!row[properties[0]]){
             add_dt_manuales = false
@@ -113,12 +123,19 @@ controller.ValCellsFile = async (workbook) => {
             controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'empty')
         }else{
 
+            if(!cods_dts.includes(row[properties[0]].trim())){
+                cods_dts.push(row[properties[0]].trim())
+            }
+
             if(cod_dts.findIndex(dts => dts.codigo_dt == row[properties[0]]) == -1){
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[0]['name'])
                 controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'distributor not found', row[properties[0]])
             }else{
+
+                let find_dts = cod_dts.find(dt => dt.codigo_dt == row[properties[0]])
+                m_dt_id = find_dts.id
+
                 const fechaJavaScript = XLSX.SSF.parse_date_code(row[properties[1]]);
-    
                 const fecha_mes = fechaJavaScript.m <= 9 ?"0"+fechaJavaScript.m.toString() :fechaJavaScript.m.toString();
                 const fecha_capturada = fechaJavaScript.y.toString()+"-"+fecha_mes.toString()
     
@@ -245,6 +262,18 @@ controller.ValCellsFile = async (workbook) => {
             }
         }
 
+        if(row[properties[3]]){
+            if(!codcli_esp.includes(row[properties[3]].trim())){
+                codcli_esp.push(row[properties[3]].trim())
+            }
+        }
+
+        let id_mcl_grow
+        if(row[properties[0]]){
+            id_mcl_grow = await DTManualesMasterClientesGrowController.MetDTManualesMasterClientesGrow(row[properties[0]], mcl_grow_local, mcl_nogrow_local)
+        }
+
+
         let cod_unidad_medida   = row[properties[13]].toString().substring(0,3)
         let unidad_medida       = row[properties[13]].toString()
         let precio_unitario     = row[properties[15]]/row[properties[12]]
@@ -256,8 +285,9 @@ controller.ValCellsFile = async (workbook) => {
 
         data.push({
             pro_so_id                       : null,
-            m_dt_id                         : null,
+            m_dt_id                         : m_dt_id,
             pk_venta_so                     : pk_venta_so,
+            m_cl_grow                       : id_mcl_grow,
             pk_extractor_venta_so           : pk_extractor_venta_so,
             codigo_distribuidor             : row[properties[0]]    ?  row[properties[0]].toString() : '',
             fecha                           : fecha_capturada       ?  fecha_capturada.toString() : '',
@@ -284,7 +314,7 @@ controller.ValCellsFile = async (workbook) => {
         num_row = num_row + 1
     }
 
-    return { messages_error, add_dt_manuales, borrar_data, data }
+    return { messages_error, add_dt_manuales, borrar_data, data, codcli_esp, cods_dts }
 }
 
 controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row, type, name_dts = null) => {
