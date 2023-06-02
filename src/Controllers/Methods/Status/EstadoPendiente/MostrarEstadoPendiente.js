@@ -68,14 +68,15 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
                         esporden                : true,
                         espdiaretraso           : true,
                         espdts                  : true,
-                        cliclientes             : {
+                        masterclientes_grow : {
                             select : {
-                                clitv       : true,
-                                clihml      : true,
-                                clisuchml   : true,
-                                zonzonas    : true
+                                zona        : true,
+                                territorio  : true,
+                                cliente_hml : true,
+                                sucursal_hml: true,
+                                conexion    : true
                             }
-                        }
+                        },
                     },
                 })
 
@@ -112,7 +113,6 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
                     if(are.arenombre == 'Ventas' && esp.espdts == false){
                         arr_no_dts.push(esp)
                     }else if(are.arenombre == 'Ventas' && esp.espdts == true){
-
                         arr_dts.push(esp)
                     }
                 })

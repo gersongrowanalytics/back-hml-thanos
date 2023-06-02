@@ -262,6 +262,7 @@ model ventas_so {
   id                            Int         @id @default(autoincrement()) @db.UnsignedInt
   pro_so_id                     Int?        @db.UnsignedInt
   m_dt_id                       Int?        @db.UnsignedInt
+  m_cl_grow                     Int?        @db.UnsignedInt
   dia                           Int?        @db.UnsignedInt
   mes                           Int?        @db.UnsignedInt
   anio                          Int?        @db.UnsignedInt
@@ -286,6 +287,7 @@ model ventas_so {
   precio_total_sin_igv          String?     @db.VarChar(255)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
+  masterclientes_grow           masterclientes_grow?   @relation(fields: [m_cl_grow], references: [id], onUpdate: Restrict, map: "masterclientes_grow_ventas_so_id_foreign")
   master_productos_so           master_productos_so?   @relation(fields: [pro_so_id], references: [id], onUpdate: Restrict, map: "ventas_so_id_foreign")
   master_distribuidoras         master_distribuidoras?   @relation(fields: [m_dt_id], references: [id], onUpdate: Restrict, map: "master_distribuidoras_m_dt_id_ventas_so_foreign")
 }
@@ -421,7 +423,6 @@ model zonzonas {
   zonorden                      String      @db.VarChar(255)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
-  cliclientes                   cliclientes[]
 }
 
 model cliclientes{
@@ -449,34 +450,113 @@ model cliclientes{
   cliidentificadoraplicativo    String?     @db.VarChar(255)
   cliclientesac                 String?     @db.VarChar(255)
   cliclientegrupo               String?     @db.VarChar(255)
-  zonid                         Int?        @db.UnsignedInt
   clizonacodigo                 Int?        @db.UnsignedInt
   clibloqueado                  Boolean     @default(false)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
-  espestadospendientes          espestadospendientes[]
-  zonzonas                      zonzonas?  @relation(fields: [zonid], references: [zonid], onUpdate: Restrict, map: "cliclientes_zonid_foreign")
 }
 
 model espestadospendientes {
   espid                         Int         @id @default(autoincrement()) @db.UnsignedInt
-  fecid                         Int?         @db.UnsignedInt
-  perid                         Int?         @db.UnsignedInt
-  tprid                         Int?         @db.UnsignedInt
+  fecid                         Int?        @db.UnsignedInt
+  perid                         Int?        @db.UnsignedInt
+  tprid                         Int?        @db.UnsignedInt
+  m_cl_grow                     Int?        @db.UnsignedInt
   espdts                        Boolean?    @default(false)
-  areid                         Int?         @db.UnsignedInt
-  cliid                         Int?        @db.UnsignedInt
+  areid                         Int?        @db.UnsignedInt
   espfechaprogramado            DateTime?   @db.Date
   espchacargareal               DateTime?   @db.Date
   espfechactualizacion          DateTime?   @db.Date
-  espbasedato                   String?      @db.VarChar(255)
-  espresponsable                String?      @db.VarChar(255)
-  espdiaretraso                 String?      @db.VarChar(255)
-  esporden                      Boolean?     @default(false)
+  espbasedato                   String?     @db.VarChar(255)
+  espresponsable                String?     @db.VarChar(255)
+  espdiaretraso                 String?     @db.VarChar(255)
+  esporden                      Boolean?    @default(false)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
+  masterclientes_grow           masterclientes_grow?  @relation(fields: [m_cl_grow], references: [id], onUpdate: Restrict, map: "espestadospendientes_m_cl_grow_foreign")
   fecfechas                     fecfechas?  @relation(fields: [fecid], references: [fecid], onUpdate: Restrict, map: "espestadospendientes_fecid_foreign")
   perpersonas                   perpersonas?  @relation(fields: [perid], references: [perid], onUpdate: Restrict, map: "espestadospendientes_perid_foreign")
   areareasestados               areareasestados?  @relation(fields: [areid], references: [areid], onUpdate: Restrict, map: "espestadospendientes_areid_foreign")
-  cliclientes                   cliclientes?  @relation(fields: [cliid], references: [cliid], onUpdate: Restrict, map: "espestadospendientes_cliid_foreign")
+}
+
+model masterclientes_grow {
+  id                          Int         @id @default(autoincrement()) @db.UnsignedInt
+  cod_organizacion            String?     @db.VarChar(255)
+  organizacion_venta          String?     @db.VarChar(255)
+  codigo_division             String?     @db.VarChar(255)
+  division                    String?     @db.VarChar(255)
+  codigo_destinatario         String?     @db.VarChar(255)
+  destinatario                String?     @db.VarChar(255)
+  codigo_solicitante          String?     @db.VarChar(255)
+  solicitante                 String?     @db.VarChar(255)
+  ruc                         String?     @db.VarChar(255)
+  cliente_hml                 String?     @db.VarChar(255)
+  grupo_cliente_hml           String?     @db.VarChar(255)
+  sucursal_hml                String?     @db.VarChar(255)
+  supervisor                  String?     @db.VarChar(255)
+  territorio                  String?     @db.VarChar(255)
+  zona                        String?     @db.VarChar(255)
+  canal_atencion              String?     @db.VarChar(255)
+  segmento_cliente            String?     @db.VarChar(255)
+  subsegmento                 String?     @db.VarChar(255)
+  tipo_atencion               String?     @db.VarChar(255)
+  segmento_regional           String?     @db.VarChar(255)
+  conexion                    String?     @db.VarChar(255)
+  estado                      String?     @db.VarChar(255)
+  codigo_pais                 String?     @db.VarChar(255)
+  pais                        String?     @db.VarChar(255)
+  codigo_departamento         String?     @db.VarChar(255)
+  departamento                String?     @db.VarChar(255)
+  codigo_provincia            String?     @db.VarChar(255)
+  provincia                   String?     @db.VarChar(255)
+  codigo_distrito             String?     @db.VarChar(255)
+  distrito                    String?     @db.VarChar(255)
+  direccion                   String?     @db.VarChar(255)
+  zona_venta                  String?     @db.VarChar(255)
+  created_at                  DateTime?   @default(now())
+  updated_at                  DateTime?   @db.Timestamp(0)
+  ventas_so                   ventas_so[]
+  espestadospendientes        espestadospendientes[]
+}
+
+model master_productos_grow {
+  id                          Int         @id @default(autoincrement()) @db.UnsignedInt
+  cod_organizacion            String?     @db.VarChar(255)
+  organizacion_venta          String?     @db.VarChar(255)
+  codigo_division             String?     @db.VarChar(255)
+  division                    String?     @db.VarChar(255)
+  codigo_material             String?     @db.VarChar(255)
+  material_softys             String?     @db.VarChar(255)
+  categoria_softys            String?     @db.VarChar(255)
+  categoria_marketing         String?     @db.VarChar(255)
+  codigo_sector               String?     @db.VarChar(255)
+  sector                      String?     @db.VarChar(255)
+  codigo_segmentacion         String?     @db.VarChar(255)
+  segmentacion                String?     @db.VarChar(255)
+  codigo_presentacion         String?     @db.VarChar(255)
+  presentacion                String?     @db.VarChar(255)
+  codigo_marca                String?     @db.VarChar(255)
+  marca                       String?     @db.VarChar(255)
+  codigo_formato              String?     @db.VarChar(255)
+  formato                     String?     @db.VarChar(255)
+  codigo_talla                String?     @db.VarChar(255)
+  talla                       String?     @db.VarChar(255)
+  codigo_conteo               String?     @db.VarChar(255)
+  conteo                      String?     @db.VarChar(255)
+  subcategoria_marketing      String?     @db.VarChar(255)
+  division_softys             String?     @db.VarChar(255)
+  subcategoria                String?     @db.VarChar(255)
+  disponible_softys           String?     @db.VarChar(255)
+  peso_kg                     Decimal?    @db.Decimal(17,10)
+  factor_bultos               Decimal?    @db.Decimal(17,10)
+  paquetes_bulto              Decimal?    @db.Decimal(17,10)
+  factor_unidad_minima        Decimal?    @db.Decimal(17,10)
+  factor_toneladas            Decimal?    @db.Decimal(17,10)
+  factor_miles                Decimal?    @db.Decimal(17,10)
+  estado                      String?     @db.VarChar(255)
+  unidades_hojas              Decimal?    @db.Decimal(17,10)
+  metros_unidad               Decimal?    @db.Decimal(17,10)
+  disponible                  String?     @db.VarChar(255)
+  created_at                  DateTime?   @default(now())
+  updated_at                  DateTime?   @db.Timestamp(0)
 }
