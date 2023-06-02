@@ -56,7 +56,7 @@ controller.MetSellin = async (req, res, data, delete_data) => {
         })
 
         if(espe){
-            if(usu.perid == 1 || usu.perid == 3 || usu.perid == 7 || usu.perid == 10){
+            if(usu.perid == 10){
                 
             }else{
                 let date_one = moment()
@@ -169,7 +169,7 @@ controller.MetSellin = async (req, res, data, delete_data) => {
 
         const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
-        const to_mail_data = "Frank.Martinez@grow-analytics.com.pe"
+        const to_mail_data = "Gerson.Vilca@grow-analytics.com.pe"
         const subject_mail_success = "Carga de Archivo"
 
         const data_mail = {
@@ -181,9 +181,10 @@ controller.MetSellin = async (req, res, data, delete_data) => {
 
         await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
-        res.status(200).json({
+        return res.status(200).json({
             message : 'Los datos de Sell In fueron cargados correctamente',
             messages_delete_data,
+            respuesta : true
         })
 
     }catch(error){
@@ -191,7 +192,8 @@ controller.MetSellin = async (req, res, data, delete_data) => {
         res.status(500)
         return res.json({
             message : 'Lo sentimos hubo un error al momento de cargar el Sellin',
-            devmsg  : error
+            devmsg  : error,
+            respuesta : false
         })
     }
 }

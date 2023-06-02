@@ -10,6 +10,7 @@ const SendMail = require('../../Reprocesos/SendMail')
 const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadenaAleatorio')
 const UploadFileExcel = require('../../S3/UploadFileExcelS3')
 const moment = require('moment');
+const { log } = require('handlebars');
 require('dotenv').config()
 
 controller.MetMasterMateriales = async (req, res) => {
@@ -28,10 +29,10 @@ controller.MetMasterMateriales = async (req, res) => {
 
     if(!workbook.Sheets['Hoja1']){
         res.status(500)
-        res.json({
-            message : 'Lo sentimos no se encontro la hoja con nombre Hoja1'
+        return res.json({
+            message : 'Lo sentimos no se encontro la hoja con nombre Hoja1',
+            respuesta : false
         })
-        return false
     }
 
     const rows = XLSX.utils.sheet_to_json(workbook.Sheets['Hoja1'], {defval:""})
@@ -122,11 +123,11 @@ controller.MetMasterMateriales = async (req, res) => {
 
         if(!add_products){
             res.status(500)
-            res.json({
+            return res.json({
                 message : 'Lo sentimos se encontraron algunas observaciones',
-                messages_error : messages_error
+                messages_error : messages_error,
+                respuesta : false
             })
-            return false
         }
 
         if(req_delete_data == 'true'){
@@ -169,7 +170,8 @@ controller.MetMasterMateriales = async (req, res) => {
             },
             select: {
                 usuid: true,
-                usuusuario: true
+                usuusuario: true,
+                perid: true
             }
         })
 
@@ -192,7 +194,7 @@ controller.MetMasterMateriales = async (req, res) => {
 
         const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
-        const to_mail_data = "Frank.Martinez@grow-analytics.com.pe"
+        const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
         const subject_mail_success = "Carga de Archivo"
 
         const data_mail = {
@@ -204,7 +206,8 @@ controller.MetMasterMateriales = async (req, res) => {
 
 
         if(espe){
-            if(usu.perid == 1 || usu.perid == 3 || usu.perid == 7 || usu.perid == 10){
+
+            if(usu.perid == 10){
                 
             }else{
                 let date_one = moment()
@@ -272,16 +275,17 @@ controller.MetMasterMateriales = async (req, res) => {
         
         return res.status(200).json({
             message : 'La maestra de Producto fue cargada correctamente',
+            respuesta : true
         })
 
     }catch(error){
         console.log(error)
         res.status(500)
-        res.json({
+        return res.json({
             message : 'Lo sentimos hubo un error al momento de cargar los datos',
-            devmsg  : error
+            devmsg  : error,
+            respuesta : false
         })
-        return false
     }
 }
 

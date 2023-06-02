@@ -27,7 +27,8 @@ controller.MetMasterClientes = async (req, res) => {
     if (!file) {
         res.status(500)
         return res.json({
-            message : 'No se ha subido ningún archivo'
+            message : 'No se ha subido ningún archivo',
+            respuesta : false
         })
     }
 
@@ -35,10 +36,10 @@ controller.MetMasterClientes = async (req, res) => {
 
     if(!workbook.Sheets['Hoja1']){
         res.status(500)
-        res.json({
-            message : 'Lo sentimos no se encontro la hoja con nombre Hoja1'
+        return res.json({
+            message : 'Lo sentimos no se encontro la hoja con nombre Hoja1',
+            respuesta : false
         })
-        return false
     }
 
     const rows = XLSX.utils.sheet_to_json(workbook.Sheets['Hoja1'], {defval:""})
@@ -130,11 +131,11 @@ controller.MetMasterClientes = async (req, res) => {
 
         if(!add_clients){
             res.status(500)
-            res.json({
+            return res.json({
                 message : 'Lo sentimos se encontraron algunas observaciones',
-                messages_error : messages_error
+                messages_error : messages_error,
+                respuesta : false
             })
-            return false
         }
 
         if(req_delete_data == 'true'){
@@ -150,7 +151,7 @@ controller.MetMasterClientes = async (req, res) => {
         const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
 
         if(espe){
-            if(usu.perid == 1 || usu.perid == 3 || usu.perid == 7 || usu.perid == 10){
+            if(usu.perid == 10){
                 
             }else{
                 let date_one = moment()
@@ -267,7 +268,7 @@ controller.MetMasterClientes = async (req, res) => {
 
         const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
-        const to_mail_data = "Frank.Martinez@grow-analytics.com.pe"
+        const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
         const subject_mail_success = "Carga de Archivo"
 
         const data_mail = {
@@ -279,21 +280,19 @@ controller.MetMasterClientes = async (req, res) => {
 
         await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
-        res.status(200).json({
+        return res.status(200).json({
             message : 'La maestra de Clientes fue cargada correctamente',
+            respuesta : true
         })
-
-        return true
 
     }catch(error){
         console.log(error)
         res.status(500)
-        res.json({
+        return res.json({
             message : 'Lo sentimos hubo un error al momento de cargar los datos del excel',
-            devmsg  : error
+            devmsg  : error,
+            respuesta : false
         })
-
-        return false
     }
 }
 

@@ -73,71 +73,68 @@ controller.MetMasterPrecios = async (req, res, data, dates_row) => {
             data
         })
 
-        if(usu.usuid != 1){
-            
-            if(espe){
-                if(usu.perid == 1 || usu.perid == 3 || usu.perid == 7 || usu.perid == 10){
-                    
-                }else{
-                    let date_one = moment()
-                    let date_two = moment(espe.espfechaprogramado)
-    
-                    let esp_day_late
-                    if(date_one > date_two){
-    
-                        let diff_days_date_one_two = date_one.diff(date_two, 'days')
-    
-                        if( diff_days_date_one_two > 0){
-                            esp_day_late = diff_days_date_one_two.toString()
-                        }else{
-                            esp_day_late = '0'
-                        }
+        if(espe){
+            if(usu.perid == 10){
+                
+            }else{
+                let date_one = moment()
+                let date_two = moment(espe.espfechaprogramado)
+
+                let esp_day_late
+                if(date_one > date_two){
+
+                    let diff_days_date_one_two = date_one.diff(date_two, 'days')
+
+                    if( diff_days_date_one_two > 0){
+                        esp_day_late = diff_days_date_one_two.toString()
                     }else{
                         esp_day_late = '0'
                     }
-    
-                    const espu = await prisma.espestadospendientes.update({
+                }else{
+                    esp_day_late = '0'
+                }
+
+                const espu = await prisma.espestadospendientes.update({
+                    where : {
+                        espid : espe.espid
+                    },
+                    data : {
+                        perid                   : usu.perid,
+                        espfechactualizacion    : new Date().toISOString(),
+                        espdiaretraso           : esp_day_late
+                    }
+                })
+
+                const aree = await prisma.areareasestados.findFirst({
+                    where : {
+                        areid : espe.areid
+                    }
+                })
+
+                if(aree){
+                    let are_percentage
+                    const espcount = await prisma.espestadospendientes.findMany({
                         where : {
-                            espid : espe.espid
+                            fecid       : fecid,
+                            areid       : espe.areid,
+                            espfechactualizacion : null
+                        }
+                    })
+
+                    if(espcount.length == 0){
+                        are_percentage = '100'
+                    }else{
+                        are_percentage = (100-(espcount.length*25)).toString()
+                    }
+
+                    const areu = await prisma.areareasestados.update({
+                        where : {
+                            areid : aree.areid
                         },
                         data : {
-                            perid                   : usu.perid,
-                            espfechactualizacion    : new Date().toISOString(),
-                            espdiaretraso           : esp_day_late
+                            areporcentaje : are_percentage
                         }
                     })
-    
-                    const aree = await prisma.areareasestados.findFirst({
-                        where : {
-                            areid : espe.areid
-                        }
-                    })
-    
-                    if(aree){
-                        let are_percentage
-                        const espcount = await prisma.espestadospendientes.findMany({
-                            where : {
-                                fecid       : fecid,
-                                areid       : espe.areid,
-                                espfechactualizacion : null
-                            }
-                        })
-
-                        if(espcount.length == 0){
-                            are_percentage = '100'
-                        }else{
-                            are_percentage = (100-(espcount.length*25)).toString()
-                        }
-
-                        const areu = await prisma.areareasestados.update({
-                            where : {
-                                areid : aree.areid
-                            },
-                            data : {
-                                areporcentaje : are_percentage
-                            }
-                        })
-                    }
                 }
             }
         }
@@ -171,7 +168,7 @@ controller.MetMasterPrecios = async (req, res, data, dates_row) => {
 
         const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
-        const to_mail_data = "Frank.Martinez@grow-analytics.com.pe"
+        const to_mail_data = "Gerson.Vilca@grow-analytics.com.pe"
         const subject_mail_success = "Carga de Archivo"
 
         const data_mail = {
@@ -184,17 +181,18 @@ controller.MetMasterPrecios = async (req, res, data, dates_row) => {
         await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
         res.status(200)
-        res.json({
+        return res.json({
             message     : 'La data de Maestro precios fue cargada con éxito',
-            response    : true
+            respuesta   : true
         })
 
     }catch(error){
         console.log(error)
         res.status(500)
-        res.json({
+        return res.json({
             message : 'Lo sentimos hubo un error al momento de leer el archivo',
-            devmsg  : error
+            devmsg  : error,
+            respuesta   : false
         })
     }
 }
