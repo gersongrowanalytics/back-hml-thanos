@@ -1,11 +1,16 @@
 const controller = {}
 const { PutObjectCommand, ListObjectsV2Command } = require('@aws-sdk/client-s3')
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 const configCredentials = require('../../../../../config')
 const client = require('../../../../../s3.js')
 const SendMail = require('../../Reprocesos/SendMail')
 const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadenaAleatorio')
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
+const StatusArchivoPlano = require('../../Status/EstadoPendiente/ActualizarStatusArchivoPlano')
+const StatusMasterClientes = require('../../Status/EstadoPendiente/ActualizarStatusMasterClientes')
+const StatusMasterProductos = require('../../Status/EstadoPendiente/ActualizarStatusMasterProductos')
+const StatusMasterPrecios = require('../../Status/EstadoPendiente/ActualizarStatusMasterPrecios')
+const StatusSellinThanos = require('../../Status/EstadoPendiente/ActualizarStatusSellinThanos')
 
 controller.MetCargaArchivoS3 = async ( req, res ) => {
 
@@ -18,14 +23,6 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
     } = req.body
 
     try{
-
-        // const input = {
-        //     Bucket: configCredentials.AWS_BUCKET,
-        //     Prefix: "hmlthanos/prueba/cargas3",
-        // };
-        // const command = new ListObjectsV2Command(input);
-        // const response = await client.send(command);
-        // console.log(response)
 
         const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
         const filePath = 'hmlthanos/prueba/cargas3/'+ token_name + req.files.file_s3.name 
@@ -60,6 +57,9 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
     
         const comand = new PutObjectCommand(uploadParams)
         await client.send(comand)
+
+        await controller.ActualizarStatus(usutoken, req_type_file)
+
         await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
         res.status(200).json({
@@ -73,6 +73,29 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
             response    : false,
             message     : 'Ha ocurrido un error al cargar el archivo'
         })
+    }
+}
+
+controller.ActualizarStatus = async ( usutoken, req_type_file ) => {
+
+    switch (req_type_file) {
+        case 'Archivo Plano SO':
+            await StatusArchivoPlano.MetActualizarStatusArchivoPlano(usutoken)
+            break;
+        case 'Master de Clientes':
+            await StatusMasterClientes.MetActualizarStatusMasterClientes(usutoken)
+            break;
+        case 'Master de Precios':
+            await StatusMasterPrecios.MetActualizarStatusMasterPrecios(usutoken)
+            break;
+        case 'Master de Producto':
+            await StatusMasterProductos.MetActualizarStatusMasterProductos(usutoken)
+            break;
+        case 'Sell In Thanos':
+            await StatusSellinThanos.MetActualizarStatusSellinThanos(usutoken)
+            break;
+        default:
+            console.log('No se encontró algun tipo de archivo');
     }
 }
 
