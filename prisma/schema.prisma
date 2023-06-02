@@ -95,6 +95,7 @@ model usuusuarios {
   created_at                  DateTime?                     @default(now())
   updated_at                  DateTime?                     @updatedAt @db.Timestamp(0)
   paupaises                   paupaisesusuarios[]
+  carcargasarchivos           carcargasarchivos[]
   estestados                  estestados                    @relation(fields: [estid], references: [estid], onUpdate: Restrict, map: "usuusuarios_estid_foreign")
   perpersonas                 perpersonas                   @relation(fields: [perid], references: [perid], onUpdate: Restrict, map: "usuusuarios_perid_foreign")
   tputiposusuarios            tputiposusuarios              @relation(fields: [tpuid], references: [tpuid], onUpdate: Restrict, map: "usuusuarios_tpuid_foreign")
@@ -140,6 +141,17 @@ model tpatiposauditorias {
   created_at    DateTime?       @default(now())
   updated_at    DateTime?       @db.Timestamp(0)
   audauditorias audauditorias[]
+}
+
+model carcargasarchivos {
+  carid              Int                 @id @default(autoincrement()) @db.UnsignedInt
+  usuid              Int?                @db.UnsignedInt
+  carnombre          String?             @db.VarChar(255)
+  cararchivo         String?             @db.VarChar(255)
+  cartoken           String?             @db.VarChar(255)
+  created_at         DateTime?           @default(now())
+  updated_at         DateTime?           @db.Timestamp(0)
+  usuusuarios        usuusuarios?        @relation(fields: [usuid], references: [usuid], onUpdate: Restrict, map: "carcargasarchivos_usuid_foreign")
 }
 
 model audauditorias {
@@ -307,7 +319,6 @@ model master_precios{
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
 }
-
 
 model inventarios {
   id                            Int         @id @default(autoincrement()) @db.UnsignedInt

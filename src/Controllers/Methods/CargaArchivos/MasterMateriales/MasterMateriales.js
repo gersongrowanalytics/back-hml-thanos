@@ -1,10 +1,15 @@
 const controller = {}
+require('dotenv').config()
 const XLSX = require('xlsx')
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const crypto = require('crypto')
 const ObtenerProductosSO = require('../Helpers/ObtenerProductosSO')
 const AsignarDTVentasSO = require('../Helpers/AsignarDTVentasSO')
 const RemoveFileS3 = require('../../S3/RemoveFileS3')
+const SendMail = require('../../Reprocesos/SendMail')
+const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadenaAleatorio')
+const UploadFileExcel = require('../../S3/UploadFileExcelS3')
 
 controller.MetMasterMateriales = async (req, res) => {
 
@@ -85,38 +90,79 @@ controller.MetMasterMateriales = async (req, res) => {
         }
 
         if(req_delete_data == 'true'){
-            await prisma.master_productos.deleteMany({})
+            // await prisma.master_productos.deleteMany({})
         }
 
-        await prisma.master_productos.create({
-            data : {
-                id : 1,
-                cod_producto : "OTROS",
-                nomb_producto : "OTROS"
-            }
-        });
+        // await prisma.master_productos.create({
+        //     data : {
+        //         id : 1,
+        //         cod_producto : "OTROS",
+        //         nomb_producto : "OTROS"
+        //     }
+        // });
 
         await prisma.master_productos.createMany({
             data
         });
 
-        const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
-        const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+        // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
+        // const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
 
-        const ARRAY_S3 = [
-            "hmlthanos/pe/tradicional/archivosgenerados/maestraclientes/", 
-            "hmlthanos/pe/tradicional/archivosgenerados/maaestraproductos/", 
-            "hmlthanos/pe/tradicional/archivosgenerados/homologaciones/"
-        ]
+        // const ARRAY_S3 = [
+        //     "hmlthanos/pe/tradicional/archivosgenerados/maestraclientes/", 
+        //     "hmlthanos/pe/tradicional/archivosgenerados/maaestraproductos/", 
+        //     "hmlthanos/pe/tradicional/archivosgenerados/homologaciones/"
+        // ]
 
-        for await (s3 of ARRAY_S3) {
-            let reqUbi = {
-                body: {
-                    re_ubicacion_s3: s3
-                }
+        // for await (s3 of ARRAY_S3) {
+        //     let reqUbi = {
+        //         body: {
+        //             re_ubicacion_s3: s3
+        //         }
+        //     }
+        //     await RemoveFileS3.RemoveFileS3(reqUbi)
+        // }
+
+        const usu = await prisma.usuusuarios.findFirst({
+            where: {
+                usutoken : req.headers.usutoken
+            },
+            select: {
+                usuid: true,
+                usuusuario: true
             }
-            await RemoveFileS3.RemoveFileS3(reqUbi)
+        })
+
+        const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
+        const nombre_archivo = 'MasterProductos-'+cadenaAleatorio
+        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/masterproductos/'+nombre_archivo+'.xlsx'
+        const archivoExcel = req.files.maestra_producto.data
+        const excelSize = req.files.maestra_producto.size
+
+        await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
+        const token_excel = crypto.randomBytes(30).toString('hex')
+        const car = await prisma.carcargasarchivos.create({
+            data: {
+                usuid       : usu.usuid,
+                carnombre   : nombre_archivo,
+                cararchivo  : ubicacion_s3,
+                cartoken    : token_excel,
+            }
+        })
+
+        const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
+        const from_mail_data = process.env.USER_MAIL
+        const to_mail_data = "Frank.Martinez@grow-analytics.com.pe"
+        const subject_mail_success = "Carga de Archivo"
+
+        const data_mail = {
+            archivo: req.files.maestra_producto.name, 
+            tipo: "Archivo Master de Productos", 
+            usuario: usu.usuusuario,
+            url_archivo: car.cartoken
         }
+
+        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
         
         return res.status(200).json({
             message : 'La maestra de Materiales fue cargada correctamente',

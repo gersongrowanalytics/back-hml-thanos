@@ -11,6 +11,7 @@ const ValMasterClientes = require('../../Controllers/Validations/CargaArchivos/M
 const ValMasterDT = require('../../Controllers/Validations/CargaArchivos/MasterMateriales/ValMasterMateriales')
 const ValMasterPrice = require('../../Controllers/Validations/CargaArchivos/MasterPrecios/ValMasterPrecios')
 const ValMasterPriceXlsx = require('../../Controllers/Validations/CargaArchivos/MasterPrecios/ValMasterPreciosXlsx')
+const ValDowloadGenerateUrl = require('../../Controllers/Validations/CargaArchivos/Helpers/ValDowloadGenerateUrl')
 
 const ValSellin = require('../../Controllers/Validations/CargaArchivos/SI/CargaSellin/Sellin')
 
@@ -47,6 +48,10 @@ protectedRoutes.post('/upload-sellin', ValSellin.ValSellin)
 // **** **** **** **** **** //
 protectedRoutes.post('/inventories', ValInventories.ValIntenvarios)
 
+// **** **** **** **** **** //
+// RUTAS DOWNLOAD EXCEL
+// **** **** **** **** **** //
+protectedRoutes.get('/generar-descarga', ValDowloadGenerateUrl.ValDowloadGenerateUrl)
 
 // **** **** **** **** **** //
 // RUTAS CARGAR MASTER PRECIOS

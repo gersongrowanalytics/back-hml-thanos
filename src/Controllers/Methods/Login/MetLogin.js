@@ -25,6 +25,7 @@ controller.MetLogin = async (user, req_usucontrasenia, res) => {
         let datanombre = user.perpersonas.pernombre
         let nombreCompleto = datanombre.indexOf(" ") != -1 ? datanombre.substring(0, datanombre.indexOf(" ")) + ' ' + user.perpersonas.perapellidopaterno : datanombre + ' ' + user.perpersonas.perapellidopaterno
         user['perpersonas']['pernombreapellido'] = nombreCompleto
+        user['token_val'] = false
 
         res.json({
             respuesta:true,

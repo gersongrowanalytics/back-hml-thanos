@@ -1,6 +1,11 @@
 const controller = {}
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+require('dotenv').config()
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
+const crypto = require('crypto')
+const SendMail = require('../../../Reprocesos/SendMail')
+const GenerateCadenaAleatorio = require('../../../Reprocesos/Helpers/GenerateCadenaAleatorio')
+const UploadFileExcel = require('../../../S3/UploadFileExcelS3')
 
 controller.MetSellin = async (req, res, data, delete_data) => {
 
@@ -28,6 +33,47 @@ controller.MetSellin = async (req, res, data, delete_data) => {
         await prisma.sellin.createMany({
             data
         })
+
+        const usu = await prisma.usuusuarios.findFirst({
+            where: {
+                usutoken : req.headers.usutoken
+            },
+            select: {
+                usuid: true,
+                usuusuario: true
+            }
+        })
+
+        const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
+        const nombre_archivo = 'SellIn-'+cadenaAleatorio
+        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/sellin/'+nombre_archivo+'.xlsx'
+        const archivoExcel = req.files.carga_sellin.data
+        const excelSize = req.files.carga_sellin.size
+
+        await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
+        const token_excel = crypto.randomBytes(30).toString('hex')
+        const car = await prisma.carcargasarchivos.create({
+            data: {
+                usuid       : usu.usuid,
+                carnombre   : nombre_archivo,
+                cararchivo  : ubicacion_s3,
+                cartoken    : token_excel,
+            }
+        })
+
+        const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
+        const from_mail_data = process.env.USER_MAIL
+        const to_mail_data = "Frank.Martinez@grow-analytics.com.pe"
+        const subject_mail_success = "Carga de Archivo"
+
+        const data_mail = {
+            archivo: req.files.carga_sellin.name, 
+            tipo: "Archivo Sell In", 
+            usuario: usu.usuusuario,
+            url_archivo: car.cartoken
+        }
+
+        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
         res.status(200).json({
             message : 'Los datos de inventarios fueron cargados correctamente',
