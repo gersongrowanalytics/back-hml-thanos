@@ -6,6 +6,7 @@ const routes_carga_archivos = require('./CargaArchivos/cargaarchivos.routes')
 const routes_administrar = require('./Administrar/administrar.routes')
 const routes_descargar_data = require('./DescargarData/descargardata.routes')
 const UserValidation = require('../Controllers/Validations/Login/ValUserValidation')
+const ValTokenUsuario = require('../Controllers/Validations/Administrar/TokenUsuario/ValTokenUsuario')
 const LogOut = require('../Controllers/Validations/Login/ValLogOut')
 const routes_status = require('./Status/status.routes')
 const authMiddleware = require('../Middleware/authMiddleware')
@@ -21,6 +22,7 @@ const publicRoutes = express.Router();
 publicRoutes.post('/log-in', Login.ValLogin)
 protectedRoutes.get('/validation-user', UserValidation.ValUserValidation)
 protectedRoutes.get('/log-out', LogOut.ValLogOut)
+protectedRoutes.post('/token-user', ValTokenUsuario.ValTokenUsuario)
 
 router.use('/public', publicRoutes);
 router.use('/protected', protectedRoutes);
