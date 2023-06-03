@@ -2,6 +2,7 @@ const controller = {}
 const { PutObjectCommand, ListObjectsV2Command } = require('@aws-sdk/client-s3')
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+const crypto = require('crypto')
 const configCredentials = require('../../../../../config')
 const client = require('../../../../../s3.js')
 const SendMail = require('../../Reprocesos/SendMail')
@@ -24,6 +25,8 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
 
     try{
 
+        const baseUrl = req.protocol + '://' + req.get('host');
+        
         const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
         const filePath = 'hmlthanos/prueba/cargas3/'+ token_name + req.files.file_s3.name 
         const fileSize = req.files.file_s3.size
@@ -37,17 +40,14 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
             }
         })
 
+        // const success_mail_html = "src/Controllers/Methods/Mails/CargaArchivoS3.html"
         const success_mail_html = "/var/www/softys/hml_thanos/back/src/Controllers/Methods/Mails/CargaArchivoS3.html"
         const from_mail_data = process.env.USER_MAIL
+        // const to_mail_data = "jose.cruz@grow-analytics.com.pe"
         const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
         const subject_mail_success = "Carga de Archivo Thanos"
+        const token_excel = crypto.randomBytes(30).toString('hex')
 
-        const data_mail = {
-            archivo : req.files.file_s3.name, 
-            usuario : usu.usuusuario,
-            tipo    : req_type_file
-        }
-        
         const uploadParams = {
             Bucket : configCredentials.AWS_BUCKET,
             Key: filePath,
@@ -57,6 +57,23 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
     
         const comand = new PutObjectCommand(uploadParams)
         await client.send(comand)
+
+        const car = await prisma.carcargasarchivos.create({
+            data: {
+                usuid       : usu.usuid,
+                carnombre   : req_type_file.replace(' ', '') + token_name,
+                cararchivo  : filePath,
+                cartoken    : token_excel,
+            }
+        })
+
+        const data_mail = {
+            archivo     : req.files.file_s3.name, 
+            usuario     : usu.usuusuario,
+            tipo        : req_type_file,
+            url_archivo : car.cartoken,
+            url_host    : baseUrl
+        }
 
         await controller.ActualizarStatus(usutoken, req_type_file)
 

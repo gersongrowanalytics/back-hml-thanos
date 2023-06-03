@@ -40,7 +40,10 @@
                     <tr>
                         <td align="center" style=" width: 100000px;" >
                             <div id="" style=" font-style: normal; font-weight: normal; font-size: 13px; line-height: 18px; color: black; padding-top:1px">
-                                <b>Nombre del Archivo:</b> {{data_mail.archivo}}
+                                <b>Nombre del Archivo:</b> 
+                                <a 
+                                    href="{{data_mail.url_host}}/carga-archivos/generar-descarga?token={{data_mail.url_archivo}}"
+                                >{{data_mail.archivo}}</a>
                             </div>
                         </td>
                     </tr>
