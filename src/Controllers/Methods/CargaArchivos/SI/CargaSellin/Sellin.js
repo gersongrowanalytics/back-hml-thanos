@@ -8,7 +8,7 @@ const GenerateCadenaAleatorio = require('../../../Reprocesos/Helpers/GenerateCad
 const UploadFileExcel = require('../../../S3/UploadFileExcelS3')
 require('dotenv').config()
 
-controller.MetSellin = async (req, res, data, delete_data) => {
+controller.MetSellin = async (req, res, data, delete_data, error, message_errors) => {
 
     const {
         req_delete_data
@@ -20,125 +20,130 @@ controller.MetSellin = async (req, res, data, delete_data) => {
 
     try{
 
-        const usu = await prisma.usuusuarios.findFirst({
-            where : {
-                usutoken : usutoken
-            },
-            select : {
-                usuid       : true,
-                perid       : true,
-                usuusuario  : true
-            }
-        })
+        let messages_delete_data_acc
 
-        const fec = await prisma.fecfechas.findFirst({
-            where : {
-                fecmesabierto : true,
-            },
-            select : {
-                fecid : true
-            }
-        })
+        if(!error){
+            const usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    usutoken : usutoken
+                },
+                select : {
+                    usuid       : true,
+                    perid       : true,
+                    usuusuario  : true
+                }
+            })
 
-        const fecid = fec.fecid
+            const fec = await prisma.fecfechas.findFirst({
+                where : {
+                    fecmesabierto : true,
+                },
+                select : {
+                    fecid : true
+                }
+            })
 
-        const espe = await prisma.espestadospendientes.findFirst({
-            where : {
-                AND : [
-                    {
-                        fecid : fecid
-                    },
-                    {
-                        espbasedato : 'Sellin Thanos (Mes actual)'
-                    }
-                ]
-            }
-        })
+            const fecid = fec.fecid
 
-        if(espe){
-            if(usu.perid == 10){
-                
-            }else{
-                let date_one = moment()
-                let date_two = moment(espe.espfechaprogramado)
+            const espe = await prisma.espestadospendientes.findFirst({
+                where : {
+                    AND : [
+                        {
+                            fecid : fecid
+                        },
+                        {
+                            espbasedato : 'Sellin Thanos (Mes actual)'
+                        }
+                    ]
+                }
+            })
 
-                let esp_day_late
-                if(date_one > date_two){
+            if(espe){
+                if(usu.perid == 10){
+                    
+                }else{
+                    let date_one = moment()
+                    let date_two = moment(espe.espfechaprogramado)
 
-                    let diff_days_date_one_two = date_one.diff(date_two, 'days')
+                    let esp_day_late
+                    if(date_one > date_two){
 
-                    if( diff_days_date_one_two > 0){
-                        esp_day_late = diff_days_date_one_two.toString()
+                        let diff_days_date_one_two = date_one.diff(date_two, 'days')
+
+                        if( diff_days_date_one_two > 0){
+                            esp_day_late = diff_days_date_one_two.toString()
+                        }else{
+                            esp_day_late = '0'
+                        }
                     }else{
                         esp_day_late = '0'
                     }
-                }else{
-                    esp_day_late = '0'
-                }
 
-                const espu = await prisma.espestadospendientes.update({
-                    where : {
-                        espid : espe.espid
-                    },
-                    data : {
-                        perid                   : usu.perid,
-                        espfechactualizacion    : new Date().toISOString(),
-                        espdiaretraso           : esp_day_late
-                    }
-                })
-
-                const aree = await prisma.areareasestados.findFirst({
-                    where : {
-                        areid : espe.areid
-                    }
-                })
-
-                if(aree){
-                    let are_percentage
-                    const espcount = await prisma.espestadospendientes.findMany({
+                    const espu = await prisma.espestadospendientes.update({
                         where : {
-                            fecid       : fecid,
-                            areid       : espe.areid,
-                            espfechactualizacion : null
-                        }
-                    })
-
-                    if(espcount.length == 0){
-                        are_percentage = '100'
-                    }else{
-                        are_percentage = (100-(espcount.length*25)).toString()
-                    }
-
-                    const areu = await prisma.areareasestados.update({
-                        where : {
-                            areid : aree.areid
+                            espid : espe.espid
                         },
                         data : {
-                            areporcentaje : are_percentage
+                            perid                   : usu.perid,
+                            espfechactualizacion    : new Date().toISOString(),
+                            espdiaretraso           : esp_day_late
+                        }
+                    })
+
+                    const aree = await prisma.areareasestados.findFirst({
+                        where : {
+                            areid : espe.areid
+                        }
+                    })
+
+                    if(aree){
+                        let are_percentage
+                        const espcount = await prisma.espestadospendientes.findMany({
+                            where : {
+                                fecid       : fecid,
+                                areid       : espe.areid,
+                                espfechactualizacion : null
+                            }
+                        })
+
+                        if(espcount.length == 0){
+                            are_percentage = '100'
+                        }else{
+                            are_percentage = (100-(espcount.length*25)).toString()
+                        }
+
+                        const areu = await prisma.areareasestados.update({
+                            where : {
+                                areid : aree.areid
+                            },
+                            data : {
+                                areporcentaje : are_percentage
+                            }
+                        })
+                    }
+                }
+            }
+
+            const { messages_delete_data } = controller.SellinOverWrittern(delete_data)
+            messages_delete_data_acc = messages_delete_data
+
+            if(req_delete_data == 'true'){
+                for await (const dat of delete_data ){
+        
+                    await prisma.sellin.deleteMany({
+                        where: {
+                            fecha: {
+                                startsWith: dat
+                            },
                         }
                     })
                 }
             }
+
+            await prisma.sellin.createMany({
+                data
+            })
         }
-
-        const { messages_delete_data } = controller.SellinOverWrittern(delete_data)
-
-        if(req_delete_data == 'true'){
-            for await (const dat of delete_data ){
-    
-                await prisma.sellin.deleteMany({
-                    where: {
-                        fecha: {
-                            startsWith: dat
-                        },
-                    }
-                })
-            }
-        }
-
-        await prisma.sellin.createMany({
-            data
-        })
 
         const usun = await prisma.usuusuarios.findFirst({
             where: {
@@ -163,7 +168,7 @@ controller.MetSellin = async (req, res, data, delete_data) => {
                 usuid       : usun.usuid,
                 carnombre   : nombre_archivo,
                 cararchivo  : ubicacion_s3,
-                cartoken    : token_excel,
+                cartoken    : token_excel
             }
         })
 
@@ -176,16 +181,23 @@ controller.MetSellin = async (req, res, data, delete_data) => {
             archivo: req.files.carga_sellin.name, 
             tipo: "Archivo Sell In", 
             usuario: usun.usuusuario,
-            url_archivo: car.cartoken
+            url_archivo: car.cartoken,
+            type_error  : "array-objeto",
+            error_val   : error,
+            error_message_mail: message_errors
         }
 
-        // await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
+        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
-        return res.status(200).json({
-            message : 'Los datos de Sell In fueron cargados correctamente',
-            messages_delete_data,
-            respuesta : true
-        })
+        if(!error){
+            return res.status(200).json({
+                message : 'Los datos de Sell In fueron cargados correctamente',
+                messages_delete_data_acc,
+                respuesta : true
+            })
+        }else{
+            return true
+        }
 
     }catch(error){
         console.log(error);

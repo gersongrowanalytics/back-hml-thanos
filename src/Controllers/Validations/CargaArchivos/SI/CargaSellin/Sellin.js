@@ -25,17 +25,17 @@ controller.ValSellin = async (req, res) => {
         const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg));
 
         if(!add_sellin){
+            await SellinController.MetSellin(req, res, null, null, true, messages_error)
             res.status(500)
             return res.json({
                 response        : false,
                 message         : 'Lo sentimos se encontraron algunas observaciones',
                 notificaciones  : messages_error,
                 messages_error  : messages
-
             })
         }
 
-        SellinController.MetSellin(req, res, data, borrar_data)
+        SellinController.MetSellin(req, res, data, borrar_data, false)
 
     }catch(error){
         console.log(error)
