@@ -11,7 +11,7 @@ require('dotenv').config()
 controller.MetMasterPrecios = async (req, res, data, dates_row) => {
 
     const {
-        req_delete_data
+        req_action_file
     } = req.body
 
     const {
@@ -19,6 +19,8 @@ controller.MetMasterPrecios = async (req, res, data, dates_row) => {
     } = req.headers
 
     try{
+
+        const action_file = JSON.parse(req_action_file)
 
         const usu = await prisma.usuusuarios.findFirst({
             where : {
@@ -55,7 +57,7 @@ controller.MetMasterPrecios = async (req, res, data, dates_row) => {
             }
         })
 
-        if(req_delete_data == 'true'){
+        if(action_file.delete_data){
 
             for await (const dat of dates_row ){
     
@@ -74,68 +76,64 @@ controller.MetMasterPrecios = async (req, res, data, dates_row) => {
         })
 
         if(espe){
-            if(usu.perid == 10){
-                
-            }else{
-                let date_one = moment()
-                let date_two = moment(espe.espfechaprogramado)
+            let date_one = moment()
+            let date_two = moment(espe.espfechaprogramado)
 
-                let esp_day_late
-                if(date_one > date_two){
+            let esp_day_late
+            if(date_one > date_two){
 
-                    let diff_days_date_one_two = date_one.diff(date_two, 'days')
+                let diff_days_date_one_two = date_one.diff(date_two, 'days')
 
-                    if( diff_days_date_one_two > 0){
-                        esp_day_late = diff_days_date_one_two.toString()
-                    }else{
-                        esp_day_late = '0'
-                    }
+                if( diff_days_date_one_two > 0){
+                    esp_day_late = diff_days_date_one_two.toString()
                 }else{
                     esp_day_late = '0'
                 }
+            }else{
+                esp_day_late = '0'
+            }
 
-                const espu = await prisma.espestadospendientes.update({
+            const espu = await prisma.espestadospendientes.update({
+                where : {
+                    espid : espe.espid
+                },
+                data : {
+                    perid                   : usu.perid,
+                    espfechactualizacion    : new Date().toISOString(),
+                    espdiaretraso           : esp_day_late
+                }
+            })
+
+            const aree = await prisma.areareasestados.findFirst({
+                where : {
+                    areid : espe.areid
+                }
+            })
+
+            if(aree){
+                let are_percentage
+                const espcount = await prisma.espestadospendientes.findMany({
                     where : {
-                        espid : espe.espid
+                        fecid       : fecid,
+                        areid       : espe.areid,
+                        espfechactualizacion : null
+                    }
+                })
+
+                if(espcount.length == 0){
+                    are_percentage = '100'
+                }else{
+                    are_percentage = (100-(espcount.length*25)).toString()
+                }
+
+                const areu = await prisma.areareasestados.update({
+                    where : {
+                        areid : aree.areid
                     },
                     data : {
-                        perid                   : usu.perid,
-                        espfechactualizacion    : new Date().toISOString(),
-                        espdiaretraso           : esp_day_late
+                        areporcentaje : are_percentage
                     }
                 })
-
-                const aree = await prisma.areareasestados.findFirst({
-                    where : {
-                        areid : espe.areid
-                    }
-                })
-
-                if(aree){
-                    let are_percentage
-                    const espcount = await prisma.espestadospendientes.findMany({
-                        where : {
-                            fecid       : fecid,
-                            areid       : espe.areid,
-                            espfechactualizacion : null
-                        }
-                    })
-
-                    if(espcount.length == 0){
-                        are_percentage = '100'
-                    }else{
-                        are_percentage = (100-(espcount.length*25)).toString()
-                    }
-
-                    const areu = await prisma.areareasestados.update({
-                        where : {
-                            areid : aree.areid
-                        },
-                        data : {
-                            areporcentaje : are_percentage
-                        }
-                    })
-                }
             }
         }
 

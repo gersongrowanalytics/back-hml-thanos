@@ -67,6 +67,7 @@ controller.MetInfoInventarios = async ( req, res ) => {
                 unidad_medida       : true
             }
         })
+        
         res.status(200)
             .json({
                 response : true,
@@ -75,8 +76,8 @@ controller.MetInfoInventarios = async ( req, res ) => {
                     maximo              : data_filtro._max.precio_unitario,
                     minimo              : data_filtro._min.precio_unitario,
                     promedio            : data_filtro._avg.precio_unitario,
-                    cod_unidad_medida   : invo.cod_unidad_medida,
-                    unidad_medida       : invo.unidad_medida
+                    cod_unidad_medida   : invo ? invo.cod_unidad_medida : null,
+                    unidad_medida       : invo ? invo.unidad_medida : null
                 },
             })
 

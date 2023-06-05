@@ -32,6 +32,10 @@
         {
           "name": "Approvals",
           "description": "Approved and not approved"
+        },
+        {
+          "name": "Status",
+          "description": "Status upload files"
         }
     ],
     "paths": {
@@ -1569,7 +1573,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Registros creado exitosamente",
+                        "description": "Registros creados exitosamente",
                         "content" : {
                             "application/json" : {
                                 "schema" : {
@@ -1577,7 +1581,7 @@
                                     "properties" : {
                                         "message": {
                                             "type": "string",
-                                            "example" : "Registros creado exitosamente"
+                                            "example" : "Registros creados exitosamente"
                                         },
                                         "respuesta": {
                                             "type": "boolean",
@@ -1610,7 +1614,7 @@
                                                 "properties" : {
                                                     "columna" : {
                                                         "type" : "string",
-                                                        "example" : "Territorio"
+                                                        "example" : "ValorVenta"
                                                     },
                                                     "notificaciones" : {
                                                         "type" : "array",
@@ -1618,7 +1622,7 @@
                                                             "type" : "object",
                                                             "properties" : {
                                                                 "msg" : {
-                                                                    "type" : "Lo sentimos, algunos códigos de Territorio se encuentran vacios, recordar que este campo es obligatorio"
+                                                                    "type" : "Lo sentimos, algunos de los ValorVenta no son númericos"
                                                                 },
                                                                 "rows" : {
                                                                     "type" : "array",
@@ -1626,7 +1630,7 @@
                                                                 },
                                                                 "type" : {
                                                                     "type" : "string",
-                                                                    "example" : "empty"
+                                                                    "example" : "not number"
                                                                 }
                                                             }
                                                         }
@@ -1636,8 +1640,7 @@
                                         },
                                         "messages_error" : {
                                             "type" : "array",
-                                            "example" : [ "Lo sentimos, algunos códigos de Territorio se encuentran vacios, recordar que este campo es obligatorio",
-                                            "Lo sentimos, algunos códigos de ValorVenta se encuentran vacios, recordar que este campo es obligatorio"]
+                                            "example" : [ "Lo sentimos, algunos de los ValorVenta no son númericos"]
                                         }
                                     }
                                 }
@@ -1857,6 +1860,23 @@
                         "description": "Carga Manual",
                         "required": true,
                         "type": "file"
+                    },
+                    {
+                        "name": "req_action_file",
+                        "in": "body",
+                        "description": "Actions file upload",
+                        "required": true,
+                        "type" : "object",
+                        "properties" : {
+                            "process_data": {
+                                "type": "boolean",
+                                "example" : false
+                            },
+                            "delete_data": {
+                                "type": "boolean",
+                                "example" : true
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -1911,6 +1931,23 @@
                         "description": "Data clients",
                         "required": true,
                         "type": "file"
+                    },
+                    {
+                        "name": "req_action_file",
+                        "in": "body",
+                        "description": "Actions file upload",
+                        "required": true,
+                        "type" : "object",
+                        "properties" : {
+                            "process_data": {
+                                "type": "boolean",
+                                "example" : false
+                            },
+                            "delete_data": {
+                                "type": "boolean",
+                                "example" : true
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -1943,7 +1980,7 @@
                                         },
                                         "devmsg": {
                                             "type": "array",
-                                            "example" : ["Lo sentimos, algunos nombres de productos se encuentran vacios"]
+                                            "example" : ["Lo sentimos, algunos nombres de clientes se encuentran vacios"]
                                         }
                                     }
                                 }
@@ -1965,6 +2002,23 @@
                         "description": "Data products",
                         "required": true,
                         "type": "file"
+                    },
+                    {
+                        "name": "req_action_file",
+                        "in": "body",
+                        "description": "Actions file upload",
+                        "required": true,
+                        "type" : "object",
+                        "properties" : {
+                            "process_data": {
+                                "type": "boolean",
+                                "example" : false
+                            },
+                            "delete_data": {
+                                "type": "boolean",
+                                "example" : true
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -1991,6 +2045,10 @@
                                 "schema" : {
                                     "type" : "object",
                                     "properties" : {
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
                                         "message": {
                                             "type": "string",
                                             "example" : "Lo sentimos se encontraron algunas observaciones"
@@ -1998,6 +2056,624 @@
                                         "devmsg": {
                                             "type": "array",
                                             "example" : ["Lo sentimos, algunos nombres de productos se encuentran vacios"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carga-archivos/upload-sellin": {
+            "post": {
+                "tags": ["File upload"],
+                "summary": "Upload file Sellin",
+                "consumes": ["multipart/form-data"],
+                "parameters" : [
+                    {
+                        "name": "carga_sellin",
+                        "in": "formData",
+                        "description": "Data Sellin",
+                        "required": true,
+                        "type": "file"
+                    },
+                    {
+                        "name": "req_action_file",
+                        "in": "body",
+                        "description": "Actions file upload",
+                        "required": true,
+                        "type" : "object",
+                        "properties" : {
+                            "process_data": {
+                                "type": "boolean",
+                                "example" : false
+                            },
+                            "delete_data": {
+                                "type": "boolean",
+                                "example" : true
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Los datos de Sell In fueron cargados correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Los datos de Sell In fueron cargados correctamentee"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de cargar el Sellin",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de cargar el Sellin"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error servidor"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400" : {
+                        "description" : "Lo sentimos se encontraron algunas observaciones",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "response": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos se encontraron algunas observaciones"
+                                        },
+                                        "notificaciones" : {
+                                            "type" : "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "columna" : {
+                                                        "type" : "string",
+                                                        "example" : "COD_CLIENTE_SI"
+                                                    },
+                                                    "notificaciones" : {
+                                                        "type" : "array",
+                                                        "items" : {
+                                                            "type" : "object",
+                                                            "properties" : {
+                                                                "msg" : {
+                                                                    "type" : "string",
+                                                                    "example" : "Lo sentimos, algunos valores de COD_CLIENTE_SI se encuentran vacios, recordar que este campo es obligatorio"
+                                                                },
+                                                                "rows" : {
+                                                                    "type" : "array",
+                                                                    "example" : [1, 2, 3]
+                                                                },
+                                                                "type" : {
+                                                                    "type" : "string",
+                                                                    "example" : "empty"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "messages_error": {
+                                            "type": "array",
+                                            "example" : ["Lo sentimos, algunos valores de COD_CLIENTE_SI se encuentran vacios, recordar que este campo es obligatorio"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carga-archivos/inventories": {
+            "post": {
+                "tags": ["File upload"],
+                "summary": "Upload file Inventories",
+                "consumes": ["multipart/form-data"],
+                "parameters" : [
+                    {
+                        "name": "carga_inventarios",
+                        "in": "formData",
+                        "description": "Data Inventories",
+                        "required": true,
+                        "type": "file"
+                    },
+                    {
+                        "name": "req_action_file",
+                        "in": "body",
+                        "description": "Actions file upload",
+                        "required": true,
+                        "type" : "object",
+                            "properties" : {
+                                "process_data": {
+                                    "type": "boolean",
+                                    "example" : false
+                                },
+                                "delete_data": {
+                                    "type": "boolean",
+                                    "example" : true
+                                }
+                            }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Los datos de inventarios fueron cargados correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Los datos de Sell In fueron cargados correctamentee"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de cargar el inventario",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de cargar el inventario"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error servidor"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400" : {
+                        "description" : "Lo sentimos se encontraron algunas observaciones",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "response": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos se encontraron algunas observaciones"
+                                        },
+                                        "notificaciones" : {
+                                            "type" : "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "columna" : {
+                                                        "type" : "string",
+                                                        "example" : "CodigoDistribuidor"
+                                                    },
+                                                    "notificaciones" : {
+                                                        "type" : "array",
+                                                        "items" : {
+                                                            "type" : "object",
+                                                            "properties" : {
+                                                                "msg" : {
+                                                                    "type" : "string",
+                                                                    "example" : "Lo sentimos, algunos códigos de CodigoDistribuidor se encuentran vacios, recordar que este campo es obligatorio"
+                                                                },
+                                                                "rows" : {
+                                                                    "type" : "array",
+                                                                    "example" : [4]
+                                                                },
+                                                                "type" : {
+                                                                    "type" : "string",
+                                                                    "example" : "empty"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "messages_error": {
+                                            "type": "array",
+                                            "example" : ["Lo sentimos, algunos códigos de CodigoDistribuidor se encuentran vacios, recordar que este campo es obligatorio"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carga-archivos/master-precios": {
+            "post": {
+                "tags": ["File upload"],
+                "summary": "Upload file Master Price",
+                "consumes": ["multipart/form-data"],
+                "parameters" : [
+                    {
+                        "name": "master_precios",
+                        "in": "formData",
+                        "description": "Data Master Price",
+                        "required": true,
+                        "type": "file"
+                    },
+                    {
+                        "name": "req_action_file",
+                        "in": "body",
+                        "description": "Actions file upload",
+                        "required": true,
+                        "type" : "object",
+                            "properties" : {
+                                "process_data": {
+                                    "type": "boolean",
+                                    "example" : false
+                                },
+                                "delete_data": {
+                                    "type": "boolean",
+                                    "example" : true
+                                }
+                            }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "La data de Maestro precios fue cargada con éxito",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "La data de Maestro precios fue cargada con éxito"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos hubo un error al momento de cargar el inventario",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos hubo un error al momento de cargar el inventario"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error servidor"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400" : {
+                        "description" : "Lo sentimos se encontraron algunas observaciones",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "response": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos se encontraron algunas observaciones"
+                                        },
+                                        "notificaciones" : {
+                                            "type" : "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "columna" : {
+                                                        "type" : "string",
+                                                        "example" : "EXCHANGE_VALUE_1"
+                                                    },
+                                                    "notificaciones" : {
+                                                        "type" : "array",
+                                                        "items" : {
+                                                            "type" : "object",
+                                                            "properties" : {
+                                                                "msg" : {
+                                                                    "type" : "string",
+                                                                    "example" : "Lo sentimos, algunos de los EXCHANGE_VALUE_1 no son númericos"
+                                                                },
+                                                                "rows" : {
+                                                                    "type" : "array",
+                                                                    "example" : [4]
+                                                                },
+                                                                "type" : {
+                                                                    "type" : "string",
+                                                                    "example" : "not number"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "messages_error": {
+                                            "type": "array",
+                                            "example" : ["Lo sentimos, algunos de los EXCHANGE_VALUE_1 no son númericos"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carga-archivos/guardar-s3": {
+            "post": {
+                "tags": ["File upload"],
+                "summary": "Save file to S3",
+                "consumes": ["multipart/form-data"],
+                "parameters" : [
+                    {
+                        "name": "file_s3",
+                        "in": "formData",
+                        "description": "Data file upload to s3",
+                        "required": true,
+                        "type": "file"
+                    },
+                    {
+                        "name": "req_action_file",
+                        "in": "body",
+                        "description": "Actions file upload",
+                        "required": true,
+                        "type" : "object",
+                            "properties" : {
+                                "process_data": {
+                                    "type": "boolean",
+                                    "example" : false
+                                },
+                                "delete_data": {
+                                    "type": "boolean",
+                                    "example" : true
+                                }
+                            }
+                    },
+                    {
+                        "name": "req_type_file",
+                        "in": "body",
+                        "description": "Type file",
+                        "required": true,
+                        "type" : "string",
+                        "example" : "Master de Producto"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Archivo cargado exitosamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Archivo cargado exitosamente"
+                                        },
+                                        "response" : {
+                                            "type" : "boolean",
+                                            "example" : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Lo sentimos ha ocurrido un error al cargar el archivo",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Lo sentimos ha ocurrido un error al cargar el archivo"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error servidor"
+                                        },
+                                        "response" : {
+                                            "type" : "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carga-archivos/master-clientes-grow": {
+            "post": {
+                "tags": ["File upload"],
+                "summary": "Upload file master clients grow",
+                "consumes": ["multipart/form-data"],
+                "parameters" : [
+                    {
+                        "name": "masterclientes_grow",
+                        "in": "formData",
+                        "description": "Data file upload master clients grow",
+                        "required": true,
+                        "type": "file"
+                    },
+                    {
+                        "name": "req_action_file",
+                        "in": "body",
+                        "description": "Actions file upload",
+                        "required": true,
+                        "type" : "object",
+                            "properties" : {
+                                "process_data": {
+                                    "type": "boolean",
+                                    "example" : false
+                                },
+                                "delete_data": {
+                                    "type": "boolean",
+                                    "example" : true
+                                }
+                            }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se cargó master clientes grow correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Se cargó master clientes grow correctamente"
+                                        },
+                                        "response": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al cargar master clientes grow",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al cargar master clientes grow"
+                                        },
+                                        "response" : {
+                                            "type" : "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carga-archivos/master-productos-grow": {
+            "post": {
+                "tags": ["File upload"],
+                "summary": "Upload file master products grow",
+                "consumes": ["multipart/form-data"],
+                "parameters" : [
+                    {
+                        "name": "masterproductos_grow",
+                        "in": "formData",
+                        "description": "Data file upload master products grow",
+                        "required": true,
+                        "type": "file"
+                    },
+                    {
+                        "name": "req_action_file",
+                        "in": "body",
+                        "description": "Actions file upload",
+                        "required": true,
+                        "type" : "object",
+                            "properties" : {
+                                "process_data": {
+                                    "type": "boolean",
+                                    "example" : false
+                                },
+                                "delete_data": {
+                                    "type": "boolean",
+                                    "example" : true
+                                }
+                            }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se cargó master productos grow correctamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Se cargó master productos grow correctamente"
+                                        },
+                                        "response": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al cargar master productos grow",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al cargar master productos grow"
+                                        },
+                                        "response" : {
+                                            "type" : "boolean",
+                                            "example" : false
                                         }
                                     }
                                 }
@@ -2702,9 +3378,153 @@
                 }
             }
         },
-        "/so/get-info": {
+        "/approvals/get-master-price": {
             "post": {
-                "tags": ["Sell-Out"],
+                "tags": ["Approvals"],
+                "summary": "Get info master price",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_type_day" : {
+                                        "type" : "boolean",
+                                        "example": false
+                                    },
+                                    "req_type_month" : {
+                                        "type" : "boolean",
+                                        "example": false
+                                    },
+                                    "req_type_year" : {
+                                        "type" : "boolean",
+                                        "example": true
+                                    },
+                                    "req_cod_material" : {
+                                        "type" : "string",
+                                        "example": "null"
+                                    },
+                                    "req_anio" : {
+                                        "type" : "array",
+                                        "example": [ 2020, 2010 ]
+                                    },
+                                    "req_mes" : {
+                                        "type" : "array",
+                                        "items" : {
+                                            "type" : "object",
+                                            "properties" : {
+                                                "year" : {
+                                                    "type" : "integer",
+                                                    "example" : 2015
+                                                },
+                                                "month" : {
+                                                    "type" : "integer",
+                                                    "example" : 4
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "req_dia" : {
+                                        "type" : "array",
+                                        "items" : {
+                                            "type" : "object",
+                                            "properties" : {
+                                                "year" : {
+                                                    "type" : "integer",
+                                                    "example" : 2015
+                                                },
+                                                "month" : {
+                                                    "type" : "integer",
+                                                    "example" : 10
+                                                },
+                                                "day" : {
+                                                    "type" : "integer",
+                                                    "example" : 4
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Información de la maestra de precios obtenida con éxito",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Información de la maestra de precios obtenida con éxito"
+                                        },
+                                        "response": {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data_final" : {
+                                            "type" : "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "nombre" : {
+                                                        "type" : "string",
+                                                        "example" : "ex_changue_one"
+                                                    },
+                                                    "promedio" : {
+                                                        "type" : "integer",
+                                                        "example" : 200
+                                                    },
+                                                    "maximo" : {
+                                                        "type" : "integer",
+                                                        "example" : 400
+                                                    },
+                                                    "minimo" : {
+                                                        "type" : "integer",
+                                                        "example" : 0
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al obtener la información de la maestra de precios",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al obtener la información de la maestra de precios"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approvals/get-so": {
+            "post": {
+                "tags": ["Approvals"],
                 "summary": "Get info about SO",
                 "requestBody" : {
                     "required"  : true,
@@ -2754,16 +3574,16 @@
                                             "type" : "object",
                                             "properties" : {
                                                 "maximo" : {
-                                                    "type" : "string",
-                                                    "example" : "35343534"
+                                                    "type" : "integer",
+                                                    "example" : 35343534
                                                 },
                                                 "minimo" : {
-                                                    "type" : "string",
-                                                    "example" : "3534"
+                                                    "type" : "integer",
+                                                    "example" : 3534
                                                 },
                                                 "promedio" : {
-                                                    "type" : "string",
-                                                    "example" : "353423"
+                                                    "type" : "integer",
+                                                    "example" : 353423
                                                 }
                                             }
                                         }
@@ -2786,6 +3606,1015 @@
                                         "devmsg": {
                                             "type": "string",
                                             "example" : "Error server"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approvals/get-si": {
+            "post": {
+                "tags": ["Approvals"],
+                "summary": "Get info about SI",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_type_day" : {
+                                        "type" : "boolean",
+                                        "example": false
+                                    },
+                                    "req_type_month" : {
+                                        "type" : "boolean",
+                                        "example": false
+                                    },
+                                    "req_type_year" : {
+                                        "type" : "boolean",
+                                        "example": true
+                                    },
+                                    "req_pk_cod_pro" : {
+                                        "type" : "integer",
+                                        "example": 1
+                                    },
+                                    "req_anio" : {
+                                        "type" : "array",
+                                        "example": [ 2020, 2010 ]
+                                    },
+                                    "req_mes" : {
+                                        "type" : "array",
+                                        "items" : {
+                                            "type" : "object",
+                                            "properties" : {
+                                                "year" : {
+                                                    "type" : "integer",
+                                                    "example" : 2015
+                                                },
+                                                "month" : {
+                                                    "type" : "integer",
+                                                    "example" : 4
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "req_dia" : {
+                                        "type" : "array",
+                                        "items" : {
+                                            "type" : "object",
+                                            "properties" : {
+                                                "year" : {
+                                                    "type" : "integer",
+                                                    "example" : 2015
+                                                },
+                                                "month" : {
+                                                    "type" : "integer",
+                                                    "example" : 10
+                                                },
+                                                "day" : {
+                                                    "type" : "integer",
+                                                    "example" : 4
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Información de Sell In obtenida con éxito",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message" : {
+                                            "type": "string",
+                                            "example" : "Información de Sell In obtenida con éxito"
+                                        },
+                                        "response" : {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data" : {
+                                            "type" : "object",
+                                            "properties" : {
+                                                "maximo" : {
+                                                    "type" : "integer",
+                                                    "example" : 35343534
+                                                },
+                                                "minimo" : {
+                                                    "type" : "integer",
+                                                    "example" : 3534
+                                                },
+                                                "promedio" : {
+                                                    "type" : "integer",
+                                                    "example" : 353423
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al obtener la información de Sell In",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al obtener la información de Sell In"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approvals/get-inv": {
+            "post": {
+                "tags": ["Approvals"],
+                "summary": "Get info about inventories",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_type_day" : {
+                                        "type" : "boolean",
+                                        "example": false
+                                    },
+                                    "req_type_month" : {
+                                        "type" : "boolean",
+                                        "example": false
+                                    },
+                                    "req_type_year" : {
+                                        "type" : "boolean",
+                                        "example": true
+                                    },
+                                    "req_pk_extractor_venta_so" : {
+                                        "type" : "string",
+                                        "example": "LIMA.01.139510310105UNIUNIDAD"
+                                    },
+                                    "req_anio" : {
+                                        "type" : "array",
+                                        "example": [ 2020, 2010 ]
+                                    },
+                                    "req_mes" : {
+                                        "type" : "array",
+                                        "items" : {
+                                            "type" : "object",
+                                            "properties" : {
+                                                "year" : {
+                                                    "type" : "integer",
+                                                    "example" : 2015
+                                                },
+                                                "month" : {
+                                                    "type" : "integer",
+                                                    "example" : 4
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "req_dia" : {
+                                        "type" : "array",
+                                        "items" : {
+                                            "type" : "object",
+                                            "properties" : {
+                                                "year" : {
+                                                    "type" : "integer",
+                                                    "example" : 2015
+                                                },
+                                                "month" : {
+                                                    "type" : "integer",
+                                                    "example" : 10
+                                                },
+                                                "day" : {
+                                                    "type" : "integer",
+                                                    "example" : 4
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Información de inventarios obtenida con éxito",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message" : {
+                                            "type": "string",
+                                            "example" : "Información de inventarios obtenida con éxito"
+                                        },
+                                        "response" : {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data" : {
+                                            "type" : "object",
+                                            "properties" : {
+                                                "maximo" : {
+                                                    "type" : "integer",
+                                                    "example" : 35343534
+                                                },
+                                                "minimo" : {
+                                                    "type" : "integer",
+                                                    "example" : 3534
+                                                },
+                                                "promedio" : {
+                                                    "type" : "integer",
+                                                    "example" : 353423
+                                                },
+                                                "cod_unidad_medida" : {
+                                                    "type" : "string",
+                                                    "example" : "353423"
+                                                },
+                                                "unidad_medida" : {
+                                                    "type" : "string",
+                                                    "example" : "UN"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al obtener la información de inventarios",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al obtener la información de inventarios"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approvals/update-inv": {
+            "post": {
+                "tags": ["Approvals"],
+                "summary": "Update data inventories",
+                "responses": {
+                    "200": {
+                        "description": "Inventarios actualizados con éxito",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message" : {
+                                            "type": "string",
+                                            "example" : "Inventarios actualizados con éxito"
+                                        },
+                                        "response" : {
+                                            "type": "boolean",
+                                            "example" : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al actualizar el inventario",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al actualizar el inventario"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        },
+                                        "response": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approvals/get-paqxbul-product": {
+            "post": {
+                "tags": ["Approvals"],
+                "summary": "Info paqxbult product",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_proid" : {
+                                        "type" : "integer",
+                                        "example": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Información del producto obtenida con éxito",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message" : {
+                                            "type": "string",
+                                            "example" : "Información del producto obtenida con éxito"
+                                        },
+                                        "response" : {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data" : {
+                                            "type" : "object",
+                                            "properties" : {
+                                                "paquetexbulto" : {
+                                                    "type" : "string",
+                                                    "example" : "1"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al obtener la información del producto",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al obtener la información del producto"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        },
+                                        "response": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/approvals/get-non-approved-product": {
+            "post": {
+                "tags": ["Approvals"],
+                "summary": "Info paqxbult product",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_pk_venta_so" : {
+                                        "type" : "string",
+                                        "example": "LALIBERTAD.01.2626354480037"
+                                    },
+                                    "req_combo" : {
+                                        "type" : "boolean",
+                                        "example": false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Información del producto obtenida con éxito",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message" : {
+                                            "type": "string",
+                                            "example" : "Información del producto obtenida con éxito"
+                                        },
+                                        "response" : {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "data" : {
+                                            "type" : "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "master_distribuidoras" : {
+                                                        "type" : "object",
+                                                        "properties" : {
+                                                            "nomb_dt" : {
+                                                                "type" : "string",
+                                                                "example" : "ALVAREZ BOHL - TRUJILLO"
+                                                            },
+                                                            "region" : {
+                                                                "type" : "string",
+                                                                "example" : "PROVINCIA"
+                                                            },
+                                                            "codigo_dt" : {
+                                                                "type" : "string",
+                                                                "example" : "LALIBERTAD.01.262635"
+                                                            }
+                                                        }
+                                                    },
+                                                    "id" : {
+                                                        "type" : "integer",
+                                                        "example" : 1
+                                                    },
+                                                    "m_dt_id" : {
+                                                        "type" : "integer",
+                                                        "example" : 61
+                                                    },
+                                                    "codigo_distribuidor" : {
+                                                        "type" : "string",
+                                                        "example" : "LALIBERTAD.01.262635"
+                                                    },
+                                                    "codigo_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "4480037"
+                                                    },
+                                                    "descripcion_producto" : {
+                                                        "type" : "string",
+                                                        "example" : "SERVILLETA ELIT INST CORTD CLS x300"
+                                                    },
+                                                    "desde" : {
+                                                        "type" : "string",
+                                                        "example" : "2023-06-01"
+                                                    },
+                                                    "hasta" : {
+                                                        "type" : "string",
+                                                        "example" : "2023-06-01"
+                                                    },
+                                                    "s_ytd" : {
+                                                        "type" : "string",
+                                                        "example" : "0"
+                                                    },
+                                                    "s_mtd" : {
+                                                        "type" : "string",
+                                                        "example" : "0"
+                                                    },
+                                                    "pk_venta_so" : {
+                                                        "type" : "string",
+                                                        "example" : "LALIBERTAD.01.2626354480037"
+                                                    },
+                                                    "pk_extractor_venta_so" : {
+                                                        "type" : "string",
+                                                        "example" : "LALIBERTAD.01.2626354480037PQTPQT"
+                                                    },
+                                                    "cod_unidad_medida" : {
+                                                        "type" : "string",
+                                                        "example" : "PQT"
+                                                    },
+                                                    "unidad_medida" : {
+                                                        "type" : "string",
+                                                        "example" : "PQT"
+                                                    },
+                                                    "ruc" : {
+                                                        "type" : "string",
+                                                        "example" : ""
+                                                    },
+                                                    "key" : {
+                                                        "type" : "integer",
+                                                        "example" : 0
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al obtener la data del producto no homologado",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al obtener la data del producto no homologado"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        },
+                                        "response": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/status/show/pending-states": {
+            "post": {
+                "tags": ["Status"],
+                "summary": "Get info status",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "date_final" : {
+                                        "type" : "string",
+                                        "example": "2023-06-05T16:54:39.484Z"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Se obtuvo el estado pendiente de status con éxito",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "response" : {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "messagge" : {
+                                            "type": "string",
+                                            "example" : "Se obtuvo el estado pendiente de status con éxito"
+                                        },
+                                        "datos" : {
+                                            "type" : "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "areicono" : {
+                                                        "type" : "string",
+                                                        "example" : "/Sistema/Modulos/Home/areas/iconoRevenue.png"
+                                                    },
+                                                    "areid" : {
+                                                        "type" : "integer",
+                                                        "example" : 34
+                                                    },
+                                                    "arenombre" : {
+                                                        "type" : "string",
+                                                        "example" : "Revenue"
+                                                    },
+                                                    "areporcentaje" : {
+                                                        "type" : "string",
+                                                        "example" : "100"
+                                                    },
+                                                    "created_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-06-01T23:11:16.151Z"
+                                                    },
+                                                    "fecid" : {
+                                                        "type" : "integer",
+                                                        "example" : 10
+                                                    },
+                                                    "tprid" : {
+                                                        "type" : "integer",
+                                                        "example" : 1
+                                                    },
+                                                    "updated_at" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-06-01T23:11:16.151Z"
+                                                    },
+                                                    "esps" : {
+                                                        "type" : "array",
+                                                        "items" : {
+                                                            "type" : "object",
+                                                            "properties" : {
+                                                                "espbasedato" : {
+                                                                    "type" : "string",
+                                                                    "example" : "DTS (Sell Out)"
+                                                                },
+                                                                "espchacargareal" : {
+                                                                    "type" : "string",
+                                                                    "format" : "date",
+                                                                    "example" : "2023-06-02T00:00:00.000Z"
+                                                                },
+                                                                "espdiaretraso" : {
+                                                                    "type" : "string",
+                                                                    "example" : "0"
+                                                                },
+                                                                "espdts" : {
+                                                                    "type" : "boolean",
+                                                                    "example" : true
+                                                                },
+                                                                "espfechactualizacion" : {
+                                                                    "type" : "string",
+                                                                    "format" : "date",
+                                                                    "example" : "2023-06-02T00:00:00.000Z"
+                                                                },
+                                                                "espfechaprogramado" : {
+                                                                    "type" : "string",
+                                                                    "format" : "date",
+                                                                    "example" : "2023-06-02T00:00:00.000Z"
+                                                                },
+                                                                "espid" : {
+                                                                    "type" : "integer",
+                                                                    "example" : 106
+                                                                },
+                                                                "esporden" : {
+                                                                    "type" : "boolean",
+                                                                    "example" : false
+                                                                },
+                                                                "espresponsable" : {
+                                                                    "type" : "string",
+                                                                    "example" : "Maria Yauri"
+                                                                },
+                                                                "fecid" : {
+                                                                    "type" : "integer",
+                                                                    "example" : 10
+                                                                },
+                                                                "perpersonas" : {
+                                                                    "type" : "object",
+                                                                    "properties" : {
+                                                                        "perapellidomaterno" : {
+                                                                            "type" : "string",
+                                                                            "example" : "Thanos"
+                                                                        },
+                                                                        "perapellidopaterno" : {
+                                                                            "type" : "string",
+                                                                            "example" : "Dev"
+                                                                        },
+                                                                        "pernombre" : {
+                                                                            "type" : "string",
+                                                                            "example" : "Usu"
+                                                                        },
+                                                                        "pernombrecompleto" : {
+                                                                            "type" : "string",
+                                                                            "example" : "Usu Dev Thanos"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            
+                                        },
+                                        "espsDistribuidoras" : {
+                                            "type" : "array",
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties" : {
+                                                    "espbasedato" : {
+                                                        "type" : "string",
+                                                        "example" : "DTS (Sell Out)"
+                                                    },
+                                                    "espchacargareal" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-06-02T00:00:00.000Z"
+                                                    },
+                                                    "espdiaretraso" : {
+                                                        "type" : "string",
+                                                        "example" : "0"
+                                                    },
+                                                    "espdts" : {
+                                                        "type" : "boolean",
+                                                        "example" : true
+                                                    },
+                                                    "espfechactualizacion" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-06-02T00:00:00.000Z"
+                                                    },
+                                                    "espfechaprogramado" : {
+                                                        "type" : "string",
+                                                        "format" : "date",
+                                                        "example" : "2023-06-02T00:00:00.000Z"
+                                                    },
+                                                    "espid" : {
+                                                        "type" : "integer",
+                                                        "example" : 106
+                                                    },
+                                                    "esporden" : {
+                                                        "type" : "boolean",
+                                                        "example" : false
+                                                    },
+                                                    "espresponsable" : {
+                                                        "type" : "string",
+                                                        "example" : "Maria Yauri"
+                                                    },
+                                                    "fecid" : {
+                                                        "type" : "integer",
+                                                        "example" : 10
+                                                    },
+                                                    "key" : {
+                                                        "type" : "integer",
+                                                        "example" : 1
+                                                    },
+                                                    "masterclientes_grow" : {
+                                                        "type" : "object",
+                                                        "properties" : {
+                                                            "cliente_hml" : {
+                                                                "type" : "string",
+                                                                "example" : "ALVAREZ BOHL - TRUJILLO"
+                                                            },
+                                                            "conexion" : {
+                                                                "type" : "string",
+                                                                "example" : "MANUAL"
+                                                            },
+                                                            "sucursal_hml" : {
+                                                                "type" : "string",
+                                                                "example" : "ALVAREZ BOHL - TRUJILLO"
+                                                            },
+                                                            "territorio" : {
+                                                                "type" : "string",
+                                                                "example" : "NORTE 2"
+                                                            },
+                                                            "zona" : {
+                                                                "type" : "string",
+                                                                "example" : "PROVINCIA"
+                                                            }
+                                                        }
+                                                    },
+                                                    "perpersonas" : {
+                                                        "type" : "object",
+                                                        "properties" : {
+                                                            "perapellidomaterno" : {
+                                                                "type" : "string",
+                                                                "example" : "Thanos"
+                                                            },
+                                                            "perapellidopaterno" : {
+                                                                "type" : "string",
+                                                                "example" : "Dev"
+                                                            },
+                                                            "pernombre" : {
+                                                                "type" : "string",
+                                                                "example" : "Usu"
+                                                            },
+                                                            "pernombrecompleto" : {
+                                                                "type" : "string",
+                                                                "example" : "Usu Dev Thanos"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al obtener el estado pendiente de status",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "messagge": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al obtener el estado pendiente de status"
+                                        },
+                                        "devmsg": {
+                                            "type": "string",
+                                            "example" : "Error server"
+                                        },
+                                        "response": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/status/config/create-environment": {
+            "post": {
+                "tags": ["Status"],
+                "summary": "Create enviroment status",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_sithanos" : {
+                                        "type" : "string",
+                                        "example": "2023/06/21"
+                                    },
+                                    "req_masterproductos" : {
+                                        "type" : "string",
+                                        "example": "2023/06/21"
+                                    },
+                                    "req_masterclientes" : {
+                                        "type" : "string",
+                                        "example": "2023/06/21"
+                                    },
+                                    "req_masterprecios" : {
+                                        "type" : "string",
+                                        "example": "2023/06/21"
+                                    },
+                                    "req_socuota" : {
+                                        "type" : "string",
+                                        "example": "2023/06/21"
+                                    },
+                                    "req_archivoplano" : {
+                                        "type" : "string",
+                                        "example": "2023/06/21"
+                                    },
+                                    "req_sachml" : {
+                                        "type" : "string",
+                                        "example": "2023/06/21"
+                                    },
+                                    "req_fecfecha" : {
+                                        "type" : "string",
+                                        "example": "2023/06/21"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Se ha creado el ambiente para status exitosamente",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "response" : {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "message" : {
+                                            "type": "string",
+                                            "example" : "Se ha creado el ambiente para status exitosamente"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al crear el ambiente para status",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al crear el ambiente para status"
+                                        },
+                                        "respuesta": {
+                                            "type": "boolean",
+                                            "example" : false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/status/edit/status-approval": {
+            "post": {
+                "tags": ["Status"],
+                "summary": "Edit status approval",
+                "requestBody" : {
+                    "required"  : true,
+                    "content"   : {
+                        "application/json": {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "req_espid" : {
+                                        "type" : "integer",
+                                        "example": 2
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status actualizado con éxito",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "response" : {
+                                            "type": "boolean",
+                                            "example" : true
+                                        },
+                                        "message" : {
+                                            "type": "string",
+                                            "example" : "Status actualizado con éxito"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500" : {
+                        "description" : "Ha ocurrido un error al actualizar el status",
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "message": {
+                                            "type": "string",
+                                            "example" : "Ha ocurrido un error al actualizar el status"
                                         },
                                         "respuesta": {
                                             "type": "boolean",

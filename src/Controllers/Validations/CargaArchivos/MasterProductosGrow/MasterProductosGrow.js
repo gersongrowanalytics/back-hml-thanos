@@ -4,6 +4,11 @@ const MasterProductosGrowController = require('../../../Methods/CargaArchivos/Ma
 
 controller.ValMasterProductosGrow = async ( req, res ) => {
     
+    const {
+        req_action_file
+    } = req.body
+    
+
     try{
 
         const file = req.files.masterproductos_grow
@@ -64,11 +69,6 @@ controller.ValMasterProductosGrow = async ( req, res ) => {
         }
 
         MasterProductosGrowController.MetMasterProductosGrow(req, res, data)
-
-        res.status(200).json({
-            response    : true,
-            message     : 'Se cargó master productos grow correctamente'
-        })
 
     }catch(err){
         console.log(err)

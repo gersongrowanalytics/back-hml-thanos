@@ -4,10 +4,14 @@ const CrearListaPrecio = require('../../../../Methods/Administracion/ListaPrecio
 
 controller.ValCrearListaPrecio = async (req, res) => {
 
+    const {
+        req_action_file
+    } = req.body
     const file = req.files.lista_precio
 
     try{
 
+        const action_file = JSON.parse(req_action_file)
         const { exists_data, message, status, workbook } = await controller.ValExistsData(file)
 
         if(!exists_data){
@@ -32,7 +36,14 @@ controller.ValCrearListaPrecio = async (req, res) => {
             })
         }
 
-        CrearListaPrecio.MetCrearListaPrecio(req, res, data, dates_row)
+        if(action_file.process_data){
+            CrearListaPrecio.MetCrearListaPrecio(req, res, data, dates_row)
+        }else{
+            res.status(200).json({
+                respuesta   : true,
+                message     : 'Se ha validado la data correctamente'
+            })
+        }
 
     }catch(error){
         console.log(error)

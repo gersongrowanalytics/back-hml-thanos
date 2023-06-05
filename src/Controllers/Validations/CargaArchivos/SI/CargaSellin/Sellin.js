@@ -7,10 +7,14 @@ const SellinController = require('../../../../Methods/CargaArchivos/SI/CargaSell
 
 controller.ValSellin = async (req, res) => {
 
+    const {
+        req_action_file
+    } = req.body
     const file          = req.files.carga_sellin
 
     try{
 
+        const action_file = JSON.parse(req_action_file)
         const { exists_data, message, status, workbook } = await controller.ValExistsData(file)
 
         if(!exists_data){
@@ -35,7 +39,14 @@ controller.ValSellin = async (req, res) => {
             })
         }
 
-        SellinController.MetSellin(req, res, data, borrar_data)
+        if(action_file.process_data){
+            SellinController.MetSellin(req, res, data, borrar_data)
+        }else{
+            res.status(200).json({
+                respuesta   : false,
+                message     : 'Se ha validado la data correctamente'
+            })
+        }
 
     }catch(error){
         console.log(error)

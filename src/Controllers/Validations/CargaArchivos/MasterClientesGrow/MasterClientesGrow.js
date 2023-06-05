@@ -3,9 +3,13 @@ const XLSX = require('xlsx')
 const MasterClientesGrowController = require('../../../Methods/CargaArchivos/MasterClientesGrow/MasterClientesGrow')
 
 controller.ValMasterClientesGrow = async ( req, res ) => {
+
+    const {
+        req_action_file
+    } = req.body
     
     try{
-
+        
         const file = req.files.masterclientes_grow
         const data  = []
 
@@ -60,11 +64,6 @@ controller.ValMasterClientesGrow = async ( req, res ) => {
         }
 
         MasterClientesGrowController.MetMasterClientesGrow(req, res, data)
-
-        res.status(200).json({
-            response    : true,
-            message     : 'Se cargó master clientes grow correctamente'
-        })
 
     }catch(err){
         console.log(err)

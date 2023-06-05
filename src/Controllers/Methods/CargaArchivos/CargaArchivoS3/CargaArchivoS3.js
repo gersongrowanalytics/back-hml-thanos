@@ -20,11 +20,14 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
     } = req.headers
 
     const {
-        req_type_file
+        req_type_file,
+        req_action_file
     } = req.body
 
     try{
 
+        // const action_file = JSON.parse(req_action_file)
+        
         const baseUrl = req.protocol + '://' + req.get('host');
         
         const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
@@ -88,7 +91,7 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
         console.log(err)
         res.status(500).json({
             response    : false,
-            message     : 'Ha ocurrido un error al cargar el archivo'
+            message     : 'Lo sentimos ha ocurrido un error al cargar el archivo'
         })
     }
 }

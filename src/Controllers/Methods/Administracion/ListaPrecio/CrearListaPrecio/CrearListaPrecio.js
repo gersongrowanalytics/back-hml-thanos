@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 controller.MetCrearListaPrecio = async (req, res, data, dates_row) => {
 
     const {
-        req_delete_data,
+        req_action_file
     } = req.body
 
     let message     = 'Registros creados exitosamente'
@@ -13,7 +13,10 @@ controller.MetCrearListaPrecio = async (req, res, data, dates_row) => {
     let respuesta   = true
 
     try{
-        if(req_delete_data == 'true'){
+
+        const action_file = JSON.parse(req_action_file)
+
+        if(action_file.delete_data){
             for await (const dat of dates_row ){
                 await prisma.lista_precio.deleteMany({
                     where : {
