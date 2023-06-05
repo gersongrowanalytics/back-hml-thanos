@@ -15,6 +15,10 @@ controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data
         },
     })
 
+    handlebars.registerHelper('isEqual', function(a, b, opts) {
+        return a == b ? opts.fn(this) : opts.inverse(this);
+    })
+
     const html = fs.readFileSync(url_mail, 'utf8')
     const template = handlebars.compile(html)
     const renderedTemplate = template({data_mail})

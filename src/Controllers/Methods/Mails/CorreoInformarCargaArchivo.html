@@ -49,6 +49,34 @@
                             </div>
                         </td>
                     </tr>
+                    {{#if data_mail.error_val}}
+                    <tr>
+                        <td style="width: 100000px; padding: 0 100px;">
+                            <div style="font-style: normal; font-weight: normal; font-size: 13px; line-height: 18px; color: black; padding-top: 10px;">
+                                <b style="color: red;">Observaciones:</b>
+                                {{#each data_mail.error_message_mail}}
+                                    {{#isEqual type_error "array-objeto"}}
+                                        <div style="color: red;">
+                                            Se encontraron las siguientes observaciones en la columna {{columna}}:
+                                        </div>
+                                        {{#each notificaciones}}
+                                        <div style="color: red;">
+                                            - {{msg}}, en las siguientes lineas: 
+                                            {{#each rows}}
+                                            <span style="font-weight: bold;">{{this}},</span>
+                                            {{/each}}
+                                        </div>
+                                        {{/each}}
+                                    {{else}}
+                                        <div style="color: red;">
+                                            {{this}}
+                                        </div>
+                                    {{/isEqual}}
+                                {{/each}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{/if}}
                     <tr>
                         <td align="center" style=" width: 100000px">
                             <div style="margin-left: 60px; margin-right: 60px; margin-bottom:30px; margin-top:20px">

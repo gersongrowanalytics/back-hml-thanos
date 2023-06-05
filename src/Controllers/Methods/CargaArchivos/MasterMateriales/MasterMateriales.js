@@ -146,8 +146,8 @@ controller.MetMasterMateriales = async (req, res) => {
             data
         });
 
-        // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
-        // const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+        const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
+        const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
 
         // const ARRAY_S3 = [
         //     "hmlthanos/pe/tradicional/archivosgenerados/maestraclientes/", 

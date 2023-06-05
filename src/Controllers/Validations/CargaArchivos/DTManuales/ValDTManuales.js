@@ -24,17 +24,19 @@ controller.ValDTManuales = async (req, res) => {
         const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg));
 
         if(!add_dt_manuales){
+            await DTManualesController.MetDTManuales(req, res, null, null, true, messages_error)
+
             res.status(500)
             return res.json({
                 response        : false,
                 message         : 'Lo sentimos se encontraron algunas observaciones',
                 notificaciones  : messages_error,
                 messages_error  : messages
-
+                
             })
         }
 
-        DTManualesController.MetDTManuales(req, res, data, borrar_data)
+        DTManualesController.MetDTManuales(req, res, data, borrar_data, false)
 
     }catch(error){
         console.log(error)
