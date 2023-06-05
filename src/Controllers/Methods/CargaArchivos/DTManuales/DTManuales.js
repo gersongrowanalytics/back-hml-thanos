@@ -24,6 +24,8 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
     try{
 
+        const espn = []
+
         const usu = await prisma.usuusuarios.findFirst({
             where: {
                 usutoken : req.headers.usutoken
@@ -35,18 +37,9 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             }
         })
 
-        if(!error){
-            // const usu = await prisma.usuusuarios.findFirst({
-            //     where : {
-            //         usutoken : usutoken
-            //     },
-            //     select : {
-            //         usuid       : true,
-            //         perid       : true,
-            //         usuusuario  : true
-            //     }
-            // })
+        let messages_delete_data_acc
 
+        if(!error){
             const fec = await prisma.fecfechas.findFirst({
                 where : {
                     fecmesabierto : true,
@@ -55,8 +48,61 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                     fecid : true
                 }
             })
-
+            
             const fecid = fec.fecid
+
+            const are = await prisma.areareasestados.findFirst({
+                where : {
+                    fecid       : fecid,
+                    arenombre   : 'Ventas'
+                }
+            })
+
+            const data_espn = data.filter(dat => dat.m_cl_grow != null)
+            
+            for await (const esp of data_espn){
+
+                const espo = await prisma.espestadospendientes.findFirst({
+                    where : {
+                        fecid       : fecid,
+                        m_cl_grow   : esp.m_cl_grow
+                    }
+                })
+
+                if(espo){
+                    await prisma.espestadospendientes.update({
+                        where : {
+                            espid : espo.espid
+                        },
+                        data : {
+                            espfechactualizacion    : new Date(),
+                            perid                   : usu.perid
+                        }
+                    })
+                }else{
+                    if(espn.findIndex(es => es.m_cl_grow == esp.m_cl_grow) == -1){
+                        espn.push({
+                            fecid               : fec.fecid,
+                            perid               : null,
+                            tprid               : 1,
+                            espdts              : true,
+                            areid               : are.areid,
+                            m_cl_grow           : esp.m_cl_grow,
+                            espfechaprogramado  : new Date(),
+                            espchacargareal     : null,
+                            espfechactualizacion: null,
+                            espbasedato         : 'DTS (Sell Out)',
+                            espresponsable      : 'Usu Dev',
+                            espdiaretraso       : '0',
+                            esporden            : false,
+                        })
+                    }
+                }
+            }
+
+            await prisma.espestadospendientes.createMany({
+                data : espn
+            })
 
             const espe = await prisma.espestadospendientes.findFirst({
                 where : {
@@ -70,12 +116,14 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                     ]
                 }
             })
-
+            
             const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
 
+            messages_delete_data_acc = messages_delete_data
+            
             if(req_delete_data == 'true'){
                 for await (const dat of delete_data ){
-        
+            
                     await prisma.ventas_so.deleteMany({
                         where: {
                             fecha: {
@@ -86,17 +134,10 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                     })
                 }
             }
-
-
-            console.log("data: --------");
-            console.log(data);
-
+            
             await prisma.ventas_so.createMany({
                 data
             })
-
-            const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
-            const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
 
             if(espe){
                 if(usu.perid == 10){
@@ -104,12 +145,12 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                 }else{
                     let date_one = moment()
                     let date_two = moment(espe.espfechaprogramado)
-    
+            
                     let esp_day_late
                     if(date_one > date_two){
-    
+            
                         let diff_days_date_one_two = date_one.diff(date_two, 'days')
-    
+            
                         if( diff_days_date_one_two > 0){
                             esp_day_late = diff_days_date_one_two.toString()
                         }else{
@@ -118,7 +159,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                     }else{
                         esp_day_late = '0'
                     }
-    
+            
                     const espu = await prisma.espestadospendientes.update({
                         where : {
                             espid : espe.espid
@@ -129,13 +170,13 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                             espdiaretraso           : esp_day_late
                         }
                     })
-    
+            
                     const aree = await prisma.areareasestados.findFirst({
                         where : {
                             areid : espe.areid
                         }
                     })
-    
+            
                     if(aree){
                         let are_percentage
                         const espcount = await prisma.espestadospendientes.findMany({
@@ -146,7 +187,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                                 espfechactualizacion : null
                             }
                         })
-    
+            
                         if(espcount.length == 0){
                             are_percentage = '100'
                         }else{
@@ -166,14 +207,17 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             }
         }
 
+        // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
+        // const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+        
         const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
         const nombre_archivo = 'PlanoSo-'+cadenaAleatorio
         const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/planoso/'+nombre_archivo+'.xlsx'
         const archivoExcel = req.files.carga_manual.data
         const excelSize = req.files.carga_manual.size
-
+        
         await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
-
+        
         const token_excel = crypto.randomBytes(30).toString('hex')
         const car = await prisma.carcargasarchivos.create({
             data: {
@@ -183,7 +227,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                 cartoken    : token_excel,
             }
         })
-
+        
         const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
         const to_mail_data = process.env.TO_MAIL
@@ -204,8 +248,9 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         if(!error){
             return res.status(200).json({
                 message : 'Las ventas manuales fueron cargadas correctamente',
-                messages_delete_data,
-                respuesta : true
+                messages_delete_data_acc,
+                respuesta : true,
+                espn
             })
         }else{
             return true

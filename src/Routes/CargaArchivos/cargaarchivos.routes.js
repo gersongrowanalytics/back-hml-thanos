@@ -13,6 +13,10 @@ const ValMasterPrice = require('../../Controllers/Validations/CargaArchivos/Mast
 const ValMasterPriceXlsx = require('../../Controllers/Validations/CargaArchivos/MasterPrecios/ValMasterPreciosXlsx')
 const ValDowloadGenerateUrl = require('../../Controllers/Validations/CargaArchivos/Helpers/ValDowloadGenerateUrl')
 
+const ValMasterCliGrow = require('../../Controllers/Validations/CargaArchivos/MasterClientesGrow/MasterClientesGrow')
+const ValMasterProGrow = require('../../Controllers/Validations/CargaArchivos/MasterProductosGrow/MasterProductosGrow')
+const ValCarArchivoS3 = require('../../Controllers/Validations/CargaArchivos/CargaArchivoS3/CargaArchivoS3')
+
 const ValSellin = require('../../Controllers/Validations/CargaArchivos/SI/CargaSellin/Sellin')
 
 const ValInventories = require('../../Controllers/Validations/CargaArchivos/Inventarios/ValInventarios')
@@ -47,6 +51,21 @@ protectedRoutes.post('/upload-sellin', ValSellin.ValSellin)
 // RUTAS CARGAR SELLIN
 // **** **** **** **** **** //
 protectedRoutes.post('/inventories', ValInventories.ValIntenvarios)
+
+// **** **** **** **** **** //
+// RUTAS CARGAR MASTER CLIENTES GROW
+// **** **** **** **** **** //
+protectedRoutes.post('/master-clientes-grow', ValMasterCliGrow.ValMasterClientesGrow)
+
+// **** **** **** **** **** //
+// RUTAS CARGAR MASTER PRODUCTOS GROW
+// **** **** **** **** **** //
+protectedRoutes.post('/master-productos-grow', ValMasterProGrow.ValMasterProductosGrow)
+
+// **** **** **** **** **** //
+// RUTAS CARGAR ARCHIVO S3
+// **** **** **** **** **** //
+protectedRoutes.post('/guardar-s3', ValCarArchivoS3.ValCargaArchivoS3)
 
 // **** **** **** **** **** //
 // RUTAS DOWNLOAD EXCEL
