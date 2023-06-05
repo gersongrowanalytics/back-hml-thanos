@@ -134,30 +134,30 @@ controller.MetMasterClientes = async ( req, res, data ) => {
                     }
                 })
             }
+    
+            const ARRAY_S3 = [
+                "hmlthanos/pe/tradicional/archivosgenerados/maestraclientes/", 
+                "hmlthanos/pe/tradicional/archivosgenerados/maaestraproductos/", 
+                "hmlthanos/pe/tradicional/archivosgenerados/homologaciones/"
+            ]
+            // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
+            // const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+    
+            // const ARRAY_S3 = [
+            //     "hmlthanos/pe/tradicional/archivosgenerados/maestraclientes/", 
+            //     "hmlthanos/pe/tradicional/archivosgenerados/maaestraproductos/", 
+            //     "hmlthanos/pe/tradicional/archivosgenerados/homologaciones/"
+            // ]
+    
+            // for await (s3 of ARRAY_S3) {
+            //     let reqUbi = {
+            //         body: {
+            //             re_ubicacion_s3: s3
+            //         }
+            //     }
+            //     await RemoveFileS3.RemoveFileS3(reqUbi)
+            // }
         }
-
-        const ARRAY_S3 = [
-            "hmlthanos/pe/tradicional/archivosgenerados/maestraclientes/", 
-            "hmlthanos/pe/tradicional/archivosgenerados/maaestraproductos/", 
-            "hmlthanos/pe/tradicional/archivosgenerados/homologaciones/"
-        ]
-        // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
-        // const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
-
-        // const ARRAY_S3 = [
-        //     "hmlthanos/pe/tradicional/archivosgenerados/maestraclientes/", 
-        //     "hmlthanos/pe/tradicional/archivosgenerados/maaestraproductos/", 
-        //     "hmlthanos/pe/tradicional/archivosgenerados/homologaciones/"
-        // ]
-
-        // for await (s3 of ARRAY_S3) {
-        //     let reqUbi = {
-        //         body: {
-        //             re_ubicacion_s3: s3
-        //         }
-        //     }
-        //     await RemoveFileS3.RemoveFileS3(reqUbi)
-        // }
 
         const usun = await prisma.usuusuarios.findFirst({
             where: {
@@ -188,22 +188,34 @@ controller.MetMasterClientes = async ( req, res, data ) => {
 
         const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
-        const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
+        const to_mail_data = process.env.TO_MAIL
         const subject_mail_success = "Carga de Archivo"
 
         const data_mail = {
             archivo: req.files.maestra_cliente.name, 
             tipo: "Archivo Master de Clientes", 
             usuario: usun.usuusuario,
-            url_archivo: car.cartoken
+            url_archivo: car.cartoken,
+            type_error: "array",
+            error_val: add_clients ? false : true,
+            error_message_mail: messages_error
         }
 
         await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
-        return res.status(200).json({
-            message : 'La maestra de Clientes fue cargada correctamente',
-            respuesta : true
-        })
+        if(!add_clients){
+            res.status(500)
+            return res.json({
+                message : 'Lo sentimos se encontraron algunas observaciones',
+                messages_error : messages_error,
+                respuesta : false
+            })
+        }else{
+            return res.status(200).json({
+                message : 'La maestra de Clientes fue cargada correctamente',
+                respuesta : true
+            })
+        }
 
     }catch(error){
         console.log(error)
