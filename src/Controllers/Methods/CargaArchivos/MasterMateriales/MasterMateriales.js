@@ -27,16 +27,16 @@ controller.MetMasterMateriales = async (req, res, data, error, message_errors) =
     try{
 
         const action_file = JSON.parse(req_action_file)
-        // const usu = await prisma.usuusuarios.findFirst({
-        //     where : {
-        //         usutoken : usutoken
-        //     },
-        //     select : {
-        //         usuid       : true,
-        //         perid       : true,
-        //         usuusuario  : true
-        //     }
-        // })
+        const usu = await prisma.usuusuarios.findFirst({
+            where : {
+                usutoken : usutoken
+            },
+            select : {
+                usuid       : true,
+                perid       : true,
+                usuusuario  : true
+            }
+        })
 
         if(!error){
             const fec = await prisma.fecfechas.findFirst({
@@ -159,17 +159,6 @@ controller.MetMasterMateriales = async (req, res, data, error, message_errors) =
             //     await RemoveFileS3.RemoveFileS3(reqUbi)
             // }
         }
-
-        const usu = await prisma.usuusuarios.findFirst({
-            where: {
-                usutoken : req.headers.usutoken
-            },
-            select: {
-                usuid: true,
-                usuusuario: true,
-                perid: true
-            }
-        })
 
         const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
         const nombre_archivo = 'MasterProductos-'+cadenaAleatorio

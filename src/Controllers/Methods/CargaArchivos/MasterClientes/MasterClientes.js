@@ -26,19 +26,18 @@ controller.MetMasterClientes = async ( req, res, data, error, message_errors) =>
     try{
 
         const action_file = JSON.parse(req_action_file)
+        const usu = await prisma.usuusuarios.findFirst({
+            where : {
+                usutoken : usutoken
+            },
+            select : {
+                usuid       : true,
+                perid       : true,
+                usuusuario  : true
+            }
+        })
 
         if(!error){
-            const usu = await prisma.usuusuarios.findFirst({
-                where : {
-                    usutoken : usutoken
-                },
-                select : {
-                    usuid       : true,
-                    perid       : true,
-                    usuusuario  : true
-                }
-            })
-
             const fec = await prisma.fecfechas.findFirst({
                 where : {
                     fecmesabierto : true,
@@ -161,16 +160,6 @@ controller.MetMasterClientes = async ( req, res, data, error, message_errors) =>
             }
         }
 
-        const usun = await prisma.usuusuarios.findFirst({
-            where: {
-                usutoken : req.headers.usutoken
-            },
-            select: {
-                usuid: true,
-                usuusuario: true
-            }
-        })
-
         const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
         const nombre_archivo = 'MasterClientes-'+cadenaAleatorio
         const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/masterclientes/'+nombre_archivo+'.xlsx'
@@ -181,7 +170,7 @@ controller.MetMasterClientes = async ( req, res, data, error, message_errors) =>
         const token_excel = crypto.randomBytes(30).toString('hex')
         const car = await prisma.carcargasarchivos.create({
             data: {
-                usuid       : usun.usuid,
+                usuid       : usu.usuid,
                 carnombre   : nombre_archivo,
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
@@ -196,7 +185,7 @@ controller.MetMasterClientes = async ( req, res, data, error, message_errors) =>
         const data_mail = {
             archivo: req.files.maestra_cliente.name, 
             tipo: "Archivo Master de Clientes", 
-            usuario: usun.usuusuario,
+            usuario: usu.usuusuario,
             url_archivo: car.cartoken,
             error_val: error,
             error_message_mail: message_errors

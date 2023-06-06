@@ -24,12 +24,15 @@ controller.ValMasterClientes = async (req, res) => {
 
         const { messages_error, add_clients, data } = await controller.ValCellsFile(workbook)
 
+        const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg))
+
         if(!add_clients){
             await MasterClientesController.MetMasterClientes(req, res, null, true, messages_error)
             res.status(500)
             return res.json({
                 message : 'Lo sentimos se encontraron algunas observaciones',
-                messages_error : messages_error,
+                messages_error : messages,
+                notificaciones : messages_error,
                 respuesta : false
             })
         }

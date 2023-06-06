@@ -24,12 +24,15 @@ controller.ValMasterMateriales = async (req, res) => {
 
         const { messages_error, add_products, data } = await controller.ValCellsFile(workbook)
 
+        const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg))
+
         if(!add_products){
             await MasterDTController.MetMasterMateriales(req, res, null, true, messages_error)
             res.status(500)
             return res.json({
                 message : 'Lo sentimos se encontraron algunas observaciones',
-                messages_error : messages_error,
+                notificaciones : messages_error,
+                messages_error : messages,
                 respuesta : false
             })
         }
