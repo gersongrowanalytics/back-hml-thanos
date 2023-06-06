@@ -6,9 +6,14 @@ const InventariosController = require('../../../Methods/CargaArchivos/Inventario
 
 controller.ValIntenvarios = async (req, res) => {
 
+    const {
+        req_action_file
+    } = req.body
     const file          = req.files.carga_inventarios
 
     try{
+
+        const action_file = JSON.parse(req_action_file)
 
         const { exists_data, message, status, workbook } = await controller.ValExistsData(file)
 
@@ -34,7 +39,14 @@ controller.ValIntenvarios = async (req, res) => {
             })
         }
 
-        InventariosController.MetInventarios(req, res, data, borrar_data)
+        if(action_file.process_data){
+            InventariosController.MetInventarios(req, res, data, borrar_data)
+        }else{
+            res.status(200).json({
+                respuesta   : false,
+                message     : 'Se ha validado la data correctamente'
+            })
+        }
 
     }catch(error){
         console.log(error)

@@ -54,7 +54,6 @@
                         <td style="width: 100000px; padding: 0 100px;">
                             <div style="font-style: normal; font-weight: normal; font-size: 13px; line-height: 18px; color: black; padding-top: 10px;">
                                 <b style="color: red;">Observaciones:</b>
-                                {{#isEqual data_mail.type_error 'array-objeto'}}
                                 {{#each data_mail.error_message_mail}}
                                     <div style="color: red;">
                                         Se encontraron las siguientes observaciones en la columna {{columna}}:
@@ -68,13 +67,6 @@
                                     </div>
                                     {{/each}}
                                 {{/each}}
-                                {{else}}
-                                    {{#each data_mail.error_message_mail}}
-                                    <div style="color: red;">
-                                        {{this}}
-                                    </div>
-                                    {{/each}}
-                                {{/isEqual}}
                             </div>
                         </td>
                     </tr>

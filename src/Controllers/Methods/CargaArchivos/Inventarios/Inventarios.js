@@ -5,14 +5,15 @@ const prisma = new PrismaClient();
 controller.MetInventarios = async (req, res, data, delete_data) => {
 
     const {
-        req_delete_data
+        req_action_file
     } = req.body
 
     try{
 
+        const action_file = JSON.parse(req_action_file)
         const { messages_delete_data } = controller.InventoriesOverWrittern(delete_data)
 
-        if(req_delete_data == 'true'){
+        if(action_file.delete_data){
             for await (const dat of delete_data ){
     
                 await prisma.inventarios.deleteMany({
@@ -33,6 +34,7 @@ controller.MetInventarios = async (req, res, data, delete_data) => {
         return res.status(200).json({
             message : 'Los datos de inventarios fueron cargados correctamente',
             messages_delete_data,
+            respuesta    : true
         })
 
     }catch(error){
@@ -40,7 +42,8 @@ controller.MetInventarios = async (req, res, data, delete_data) => {
         res.status(500)
         return res.json({
             message : 'Lo sentimos hubo un error al momento de cargar el inventario',
-            devmsg  : error
+            devmsg  : error,
+            respuesta    : false
         })
     }
 }

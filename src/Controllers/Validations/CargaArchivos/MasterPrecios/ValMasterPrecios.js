@@ -4,10 +4,14 @@ const MasterPreciosController = require('../../../Methods/CargaArchivos/MasterPr
 
 controller.ValMasterPrecios = async (req, res) => {
 
+    const {
+        req_action_file
+    } = req.body
     const file = req.files.master_precios
 
     try{
 
+        const action_file = JSON.parse(req_action_file)
         const { exists_data, message, status, workbook } = await controller.ValExistsData(file)
 
         if(!exists_data){
@@ -32,7 +36,14 @@ controller.ValMasterPrecios = async (req, res) => {
             })
         }
 
-        MasterPreciosController.MetMasterPrecios(req, res, data, dates_row, false)
+        if(action_file.process_data){
+            MasterPreciosController.MetMasterPrecios(req, res, data, dates_row, false)
+        }else{
+            res.status(200).json({
+                respuesta   : false,
+                message     : 'Se ha validado la data correctamente'
+            })
+        }
 
     }catch(error){
         console.log(error)

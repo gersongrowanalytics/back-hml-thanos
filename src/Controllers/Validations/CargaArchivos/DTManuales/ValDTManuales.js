@@ -7,9 +7,15 @@ const DTManualesMasterClientesGrowController = require('../../../Methods/CargaAr
 
 controller.ValDTManuales = async (req, res) => {
 
+    const {
+        req_action_file
+    } = req.body
+
     const file          = req.files.carga_manual
 
     try{
+
+        const action_file = JSON.parse(req_action_file)
 
         const { exists_data, message, status, workbook } = await controller.ValExistsData(file)
 
@@ -29,7 +35,7 @@ controller.ValDTManuales = async (req, res) => {
 
             res.status(500)
             return res.json({
-                response        : false,
+                respuesta       : false,
                 message         : 'Lo sentimos se encontraron algunas observaciones',
                 notificaciones  : messages_error,
                 messages_error  : messages
@@ -37,8 +43,15 @@ controller.ValDTManuales = async (req, res) => {
             })
         }
 
-        DTManualesController.MetDTManuales(req, res, data, borrar_data, false)
-
+        if(action_file.process_data){
+            DTManualesController.MetDTManuales(req, res, data, borrar_data, false)
+        }else{
+            res.status(200).json({
+                respuesta   : true,
+                message     : 'Se ha validado la data correctamente'
+            })
+        }
+        
     }catch(error){
         console.log(error)
         res.status(500)

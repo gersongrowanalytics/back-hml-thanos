@@ -112,7 +112,7 @@ controller.MetActualizarInventario = async ( req, res ) => {
 
         res.status(200).json({
             response    : true,
-            messagge    : 'Inventarios actualizado',
+            messagge    : 'Inventarios actualizados con éxito',
         })
 
 
