@@ -161,8 +161,6 @@ controller.MetMasterMateriales = async (req, res, data, error, message_errors) =
             // }
         }
 
-
-
         const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
         const nombre_archivo = 'MasterProductos-'+cadenaAleatorio
         const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/masterproductos/'+nombre_archivo+'.xlsx'
