@@ -15,7 +15,8 @@ const ValCreDts = require('../../Controllers/Validations/Administracion/Distribu
 const ValCreLpr = require('../../Controllers/Validations/Administracion/ListaPrecio/CrearListaPrecio/ValListaPrecio')
 const ValMosLpr = require('../../Controllers/Validations/Administracion/ListaPrecio/MostrarListaPrecio/MostrarListaPrecio')
 
-const ValMosMpg = require('../../Controllers/Methods/Administracion/MasterProductosGrow/MostrarMasterProductosGrow/MostrarMasterProductosGrow')
+const ValMosMpg = require('../../Controllers/Validations/Administracion/MasterProductosGrow/MostrarMasterProductosGrow/MostrarMasterProductosGrow')
+const ValMosMcg = require('../../Controllers/Validations/Administracion/MasterClientesGrow/MostrarMasterClientesGrow/MostrarMasterClientesGrow')
 
 const protectedRoutes = express.Router();
 // protectedRoutes.use(authMiddleware);
@@ -31,8 +32,8 @@ protectedRoutes.post('/edit-product', ValEdiPro.ValEditarProducto)
 // **** **** **** **** **** //
 // RUTAS MASTER GROW
 // **** **** **** **** **** //
-protectedRoutes.post('/get-master-products-grow', ValMosMpg.MetMostrarMasterProductosGrowController)
-
+protectedRoutes.post('/get-master-products-grow', ValMosMpg.ValMostrarMasterProductosGrow)
+protectedRoutes.post('/get-master-clients-grow', ValMosMcg.ValMostrarMasterClientesGrow)
 
 // **** **** **** **** **** //
 // RUTAS DISTRIBUIDORAS
