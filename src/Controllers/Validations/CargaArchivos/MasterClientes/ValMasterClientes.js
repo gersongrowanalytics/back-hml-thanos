@@ -80,30 +80,34 @@ controller.ValCellsFile = async (workbook) => {
     const rows = XLSX.utils.sheet_to_json(workbook.Sheets['Hoja1'], {defval:""})
 
     let add_clients = true
-    let messages_error_cod_client = false
-    let messages_error_nomb_client = false
     let messages_error = []
 
+    const columns_name = [
+        { value : 0, name : 'CodigoDistribuidor' },
+        { value : 1, name : 'Region' },
+        { value : 2, name : 'Supervisor' },
+        { value : 3, name : 'Localidad' },
+        { value : 4, name : 'NombreDistribuidor' },
+    ]
+
+    let num_row = 1
     const data = rows.map((row, pos) => {
 
         let properties = Object.keys(rows[0])
 
         if(!row[properties[0]]){
             add_clients = false
-            if(!messages_error_cod_client){
-                messages_error_cod_client = true
-                messages_error.push("Lo sentimos, algunos códigos se encuentran vacios")
-            }
+            let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[0]['name'])
+            controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'empty')
         }
 
         if(!row[properties[4]]){
             add_clients = false
-            if(!messages_error_nomb_client){
-                messages_error_nomb_client = true
-                messages_error.push("Lo sentimos, algunos nombres de clientes se encuentran vacios")
-            }
+            let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
+            controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'empty')
         }
 
+        num_row = num_row + 1
         return {
             
             codigo_dt           : row[properties[0]] ?  row[properties[0]].toString() : '',
@@ -128,6 +132,54 @@ controller.ValCellsFile = async (workbook) => {
     })
 
     return { messages_error, add_clients, data }
+}
+
+controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row, type, name_dts = null) => {
+
+    let msg_log = ''
+
+    switch (type) {
+        case 'empty':
+            msg_log = `Lo sentimos, algunos códigos de ${name_column} se encuentran vacios, recordar que este campo es obligatorio`
+            break;
+        case 'not number':
+            msg_log = `Lo sentimos, algunos de los ${name_column} no son númericos`
+            break;
+        case 'format invalid':
+            msg_log = `Lo sentimos, algunos de los ${name_column} no tienen el formato válido`
+            break;
+        case 'distributor not found':
+            msg_log = `El código ${name_dts} no se encuentra en la maestra distribuidoras`
+            break;
+        default:
+            msg_log = `Lo sentimos, el tipo de dato para ${name_column} es inválido`
+    }
+
+    if(rows_error == -1){
+        messages_error.push({
+            "columna"           : name_column,
+            "notificaciones"    : [
+                {
+                    "msg"   : msg_log,
+                    "rows" : [num_row+1],
+                    "type" : type
+                }
+            ]
+        })
+    }else{
+        let index_type_error = messages_error[rows_error]['notificaciones'].findIndex(typ => typ.type == type)
+
+        if(index_type_error == -1){
+            messages_error[rows_error]['notificaciones'].push({
+                "msg"   : msg_log,
+                "rows" : [num_row+1],
+                "type" : type
+            })
+        }else{
+            messages_error[rows_error]['notificaciones'][index_type_error]['rows'].push(num_row+1)
+        }  
+        
+    }
 }
 
 module.exports = controller
