@@ -30,7 +30,7 @@ const protectedRoutes = express.Router();
 // **** **** **** **** **** //
 // RUTAS HELPERS
 // **** **** **** **** **** //
-protectedRoutes.get('/get-master-products', ValMosProController.ValMostrarProductos)
+protectedRoutes.post('/get-master-products', ValMosProController.ValMostrarProductos)
 
 // **** **** **** **** **** //
 // RUTAS HOMOLOGACIONES
