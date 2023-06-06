@@ -1,13 +1,20 @@
 const controller = {}
-const MostrarProductosController = require('../../../../Methods/Homologaciones/Helpers/MostrarProductos/MostrarProductos')
+const MostrarProductosController        = require('../../../../Methods/Homologaciones/Helpers/MostrarProductos/MostrarProductos')
+const MostrarProductosGrowController    = require('../../../../Methods/Homologaciones/Helpers/MostrarProductosGrow/MostrarProductosGrow')
 
 controller.ValMostrarProductos = async (req, res) => {
 
-    const {  } = req.body;
+    const {  
+        req_mp_grow
+    } = req.body;
 
     try{
 
-        MostrarProductosController.MetMostrarProductos(req, res)
+        if(req_mp_grow){
+            MostrarProductosGrowController.MetMostrarProductosGrow(req, res)
+        }else{
+            MostrarProductosController.MetMostrarProductos(req, res)
+        }
 
     }catch(error){
         console.log(error)
