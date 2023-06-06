@@ -58,7 +58,7 @@ controller.MetObtenerHomologadosMaster = async ( req, res ) => {
             // if(inv?.length > 0){
             if(inv){
                 exist_inv = true
-                mps['inventario'] = {}
+                mps['inventario'] = inv
             }else{
                 mps['inventario'] = {}
             }

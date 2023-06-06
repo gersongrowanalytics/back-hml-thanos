@@ -17,6 +17,7 @@ const ValMosLpr = require('../../Controllers/Validations/Administracion/ListaPre
 
 const ValMosMpg = require('../../Controllers/Validations/Administracion/MasterProductosGrow/MostrarMasterProductosGrow/MostrarMasterProductosGrow')
 const ValMosMcg = require('../../Controllers/Validations/Administracion/MasterClientesGrow/MostrarMasterClientesGrow/MostrarMasterClientesGrow')
+const ValMosMcs = require('../../Controllers/Validations/Administracion/MasterClientesSoftys/MostrarMasterClientesSoftys/MostrarMasterClientesSoftys')
 
 const protectedRoutes = express.Router();
 // protectedRoutes.use(authMiddleware);
@@ -34,6 +35,11 @@ protectedRoutes.post('/edit-product', ValEdiPro.ValEditarProducto)
 // **** **** **** **** **** //
 protectedRoutes.post('/get-master-products-grow', ValMosMpg.ValMostrarMasterProductosGrow)
 protectedRoutes.post('/get-master-clients-grow', ValMosMcg.ValMostrarMasterClientesGrow)
+
+// **** **** **** **** **** //
+// RUTAS MASTER SOFTYS
+// **** **** **** **** **** //
+protectedRoutes.post('/get-master-clients-softys', ValMosMcs.ValMostrarMasterClientesSoftys)
 
 // **** **** **** **** **** //
 // RUTAS DISTRIBUIDORAS

@@ -17,6 +17,8 @@ const ValMasterCliGrow = require('../../Controllers/Validations/CargaArchivos/Ma
 const ValMasterProGrow = require('../../Controllers/Validations/CargaArchivos/MasterProductosGrow/MasterProductosGrow')
 const ValCarArchivoS3 = require('../../Controllers/Validations/CargaArchivos/CargaArchivoS3/CargaArchivoS3')
 
+const ValMasterCliSof = require('../../Controllers/Validations/CargaArchivos/MasterClientesSoftys/MasterClientesSoftys')
+
 const ValSellin = require('../../Controllers/Validations/CargaArchivos/SI/CargaSellin/Sellin')
 
 const ValInventories = require('../../Controllers/Validations/CargaArchivos/Inventarios/ValInventarios')
@@ -56,6 +58,11 @@ protectedRoutes.post('/inventories', ValInventories.ValIntenvarios)
 // RUTAS CARGAR MASTER CLIENTES GROW
 // **** **** **** **** **** //
 protectedRoutes.post('/master-clientes-grow', ValMasterCliGrow.ValMasterClientesGrow)
+
+// **** **** **** **** **** //
+// RUTAS CARGAR MASTER CLIENTES SOFTYS
+// **** **** **** **** **** //
+protectedRoutes.post('/master-clientes-softys', ValMasterCliSof.ValMasterClientesSoftys)
 
 // **** **** **** **** **** //
 // RUTAS CARGAR MASTER PRODUCTOS GROW
