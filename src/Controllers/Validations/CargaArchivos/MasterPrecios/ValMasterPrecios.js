@@ -26,18 +26,18 @@ controller.ValMasterPrecios = async (req, res) => {
         const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg))
 
         if(!add_master_price){
+            await MasterPreciosController.MetMasterPrecios(req, res, null, null, true, messages_error)
             res.status(500)
             return res.json({
                 response        : false,
                 message         : 'Lo sentimos se encontraron algunas observaciones',
                 notificaciones  : messages_error,
                 messages_error  : messages
-
             })
         }
 
         if(action_file.process_data){
-            MasterPreciosController.MetMasterPrecios(req, res, data, dates_row)
+            MasterPreciosController.MetMasterPrecios(req, res, data, dates_row, false)
         }else{
             res.status(200).json({
                 respuesta   : false,

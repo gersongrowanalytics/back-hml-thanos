@@ -25,6 +25,7 @@ controller.ValMasterClientes = async (req, res) => {
         const { messages_error, add_clients, data } = await controller.ValCellsFile(workbook)
 
         if(!add_clients){
+            await MasterClientesController.MetMasterClientes(req, res, null, true, messages_error)
             res.status(500)
             return res.json({
                 message : 'Lo sentimos se encontraron algunas observaciones',
@@ -34,7 +35,7 @@ controller.ValMasterClientes = async (req, res) => {
         }
 
         if(action_file.process_data){
-            MasterClientesController.MetMasterClientes(req, res, data)
+            MasterClientesController.MetMasterClientes(req, res, data, false)
         }else{
             res.status(200).json({
                 respuesta   : false,

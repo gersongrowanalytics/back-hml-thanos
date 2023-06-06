@@ -44,7 +44,7 @@ controller.ValDTManuales = async (req, res) => {
         }
 
         if(action_file.process_data){
-            DTManualesController.MetDTManuales(req, res, data, borrar_data)
+            DTManualesController.MetDTManuales(req, res, data, borrar_data, false)
         }else{
             res.status(200).json({
                 respuesta   : true,

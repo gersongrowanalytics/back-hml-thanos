@@ -13,7 +13,7 @@ const moment = require('moment');
 const { log } = require('handlebars');
 require('dotenv').config()
 
-controller.MetMasterMateriales = async (req, res, data) => {
+controller.MetMasterMateriales = async (req, res, data, error, message_errors) => {
 
     const {
         req_action_file
@@ -38,64 +38,127 @@ controller.MetMasterMateriales = async (req, res, data) => {
         //     }
         // })
 
-        const fec = await prisma.fecfechas.findFirst({
-            where : {
-                fecmesabierto : true,
-            },
-            select : {
-                fecid : true
+        if(!error){
+            const fec = await prisma.fecfechas.findFirst({
+                where : {
+                    fecmesabierto : true,
+                },
+                select : {
+                    fecid : true
+                }
+            })
+    
+            const fecid = fec.fecid
+    
+            const espe = await prisma.espestadospendientes.findFirst({
+                where : {
+                    AND : [
+                        {
+                            fecid : fecid
+                        },
+                        {
+                            espbasedato : 'Master Productos'
+                        }
+                    ]
+                }
+            })
+    
+            if(action_file.delete_data){
+                // await prisma.master_productos.deleteMany({})
             }
-        })
-
-        const fecid = fec.fecid
-
-        const espe = await prisma.espestadospendientes.findFirst({
-            where : {
-                AND : [
-                    {
-                        fecid : fecid
-                    },
-                    {
-                        espbasedato : 'Master Productos'
+    
+            // await prisma.master_productos.create({
+            //     data : {
+            //         id : 1,
+            //         cod_producto : "OTROS",
+            //         nomb_producto : "OTROS"
+            //     }
+            // });
+    
+            await prisma.master_productos.createMany({
+                data
+            })
+    
+            const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
+            const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+    
+            if(espe){
+                let date_one = moment()
+                let date_two = moment(espe.espfechaprogramado)
+    
+                let esp_day_late
+                if(date_one > date_two){
+    
+                    let diff_days_date_one_two = date_one.diff(date_two, 'days')
+    
+                    if( diff_days_date_one_two > 0){
+                        esp_day_late = diff_days_date_one_two.toString()
+                    }else{
+                        esp_day_late = '0'
                     }
-                ]
+                }else{
+                    esp_day_late = '0'
+                }
+    
+                const espu = await prisma.espestadospendientes.update({
+                    where : {
+                        espid : espe.espid
+                    },
+                    data : {
+                        perid                   : usu.perid,
+                        espfechactualizacion    : new Date().toISOString(),
+                        espdiaretraso           : esp_day_late
+                    }
+                })
+    
+                const aree = await prisma.areareasestados.findFirst({
+                    where : {
+                        areid : espe.areid
+                    }
+                })
+    
+                if(aree){
+                    let are_percentage
+                    const espcount = await prisma.espestadospendientes.findMany({
+                        where : {
+                            fecid       : fecid,
+                            areid       : espe.areid,
+                            espfechactualizacion : null
+                        }
+                    })
+    
+                    if(espcount.length == 0){
+                        are_percentage = '100'
+                    }else{
+                        are_percentage = (100 - (espcount.length*25)).toString()
+                    }
+    
+                    const areu = await prisma.areareasestados.update({
+                        where : {
+                            areid : aree.areid
+                        },
+                        data : {
+                            areporcentaje : are_percentage
+                        }
+                    })
+                }
             }
-        })
-
-
-        if(action_file.delete_data){
-            // await prisma.master_productos.deleteMany({})
+    
+            // const ARRAY_S3 = [
+            //     "hmlthanos/pe/tradicional/archivosgenerados/maestraclientes/", 
+            //     "hmlthanos/pe/tradicional/archivosgenerados/maaestraproductos/", 
+            //     "hmlthanos/pe/tradicional/archivosgenerados/homologaciones/"
+            // ]
+    
+            // for await (s3 of ARRAY_S3) {
+            //     let reqUbi = {
+            //         body: {
+            //             re_ubicacion_s3: s3
+            //         }
+            //     }
+            //     await RemoveFileS3.RemoveFileS3(reqUbi)
+            // }
         }
-
-        // await prisma.master_productos.create({
-        //     data : {
-        //         id : 1,
-        //         cod_producto : "OTROS",
-        //         nomb_producto : "OTROS"
-        //     }
-        // });
-
-        await prisma.master_productos.createMany({
-            data
-        });
-
-        const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
-        const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
-
-        // const ARRAY_S3 = [
-        //     "hmlthanos/pe/tradicional/archivosgenerados/maestraclientes/", 
-        //     "hmlthanos/pe/tradicional/archivosgenerados/maaestraproductos/", 
-        //     "hmlthanos/pe/tradicional/archivosgenerados/homologaciones/"
-        // ]
-
-        // for await (s3 of ARRAY_S3) {
-        //     let reqUbi = {
-        //         body: {
-        //             re_ubicacion_s3: s3
-        //         }
-        //     }
-        //     await RemoveFileS3.RemoveFileS3(reqUbi)
-        // }
 
         const usu = await prisma.usuusuarios.findFirst({
             where: {
@@ -134,78 +197,21 @@ controller.MetMasterMateriales = async (req, res, data) => {
             archivo: req.files.maestra_producto.name, 
             tipo: "Archivo Master de Productos", 
             usuario: usu.usuusuario,
-            url_archivo: car.cartoken
+            url_archivo: car.cartoken,
+            error_val: error,
+            error_message_mail: message_errors
         }
 
-
-        if(espe){
-
-            let date_one = moment()
-            let date_two = moment(espe.espfechaprogramado)
-
-            let esp_day_late
-            if(date_one > date_two){
-
-                let diff_days_date_one_two = date_one.diff(date_two, 'days')
-
-                if( diff_days_date_one_two > 0){
-                    esp_day_late = diff_days_date_one_two.toString()
-                }else{
-                    esp_day_late = '0'
-                }
-            }else{
-                esp_day_late = '0'
-            }
-
-            const espu = await prisma.espestadospendientes.update({
-                where : {
-                    espid : espe.espid
-                },
-                data : {
-                    perid                   : usu.perid,
-                    espfechactualizacion    : new Date().toISOString(),
-                    espdiaretraso           : esp_day_late
-                }
-            })
-
-            const aree = await prisma.areareasestados.findFirst({
-                where : {
-                    areid : espe.areid
-                }
-            })
-
-            if(aree){
-                let are_percentage
-                const espcount = await prisma.espestadospendientes.findMany({
-                    where : {
-                        fecid       : fecid,
-                        areid       : espe.areid,
-                        espfechactualizacion : null
-                    }
-                })
-
-                if(espcount.length == 0){
-                    are_percentage = '100'
-                }else{
-                    are_percentage = (100 - (espcount.length*25)).toString()
-                }
-
-                const areu = await prisma.areareasestados.update({
-                    where : {
-                        areid : aree.areid
-                    },
-                    data : {
-                        areporcentaje : are_percentage
-                    }
-                })
-            }
-        }
-        // await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
+        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
         
-        return res.status(200).json({
-            message : 'La maestra de Producto fue cargada correctamente',
-            respuesta : true
-        })
+        if(!error){
+            return res.status(200).json({
+                message : 'La maestra de Producto fue cargada correctamente',
+                respuesta : true
+            })
+        }else{
+            return true
+        }
 
     }catch(error){
         console.log(error)

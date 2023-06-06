@@ -25,6 +25,7 @@ controller.ValMasterMateriales = async (req, res) => {
         const { messages_error, add_products, data } = await controller.ValCellsFile(workbook)
 
         if(!add_products){
+            await MasterDTController.MetMasterMateriales(req, res, null, true, messages_error)
             res.status(500)
             return res.json({
                 message : 'Lo sentimos se encontraron algunas observaciones',
@@ -34,7 +35,7 @@ controller.ValMasterMateriales = async (req, res) => {
         }
 
         if(action_file.process_data){
-            MasterDTController.MetMasterMateriales(req, res, data)
+            MasterDTController.MetMasterMateriales(req, res, data, false)
         }else{
             res.status(200).json({
                 respuesta   : false,
