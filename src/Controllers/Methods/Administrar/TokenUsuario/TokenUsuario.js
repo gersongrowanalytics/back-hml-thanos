@@ -26,7 +26,7 @@ controller.MetTokenUsuario = async (req, res) => {
         res.json({
             message : message,
             respuesta : true,
-            auth_token: req_token,
+            auth_token: middle_usuario.usutoken,
             user : middle_usuario
         })
     }
