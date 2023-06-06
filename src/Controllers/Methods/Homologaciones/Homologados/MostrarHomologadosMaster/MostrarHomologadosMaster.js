@@ -40,7 +40,10 @@ controller.MetObtenerHomologadosMaster = async ( req, res ) => {
                 bonificado              : true,
                 master_productos: {
                     select: {
-                        nomb_producto : true
+                        id: true,
+                        cod_producto: true,
+                        nomb_producto : true,
+                        paquetexbulto: true,
                     }
                 },
             },
