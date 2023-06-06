@@ -18,7 +18,8 @@ controller.ValLogin = async (req, res) => {
                     usucorreo : req_usucorreo
                 },
                 include : {
-                    perpersonas : true
+                    perpersonas : true,
+                    tputiposusuarios : true
                 }
             });
 

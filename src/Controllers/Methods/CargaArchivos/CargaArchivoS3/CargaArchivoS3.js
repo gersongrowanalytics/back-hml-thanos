@@ -47,8 +47,7 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
         const success_mail_html = "src/Controllers/Methods/Mails/CargaArchivoS3.html"
         const from_mail_data = process.env.USER_MAIL
         // const to_mail_data = "jose.cruz@grow-analytics.com.pe"
-        // const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
-        const to_mail_data = "Frank.Martinez@grow-analytics.com.pe"
+        const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
         const subject_mail_success = "Carga de Archivo Thanos"
         const token_excel = crypto.randomBytes(30).toString('hex')
 

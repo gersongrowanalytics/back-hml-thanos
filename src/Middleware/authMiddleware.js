@@ -8,7 +8,12 @@ async function authMiddleware (req, res, next) {
 
     const usuPrisma = await prisma.usuusuarios.findFirst({
         include : {
-            perpersonas : true
+            perpersonas : true,
+            tputiposusuarios : {
+                select : {
+                    tpuprivilegio : true
+                }
+            }
         }
     })
 

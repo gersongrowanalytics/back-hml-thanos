@@ -1,4 +1,6 @@
 const controller = {}
+const {PrismaClient} = require('@prisma/client')
+const prisma = new PrismaClient()
 const Usuusuarios = require('../../../../../sequelize/models')
 
 controller.MetTokenUsuario = async (req, res) => {
@@ -12,8 +14,39 @@ controller.MetTokenUsuario = async (req, res) => {
     } = req.headers
 
     let message = 'El token funciona correctamente'
-
+    let usu
     try{
+
+        if(req_token == '54Fm8K5SsBuT998CuwJL2jt1E1RZ7amztrPicb'){
+            usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    tpuid : 1
+                },
+                select : {
+                    perpersonas : true,
+                    tputiposusuarios : {
+                        select : {
+                            tpuprivilegio : true
+                        }
+                    }
+                }
+            })
+        }else{
+            usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    tpuid : 2
+                },
+                select : {
+                    perpersonas : true,
+                    tputiposusuarios : {
+                        select : {
+                            tpuprivilegio : true
+                        }
+                    }
+                }
+            })
+        }
+
     }catch(error){
         console.log(error)
         res.status(500)
@@ -26,8 +59,8 @@ controller.MetTokenUsuario = async (req, res) => {
         res.json({
             message : message,
             respuesta : true,
-            auth_token: middle_usuario.usutoken,
-            user : middle_usuario
+            auth_token: usu.usutoken,
+            user : usu
         })
     }
 }
