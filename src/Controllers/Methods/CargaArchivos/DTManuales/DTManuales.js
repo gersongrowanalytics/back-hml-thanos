@@ -30,7 +30,8 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
         const usu = await prisma.usuusuarios.findFirst({
             where: {
-                usutoken : req.headers.usutoken
+                // usutoken : req.headers.usutoken
+                usutoken : req.headers.Usutoken
             },
             select: {
                 usuid: true,
