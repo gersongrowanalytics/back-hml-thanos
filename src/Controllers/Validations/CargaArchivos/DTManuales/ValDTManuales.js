@@ -278,8 +278,11 @@ controller.ValCellsFile = async (workbook) => {
         }
 
         if(row[properties[3]]){
-            if(!codcli_esp.includes(row[properties[3]].trim())){
-                codcli_esp.push(row[properties[3]].trim())
+            // if(!codcli_esp.includes(row[properties[3]].trim())){
+            //     codcli_esp.push(row[properties[3]].trim())
+            // }
+            if(!codcli_esp.includes(row[properties[3]])){
+                codcli_esp.push(row[properties[3]])
             }
         }
 
