@@ -231,7 +231,8 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         // const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const success_mail_html = "/var/www/softys/hml_thanos/back/src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
-        const to_mail_data = process.env.TO_MAIL
+        // const to_mail_data = process.env.TO_MAIL
+        const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
         const subject_mail_success = "Carga de Archivo"
         
         const data_mail = {
