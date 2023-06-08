@@ -465,6 +465,7 @@ model espestadospendientes {
   perid                         Int?        @db.UnsignedInt
   tprid                         Int?        @db.UnsignedInt
   m_cl_grow                     Int?        @db.UnsignedInt
+  cliid                         Int?        @db.UnsignedInt
   espdts                        Boolean?    @default(false)
   areid                         Int?        @db.UnsignedInt
   espfechaprogramado            DateTime?   @db.Date
