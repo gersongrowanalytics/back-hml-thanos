@@ -154,8 +154,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
 
         let date_deadline = new Date()
         const date_lost_day = date_deadline.setDate(date_deadline.getDate() - 1)
-
-        let espdiasretrasomcl = moment(date_deadline).diff(moment(date_lost_day), 'days')
+        let espdiasretrasomcl = moment().diff(moment(date_lost_day), 'days')
 
         mcl_grow.forEach(element => {
 
