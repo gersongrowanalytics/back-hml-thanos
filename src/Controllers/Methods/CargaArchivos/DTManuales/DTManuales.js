@@ -207,8 +207,8 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             }
         }   
 
-        // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
-        // const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+        const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
+        const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
         
         const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
         const nombre_archivo = 'PlanoSo-'+cadenaAleatorio
@@ -228,7 +228,8 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             }
         })
         
-        const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
+        // const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
+        const success_mail_html = "/var/www/softys/hml_thanos/back/src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
         const to_mail_data = process.env.TO_MAIL
         const subject_mail_success = "Carga de Archivo"
