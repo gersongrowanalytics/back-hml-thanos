@@ -32,7 +32,18 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
         req_datos_homologados = dataNoRepetida
 
         for await (const dhm of req_datos_homologados ){
-            let data_mpso = { proid : dhm.req_id_producto_homologado, unidad_minima: dhm.req_unidad_minima_homologado }
+
+            const prod_hml = await prisma.master_productos.findFirst({
+                where : {
+                    id : dhm.req_id_producto_homologado
+                }
+            })
+
+            let data_mpso = { 
+                proid : dhm.req_id_producto_homologado, 
+                unidad_minima: dhm.req_unidad_minima_homologado 
+            }
+
             if(dhm.req_combo){
                 data_mpso = { ...data_mpso, 
                                 combo                   : dhm.req_combo, 
@@ -43,7 +54,8 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                                 bonificado              : dhm.req_bonificado,
                                 desde                   : moment(req_rango_fecha.desde).format('YYYY-MM-DD').toString(),
                                 hasta                   : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
-                                cod_unidad_medida   : dhm.req_cod_unidad_medida
+                                cod_unidad_medida   : dhm.req_cod_unidad_medida,
+                                pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.cod_producto
                             }
             }
             if(dhm.req_id){
@@ -60,6 +72,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             proid : dhm.req_id_producto_homologado,
                             m_dt_id : req_select_product_so.m_dt_id,
                             pk_venta_so : req_select_product_so.pk_venta_so,
+                            pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.cod_producto,
                             pk_extractor_venta_so : req_select_product_so.pk_extractor_venta_so,
                             codigo_distribuidor : req_select_product_so.codigo_distribuidor,
                             codigo_producto : req_select_product_so.codigo_producto,
@@ -87,6 +100,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             proid : dhm.req_id_producto_homologado,
                             m_dt_id : req_select_product_so.m_dt_id,
                             pk_venta_so : req_select_product_so.pk_venta_so,
+                            pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.cod_producto,
                             pk_extractor_venta_so : req_select_product_so.pk_extractor_venta_so,
                             codigo_distribuidor : req_select_product_so.codigo_distribuidor,
                             codigo_producto : req_select_product_so.codigo_producto,

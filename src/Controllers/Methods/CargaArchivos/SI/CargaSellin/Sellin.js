@@ -7,6 +7,8 @@ const SendMail = require('../../../Reprocesos/SendMail')
 const GenerateCadenaAleatorio = require('../../../Reprocesos/Helpers/GenerateCadenaAleatorio')
 const UploadFileExcel = require('../../../S3/UploadFileExcelS3')
 require('dotenv').config()
+const path = require('path');
+
 
 controller.MetSellin = async (req, res, data, delete_data, error, message_errors) => {
 
@@ -173,7 +175,8 @@ controller.MetSellin = async (req, res, data, delete_data, error, message_errors
             }
         })
 
-        const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
+        const success_mail_html = path.resolve(__dirname, '../../../Mails/CorreoInformarCargaArchivo.html');
+        // const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
         const to_mail_data = process.env.TO_MAIL
         const subject_mail_success = "Carga de Archivo"

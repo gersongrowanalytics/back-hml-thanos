@@ -12,6 +12,7 @@ const StatusMasterClientes = require('../../Status/EstadoPendiente/ActualizarSta
 const StatusMasterProductos = require('../../Status/EstadoPendiente/ActualizarStatusMasterProductos')
 const StatusMasterPrecios = require('../../Status/EstadoPendiente/ActualizarStatusMasterPrecios')
 const StatusSellinThanos = require('../../Status/EstadoPendiente/ActualizarStatusSellinThanos')
+const path = require('path');
 
 controller.MetCargaArchivoS3 = async ( req, res ) => {
 
@@ -44,9 +45,10 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
         })
 
         // const success_mail_html = "src/Controllers/Methods/Mails/CargaArchivoS3.html"
-        const success_mail_html = "/var/www/softys/hml_thanos/back/src/Controllers/Methods/Mails/CargaArchivoS3.html"
+        // const success_mail_html = "/var/www/softys/hml_thanos/back/src/Controllers/Methods/Mails/CargaArchivoS3.html"
+        const success_mail_html = path.resolve(__dirname, '../../Mails/CargaArchivoS3.html');
         const from_mail_data = process.env.USER_MAIL
-        // const to_mail_data = "jose.cruz@grow-analytics.com.pe"
+        // const to_mail_data = "jose.cruz.growanalytics@gmail.com"
         const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
         const subject_mail_success = "Carga de Archivo Thanos"
         const token_excel = crypto.randomBytes(30).toString('hex')

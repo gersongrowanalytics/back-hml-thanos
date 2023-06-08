@@ -18,6 +18,21 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
             },
             select : {
                 id : true,
+                master_distribuidoras: {
+                    select: {
+                        nomb_dt: true,
+                        region : true,
+                        codigo_dt : true
+                    }
+                },
+                masterclientes_grow : {
+                    select : {
+                        cliente_hml: true,
+                        territorio : true, // En el front se muestra región, validar con Jazmin
+                        codigo_destinatario : true,
+                        sucursal_hml : true
+                    }
+                },
                 proid                   : true,
                 m_dt_id                 : true,
                 pk_venta_so             : true,

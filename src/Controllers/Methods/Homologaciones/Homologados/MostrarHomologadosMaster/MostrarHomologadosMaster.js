@@ -7,13 +7,16 @@ const ObtenerInfoInventarioController = require('../../../../Methods/Homologacio
 controller.MetObtenerHomologadosMaster = async ( req, res ) => {
 
     const {
-        req_pk_venta_so
+        req_pk_venta_so,
+        req_pk_venta_so_hml,
+        req_select_product
     } = req.body
 
     try{
         const mpso = await prisma.master_productos_so.findMany({
             where : {
-                pk_venta_so : req_pk_venta_so
+                pk_venta_so_hml : req_select_product.pk_venta_so_hml
+                // pk_venta_so : req_pk_venta_so
             },
             select : {
                 id                      : true,
@@ -44,6 +47,14 @@ controller.MetObtenerHomologadosMaster = async ( req, res ) => {
                         cod_producto: true,
                         nomb_producto : true,
                         paquetexbulto: true,
+                    }
+                },
+                masterclientes_grow : {
+                    select : {
+                        cliente_hml: true,
+                        territorio : true, // En el front se muestra región, validar con Jazmin
+                        codigo_destinatario : true,
+                        sucursal_hml : true
                     }
                 },
             },
