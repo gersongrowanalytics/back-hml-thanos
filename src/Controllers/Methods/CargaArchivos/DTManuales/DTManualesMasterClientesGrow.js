@@ -7,6 +7,7 @@ controller.MetDTManualesMasterClientesGrow = async (dts, mcl_grow_local, mcl_nog
     try{
         
         let id_mcl_grow = null
+        dts = dts.toString()
         const exist_dts     = mcl_grow_local.findIndex(dt => dt.dts == dts)
         const no_exist_dts  = mcl_nogrow_local.findIndex(dt => dt == dts)
 
@@ -31,6 +32,10 @@ controller.MetDTManualesMasterClientesGrow = async (dts, mcl_grow_local, mcl_nog
                 let find_dts = mcl_grow_local.find((mcl) => mcl.dts == dts)
                 id_mcl_grow = find_dts.id
             }
+        }
+
+        if(id_mcl_grow != null){
+            console.log('No es null: ' + id_mcl_grow)
         }
 
         return id_mcl_grow

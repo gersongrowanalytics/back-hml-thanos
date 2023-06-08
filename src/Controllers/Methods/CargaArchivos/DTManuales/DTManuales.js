@@ -126,13 +126,15 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
             if(action_file.delete_data){
                 for await (const dat of delete_data ){
+
+                    let dat_cod = dat.cod_dt.toString()
             
                     await prisma.ventas_so.deleteMany({
                         where: {
                             fecha: {
                                 startsWith: dat.fecha
                             },
-                            codigo_distribuidor: dat.cod_dt
+                            codigo_distribuidor: dat_cod
                         }
                     })
                 }
@@ -216,7 +218,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         const archivoExcel = req.files.carga_manual.data
         const excelSize = req.files.carga_manual.size
         
-        await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
+        // await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
         
         const token_excel = crypto.randomBytes(30).toString('hex')
         const car = await prisma.carcargasarchivos.create({

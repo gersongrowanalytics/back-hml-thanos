@@ -30,18 +30,18 @@ controller.ValDTManuales = async (req, res) => {
 
         const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg));
 
-        if(!add_dt_manuales){
-            await DTManualesController.MetDTManuales(req, res, null, null, true, messages_error)
+        // if(!add_dt_manuales){
+        //     await DTManualesController.MetDTManuales(req, res, null, null, true, messages_error)
 
-            res.status(500)
-            return res.json({
-                respuesta       : false,
-                message         : 'Lo sentimos se encontraron algunas observaciones',
-                notificaciones  : messages_error,
-                messages_error  : messages
+        //     res.status(500)
+        //     return res.json({
+        //         respuesta       : false,
+        //         message         : 'Lo sentimos se encontraron algunas observaciones',
+        //         notificaciones  : messages_error,
+        //         messages_error  : messages
                 
-            })
-        }
+        //     })
+        // }
 
         if(action_file.process_data){
             DTManualesController.MetDTManuales(req, res, data, borrar_data, false)
@@ -138,8 +138,8 @@ controller.ValCellsFile = async (workbook) => {
             controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'empty')
         }else{
 
-            if(!cods_dts.includes(row[properties[0]].trim())){
-                cods_dts.push(row[properties[0]].trim())
+            if(!cods_dts.includes(row[properties[0]].toString().trim())){
+                cods_dts.push(row[properties[0]].toString().trim())
             }
 
             if(cod_dts.findIndex(dts => dts.codigo_dt == row[properties[0]]) == -1){
@@ -278,11 +278,8 @@ controller.ValCellsFile = async (workbook) => {
         }
 
         if(row[properties[3]]){
-            // if(!codcli_esp.includes(row[properties[3]].trim())){
-            //     codcli_esp.push(row[properties[3]].trim())
-            // }
-            if(!codcli_esp.includes(row[properties[3]])){
-                codcli_esp.push(row[properties[3]])
+            if(!codcli_esp.includes(row[properties[3]].toString().trim())){
+                codcli_esp.push(row[properties[3]].toString().trim())
             }
         }
 
