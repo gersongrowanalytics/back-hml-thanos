@@ -3,6 +3,7 @@ const moment = require('moment');
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
+
 controller.MetMostrarEstadoPendiente = async ( req, res ) => {
 
     let {
@@ -74,7 +75,8 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
                                 territorio  : true,
                                 cliente_hml : true,
                                 sucursal_hml: true,
-                                conexion    : true
+                                conexion    : true,
+                                id          : true
                             }
                         },
                     },
@@ -126,17 +128,64 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
                 }
             });
 
+
+    
+            //
             arr_dts.forEach((ndts, index_ndts) => {
                 arr_dts[index_ndts]['key'] = index_ndts + 1
+                arr_dts[index_ndts]['zona'] = ndts.masterclientes_grow.zona
+                arr_dts[index_ndts]['territorio'] = ndts.masterclientes_grow.territorio
+                arr_dts[index_ndts]['cliente_hml'] = ndts.masterclientes_grow.cliente_hml
+                arr_dts[index_ndts]['sucursal_hml'] = ndts.masterclientes_grow.sucursal_hml
+                arr_dts[index_ndts]['conexion'] = ndts.masterclientes_grow.conexion
+                arr_dts[index_ndts]['pernombrecompleto'] = ndts.perpersonas.pernombrecompleto
+                arr_dts[index_ndts]['index_mcl_grow'] = ndts.masterclientes_grow.id
             });
-
-
         }
+
+        const mc_grow = []
+
+        const mcl_grow = await prisma.masterclientes_grow.findMany({
+            where : {
+                conexion : 'MANUAL'
+            },
+        })
+
+
+        let date_deadline = new Date()
+        const date_lost_day = date_deadline.setDate(date_deadline.getDate() - 1)
+
+        let espdiasretrasomcl = moment(date_deadline).diff(moment(date_lost_day), 'days')
+
+        mcl_grow.forEach(element => {
+
+            let existe_cliente = arr_dts.findIndex(arr => arr.index_mcl_grow == element.id)
+
+            if(existe_cliente == -1){
+                mc_grow.push({
+                    espfechactualizacion: null,
+                    espfechaprogramado : date_lost_day,
+                    masterclientes_grow : element,
+                    zona : element.zona,
+                    territorio :  element.territorio,
+                    cliente_hml : element.cliente_hml,
+                    sucursal_hml : element.sucursal_hml,
+                    conexion : element.conexion,
+                    pernombrecompleto : '',
+                    espresponsable : 'SAC',
+                    espdiaretraso : espdiasretrasomcl.toString()
+    
+                    
+                })
+            }
+
+        });
+
 
         res.status(200).json({
             response    : true,
             messagge    : 'Se obtuvo el estado pendiente de status con éxito',
-            espsDistribuidoras : arr_dts,
+            espsDistribuidoras : arr_dts.concat(mc_grow),
             datos: ares,
 
         })
