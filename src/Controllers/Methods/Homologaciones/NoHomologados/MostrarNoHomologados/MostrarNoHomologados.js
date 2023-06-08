@@ -17,6 +17,14 @@ controller.MetMostrarNoHomologados = async (req, res) => {
                         codigo_dt : true
                     }
                 },
+                masterclientes_grow : {
+                    select : {
+                        cliente_hml: true,
+                        territorio : true, // En el front se muestra región, validar con Jazmin
+                        codigo_destinatario : true,
+                        sucursal_hml : true
+                    }
+                },
                 id : true,
                 m_dt_id : true,
                 codigo_distribuidor : true,

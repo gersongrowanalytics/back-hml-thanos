@@ -22,6 +22,14 @@ controller.MetMostrarHomologados = async (req, res) => {
                         region : true
                     }
                 },
+                masterclientes_grow : {
+                    select : {
+                        cliente_hml: true,
+                        territorio : true, // En el front se muestra región, validar con Jazmin
+                        codigo_destinatario : true,
+                        sucursal_hml : true
+                    }
+                },
                 master_productos: {
                     select: {
                         cod_producto : true,
@@ -34,12 +42,13 @@ controller.MetMostrarHomologados = async (req, res) => {
                 desde : true,
                 hasta : true,
                 combo: true,
-                pk_venta_so: true
+                pk_venta_so: true,
+                pk_venta_so_hml : true
             },
             orderBy: {
                 updated_at: 'desc'
             },
-            distinct : ['pk_venta_so']
+            distinct : ['pk_venta_so_hml']
         })
 
         productos_hml.map((pro, index) => productos_hml[index]['key'] = index)

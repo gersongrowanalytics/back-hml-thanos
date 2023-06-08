@@ -14,6 +14,7 @@ controller.MetObtenerProductosSO = async () => {
             select: {
                 pk_extractor_venta_so: true,
                 pk_venta_so: true,
+                m_cl_grow : true,
                 m_dt_id : true,
                 codigo_distribuidor : true,
                 codigo_producto : true,
@@ -31,8 +32,10 @@ controller.MetObtenerProductosSO = async () => {
         distinct_ventas_so.map((venta_so) => {
             new_data_master_productos_so.push({
                 m_dt_id : venta_so.m_dt_id,
+                m_cl_grow : venta_so.m_cl_grow,
                 pk_extractor_venta_so : venta_so.pk_extractor_venta_so,
                 pk_venta_so : venta_so.pk_venta_so,
+                pk_venta_so_hml : venta_so.pk_venta_so,
                 codigo_distribuidor : venta_so.codigo_distribuidor,
                 codigo_producto : venta_so.codigo_producto,
                 descripcion_producto : venta_so.descripcion_producto,
@@ -57,7 +60,8 @@ controller.MetObtenerProductosSO = async () => {
 
             const product_so_unique = await prisma.master_productos_so.findFirst({
                 where: {
-                    m_dt_id : venta_so.m_dt_id,
+                    // m_dt_id : venta_so.m_dt_id,
+                    m_cl_grow : venta_so.m_cl_grow,
                     codigo_distribuidor : venta_so.codigo_distribuidor,
                     codigo_producto : venta_so.codigo_producto,
                 }

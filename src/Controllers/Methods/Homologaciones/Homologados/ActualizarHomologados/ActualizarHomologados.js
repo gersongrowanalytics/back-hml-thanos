@@ -7,7 +7,8 @@ controller.MetActualizarHomologados = async (req, res) => {
     const { 
         producto_so_id,
         producto_hml_id,
-        req_desde
+        req_desde,
+        req_cod_producto_hml
     } = req.body;
 
     try{
@@ -31,7 +32,10 @@ controller.MetActualizarHomologados = async (req, res) => {
                     desde : req_desde,
                     // hasta : producto_so.hasta,
                     s_ytd : producto_so.s_ytd,
-                    s_mtd : producto_so.s_mtd
+                    s_mtd : producto_so.s_mtd,
+                    m_cl_grow : producto_so.m_cl_grow,
+                    pk_venta_so_hml: producto_so.pk_venta_so + req_cod_producto_hml,
+                    pk_venta_so : producto_so.pk_venta_so 
                 }
             })
         }else{

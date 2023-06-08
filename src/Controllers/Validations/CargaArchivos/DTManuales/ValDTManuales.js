@@ -30,18 +30,18 @@ controller.ValDTManuales = async (req, res) => {
 
         const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg));
 
-        // if(!add_dt_manuales){
-        //     await DTManualesController.MetDTManuales(req, res, null, null, true, messages_error)
+        if(!add_dt_manuales){
+            await DTManualesController.MetDTManuales(req, res, null, null, true, messages_error)
 
-        //     res.status(500)
-        //     return res.json({
-        //         respuesta       : false,
-        //         message         : 'Lo sentimos se encontraron algunas observaciones',
-        //         notificaciones  : messages_error,
-        //         messages_error  : messages
+            res.status(500)
+            return res.json({
+                respuesta       : false,
+                message         : 'Lo sentimos se encontraron algunas observaciones',
+                notificaciones  : messages_error,
+                messages_error  : messages
                 
-        //     })
-        // }
+            })
+        }
 
         if(action_file.process_data){
             DTManualesController.MetDTManuales(req, res, data, borrar_data, false)
@@ -198,13 +198,13 @@ controller.ValCellsFile = async (workbook) => {
 
         if(row[properties[4]]){
             
-            if(row[properties[4]].toString().length != 11){
-                add_dt_manuales = false
-                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'format invalid')
-            }
+            // if(row[properties[4]].toString().length != 11){
+            //     add_dt_manuales = false
+            //     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
+            //     controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'number of digits')
+            // }
     
-            if(typeof row[properties[4]] != 'number'){
+            if(isNaN(row[properties[4]])){
                 add_dt_manuales = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
                 controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'not number')
@@ -213,13 +213,13 @@ controller.ValCellsFile = async (workbook) => {
 
         if(row[properties[8]]){
             
-            if(row[properties[8]].toString().length != 8){
-                add_dt_manuales = false
-                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'format invalid')
-            }
+            // if(row[properties[8]].toString().length != 8){
+            //     add_dt_manuales = false
+            //     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
+            //     controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'number of digits')
+            // }
     
-            if(typeof row[properties[8]] != 'number'){
+            if(isNaN(row[properties[8]])){
                 add_dt_manuales = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
                 controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'not number')
@@ -234,13 +234,13 @@ controller.ValCellsFile = async (workbook) => {
             }
         })
 
-        if(typeof row[properties[12]] != 'number'){
+        if(isNaN(row[properties[12]])){
             add_dt_manuales = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[12]['name'])
             controller.ValAddMessageLog(rows_error, messages_error, columns_name[12]['name'], num_row, 'not number')
         }
 
-        if(typeof row[properties[14]] != 'number'){
+        if(isNaN(row[properties[14]])){
             add_dt_manuales = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[14]['name'])
             controller.ValAddMessageLog(rows_error, messages_error, columns_name[14]['name'], num_row, 'not number')
@@ -260,7 +260,7 @@ controller.ValCellsFile = async (workbook) => {
 
             const row_precio_total = row[properties[15]]
 
-            if( typeof row_precio_total !== 'number' ){
+            if(isNaN(row_precio_total)){
                 add_dt_manuales = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[15]['name'])
                 controller.ValAddMessageLog(rows_error, messages_error, columns_name[15]['name'], num_row, 'not number')
@@ -345,6 +345,9 @@ controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row,
             break;
         case 'format invalid':
             msg_log = `Lo sentimos, algunos de los ${name_column} no tienen el formato válido`
+            break;
+        case 'number of digits':
+            msg_log = `Lo sentimos, algunos de los ${name_column} no tienen la cantidad de digitos correctos`
             break;
         case 'inconsistent data':
             msg_log = `Lo sentimos, algunos precios totales no cuadran con las cantidades y precios unitarios`

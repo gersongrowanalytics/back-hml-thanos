@@ -11,6 +11,7 @@ const RemoveFileS3 = require('../../S3/RemoveFileS3')
 const SendMail = require('../../Reprocesos/SendMail')
 const UploadFileExcel = require('../../S3/UploadFileExcelS3')
 const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadenaAleatorio')
+const path = require('path');
 
 controller.MetDTManuales = async (req, res, data, delete_data, error, message_errors) => {
 
@@ -86,7 +87,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                     if(espn.findIndex(es => es.m_cl_grow == esp.m_cl_grow) == -1){
                         espn.push({
                             fecid               : fec.fecid,
-                            perid               : null,
+                            perid               : usu.perid,
                             tprid               : 1,
                             espdts              : true,
                             areid               : are.areid,
@@ -209,7 +210,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             }
         }   
 
-        const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
+        // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
         const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
         
         const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
@@ -218,7 +219,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         const archivoExcel = req.files.carga_manual.data
         const excelSize = req.files.carga_manual.size
         
-        // await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
+        await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
         
         const token_excel = crypto.randomBytes(30).toString('hex')
         const car = await prisma.carcargasarchivos.create({
@@ -229,14 +230,16 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                 cartoken    : token_excel,
             }
         })
+
+        const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html');
         
         // const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
-        const success_mail_html = "/var/www/softys/hml_thanos/back/src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
+        // const success_mail_html = "/var/www/softys/hml_thanos/back/src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
         // const to_mail_data = process.env.TO_MAIL
         const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
         const subject_mail_success = "Carga de Archivo"
-        
+
         const data_mail = {
             archivo: req.files.carga_manual.name, 
             tipo: "Archivo Plano So", 
