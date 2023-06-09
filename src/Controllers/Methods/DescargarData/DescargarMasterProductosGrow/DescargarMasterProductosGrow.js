@@ -16,7 +16,7 @@ controller.MetDescargarMasterProductosGrow = async (req, res) => {
         const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/masterproductosgrow/'+nombre_archivo+'.xlsx'
         const respuestaFile = await CheckFile.CheckFileS3(ubicacion_s3)
 
-        if(true){
+        if(!respuestaFile){
             const master_productos_grow = await prisma.master_productos_grow.findMany({
                 select: {
                     id: true,
