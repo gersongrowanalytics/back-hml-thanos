@@ -7,15 +7,32 @@ async function authMiddleware (req, res, next) {
     // Lógica del middleware
 
     const usuPrisma = await prisma.usuusuarios.findFirst({
+        where : {
+            usutoken : req.headers.usutoken
+        },
         include : {
             perpersonas : true,
             tputiposusuarios : {
                 select : {
-                    tpuprivilegio : true
+                    tpuprivilegio : true,
+                    tuptiposusuariospermisos: {
+                        select : {
+                            pempermisos : {
+                                select : {
+                                    pemnombre : true,
+                                    pemslug  : true,
+                                    pemruta : true,
+                                    tpeid : true
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
     })
+
+
 
     let usu = usuPrisma
     // if(req.headers.token == "true"){

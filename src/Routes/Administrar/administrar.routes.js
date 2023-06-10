@@ -14,6 +14,8 @@ const ValObtenerPermiso = require('../../Controllers/Validations/Administrar/Per
 const ValEliminarPermiso = require('../../Controllers/Validations/Administrar/Permisos/EliminarPermiso/EliminarPermiso')
 const ValEditarPermiso = require('../../Controllers/Validations/Administrar/Permisos/EditarPermiso/EditarPermiso')
 
+const ValObtenerUsuarios = require('../../Controllers/Validations/Administrar/Usuarios/MostrarUsuarios/MostrarUsuarios')
+
 const protectedRoutes = express.Router()
 
 protectedRoutes.post('/create-users', ValCrearUsuarios.ValCrearUsuarios)
@@ -30,6 +32,7 @@ protectedRoutes.post('/delete-permission', ValEliminarPermiso.ValEliminarPermiso
 protectedRoutes.post('/edit-permission', ValEditarPermiso.ValEditarPermiso)
 
 
+protectedRoutes.post('/get-users', ValObtenerUsuarios.ValMostrarUsuarios)
 
 router.use('/manage', protectedRoutes)
 

@@ -100,21 +100,24 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
 
 controller.ActualizarStatus = async ( usutoken, req_type_file ) => {
 
+    let date    = null
+    let perid   = null
+
     switch (req_type_file) {
         case 'Archivo Plano SO':
-            await StatusArchivoPlano.MetActualizarStatusArchivoPlano(usutoken)
+            await StatusArchivoPlano.MetActualizarStatusArchivoPlano(usutoken, date, perid)
             break;
         case 'Master de Clientes':
-            await StatusMasterClientes.MetActualizarStatusMasterClientes(usutoken)
+            await StatusMasterClientes.MetActualizarStatusMasterClientes(usutoken, date, perid)
             break;
         case 'Master de Precios':
-            await StatusMasterPrecios.MetActualizarStatusMasterPrecios(usutoken)
+            await StatusMasterPrecios.MetActualizarStatusMasterPrecios(usutoken, date, perid)
             break;
         case 'Master de Producto':
-            await StatusMasterProductos.MetActualizarStatusMasterProductos(usutoken)
+            await StatusMasterProductos.MetActualizarStatusMasterProductos(usutoken, date, perid)
             break;
         case 'Sell In Thanos':
-            await StatusSellinThanos.MetActualizarStatusSellinThanos(usutoken)
+            await StatusSellinThanos.MetActualizarStatusSellinThanos(usutoken, date, perid)
             break;
         default:
             console.log('No se encontró algun tipo de archivo');

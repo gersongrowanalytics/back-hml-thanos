@@ -3,32 +3,41 @@ const moment = require('moment');
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
-controller.MetActualizarStatusSellinThanos = async (usutoken) => {
-
+controller.MetActualizarStatusSellinThanos = async (usutoken, date, perid) => {
 
     try{
 
-        const usu = await prisma.usuusuarios.findFirst({
-            where : {
-                usutoken : usutoken
-            },
-            select : {
-                usuid       : true,
-                perid       : true,
-                usuusuario  : true
-            }
-        })
+        let perid_usu
+        let fecid
 
-        const fec = await prisma.fecfechas.findFirst({
-            where : {
-                fecmesabierto : true,
-            },
-            select : {
-                fecid : true
-            }
-        })
+        if(!date){
+            const usu = await prisma.usuusuarios.findFirst({
+                where: {
+                    usutoken : usutoken
+                },
+                select: {
+                    usuid: true,
+                    usuusuario: true,
+                    perid : true
+                }
+            })
 
-        const fecid = fec.fecid
+            perid_usu = usu.perid
+    
+            const fec = await prisma.fecfechas.findFirst({
+                where : {
+                    fecmesabierto : true,
+                },
+                select : {
+                    fecid : true
+                }
+            })
+            
+            fecid = fec.fecid
+        }else{
+            perid_usu = perid
+            fecid = date
+        }
 
         const espe = await prisma.espestadospendientes.findFirst({
             where : {
@@ -67,7 +76,7 @@ controller.MetActualizarStatusSellinThanos = async (usutoken) => {
                     espid : espe.espid
                 },
                 data : {
-                    perid                   : usu.perid,
+                    perid                   : perid_usu,
                     espfechactualizacion    : new Date().toISOString(),
                     espdiaretraso           : esp_day_late
                 }

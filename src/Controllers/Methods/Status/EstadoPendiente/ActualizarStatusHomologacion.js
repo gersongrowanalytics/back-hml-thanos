@@ -4,7 +4,7 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 
-controller.MetActualizarStatusHomologacion = async ( req, res ) => {
+controller.MetActualizarStatusHomologacion = async ( req, res, date, perid ) => {
 
     const {
         req_espid
@@ -17,33 +17,43 @@ controller.MetActualizarStatusHomologacion = async ( req, res ) => {
     try{
 
         let day_late
-
-        const usu = await prisma.usuusuarios.findFirst({
-            where : {
-                usutoken : usu_token
-            },
-            select : {
-                perpersonas: {
-                    select : {
-                        perid : true
+        let perid_usu
+        let espo
+        if(!date){
+            const usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    usutoken : usu_token
+                },
+                select : {
+                    perpersonas: {
+                        select : {
+                            perid : true
+                        }
                     }
                 }
-            }
-        })
+            })    
+            perid_usu = usu.perpersonas.perid
 
-        const espo = await prisma.espestadospendientes.findFirst({
-            where : {
-                espid : req_espid
-            }
-        })
+            espo = await prisma.espestadospendientes.findFirst({
+                where : {
+                    espid : req_espid
+                }
+            })
+        }else{
+            perid_usu = perid
+            espo = await prisma.espestadospendientes.findFirst({
+                where : {
+                    espbasedato : 'Homologaciones',
+                    fecid : date
+                }
+            })
+        }
 
         const areo = await prisma.areareasestados.findFirst({
             where : {
                 areid : espo.areid,
             }
         })
-
-        console.log(usu)
 
         date_two    = moment(espo.espfechaprogramado)
         date_one    = moment()
@@ -62,12 +72,12 @@ controller.MetActualizarStatusHomologacion = async ( req, res ) => {
 
         await prisma.espestadospendientes.update({
             where : {
-                espid : req_espid
+                espid : espo.espid
             },
             data : {
                 espfechactualizacion    : new Date(),
                 espdiaretraso           : day_late,
-                perid                   : usu.perpersonas.perid
+                perid                   : perid_usu
             }
         })
 
@@ -80,17 +90,25 @@ controller.MetActualizarStatusHomologacion = async ( req, res ) => {
             }
         })
 
-        res.status(200).json({
-            message : 'Status actualizado con éxito',
-            response : true
-        })
+        if(!date){
+            res.status(200).json({
+                message : 'Status actualizado con éxito',
+                response : true
+            })
+        }else{
+            return true
+        }
 
     }catch(err){
         console.log(err)
-        res.status(500).json({
-            message : 'Ha ocurrido un error al actualizar el status',
-            response : false
-        })
+        if(!date){
+            res.status(500).json({
+                message : 'Ha ocurrido un error al actualizar el status',
+                response : false
+            })    
+        }else{
+            return false
+        }
     }
 }
 

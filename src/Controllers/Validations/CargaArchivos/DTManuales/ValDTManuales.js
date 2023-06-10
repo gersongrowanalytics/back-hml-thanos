@@ -4,6 +4,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const DTManualesController = require('../../../Methods/CargaArchivos/DTManuales/DTManuales')
 const DTManualesMasterClientesGrowController = require('../../../Methods/CargaArchivos/DTManuales/DTManualesMasterClientesGrow')
+const moment = require('moment');
 
 controller.ValDTManuales = async (req, res) => {
 
@@ -27,6 +28,7 @@ controller.ValDTManuales = async (req, res) => {
         }
 
         const { messages_error, add_dt_manuales, borrar_data, data, codcli_esp, cods_dts } = await controller.ValCellsFile(workbook)
+
 
         const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg));
 
@@ -105,8 +107,8 @@ controller.ValCellsFile = async (workbook) => {
 
     const mcl_grow_local    = []
     const mcl_nogrow_local  = []
-
-    const cods_dts      = []
+    const columns_empty     = []
+    const cods_dts          = []
 
     const columns_name = [
         { value   : 0, name    : 'CodigoDistribuidor' },
@@ -127,10 +129,39 @@ controller.ValCellsFile = async (workbook) => {
         { value   : 15, name   : 'PrecioTotalSinIGV' },
     ]
 
+    const size_rows = rows.length
     let num_row = 1
+
     for await (const row of rows){
 
         let m_dt_id = null
+
+
+        let date_excel
+        let day_date
+        let month_date
+        let year_date
+        let date_final
+        
+        if(typeof(row[properties[1]]) == 'number'){
+            date_excel = XLSX.SSF.parse_date_code(row[properties[1]])
+            month_date = date_excel.m <= 9 ?"0"+date_excel.m.toString() :date_excel.m.toString();
+            day_date = date_excel.d
+            year_date = date_excel.y
+            date_final = year_date.toString()+"-"+ month_date.toString()
+        }else if(typeof(row[properties[1]]) == 'string'){
+            let separators
+            if(row[properties[1]].includes('/')){
+                separators = 'DD/MM/YYYY'
+            }else{
+                separators = 'DD-MM-YYYY'
+            }
+            const date_excel = moment(row[properties[1]], separators);
+            month_date = date_excel.month() + 1 <= 9 ? "0"+ (date_excel.month() + 1).toString() : date_excel.month() + 1
+            day_date = date_excel.date()
+            year_date = date_excel.year()
+            date_final = year_date.toString() +'-'+ month_date.toString()
+        }
 
         if(!row[properties[0]]){
             add_dt_manuales = false
@@ -147,51 +178,42 @@ controller.ValCellsFile = async (workbook) => {
                 controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'distributor not found', row[properties[0]])
             }else{
 
-                let find_dts = cod_dts.find(dt => dt.codigo_dt == row[properties[0]])
+                let find_dts = cod_dts.find(dt => dt.codigo_dt == row[properties[0]].toString().trim())
                 m_dt_id = find_dts.id
-
-                const fechaJavaScript = XLSX.SSF.parse_date_code(row[properties[1]]);
-                const fecha_mes = fechaJavaScript.m <= 9 ?"0"+fechaJavaScript.m.toString() :fechaJavaScript.m.toString();
-                const fecha_capturada = fechaJavaScript.y.toString()+"-"+fecha_mes.toString()
     
                 let existe_cod = false
                 borrar_data.map((dat) => {
-                    if(dat.cod_dt == row[properties[0]] && dat.fecha == fecha_capturada ){
+                    if(dat.cod_dt == row[properties[0]].toString().trim() && dat.fecha == date_final ){
                         existe_cod = true
                     }
                 })
     
                 if(existe_cod == false){
                     borrar_data.push({
-                        cod_dt : row[properties[0]],
-                        fecha : fecha_capturada
+                        cod_dt : row[properties[0]].toString().trim(),
+                        fecha : date_final
                     })
                 }
             }
         }
 
-        let fecha_capturada
         if(!row[properties[1]]){
             add_dt_manuales = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[1]['name'])
             controller.ValAddMessageLog(rows_error, messages_error, columns_name[1]['name'], num_row, 'empty')
         }else{
 
-            const fechaJavaScript = XLSX.SSF.parse_date_code(row[properties[1]]);
-            const fecha_mes = fechaJavaScript.m <= 9 ?"0"+fechaJavaScript.m.toString() :fechaJavaScript.m.toString();
-            fecha_capturada = fechaJavaScript.y.toString()+"-"+fecha_mes.toString()
-
             let existe_fec = false
             borrar_data.map((dat) => {
-                if(dat.cod_dt == row[properties[0]] && dat.fecha == fecha_capturada){
+                if(dat.cod_dt == row[properties[0]].toString().trim() && dat.fecha == date_final){
                     existe_fec = true
                 }
             })
 
             if(existe_fec == false){
                 borrar_data.push({
-                    cod_dt : row[properties[0]],
-                    fecha : fecha_capturada
+                    cod_dt : row[properties[0]].toString().trim(),
+                    fecha : date_final
                 })
             }
         }
@@ -231,6 +253,16 @@ controller.ValCellsFile = async (workbook) => {
                 add_dt_manuales = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[cell]['name'])
                 controller.ValAddMessageLog(rows_error, messages_error, columns_name[cell]['name'], num_row, 'empty')
+
+                let index_empty = columns_empty.findIndex(col => col.name == columns_name[cell]['name']) 
+                if(index_empty == -1){
+                    columns_empty.push({
+                        name : columns_name[cell]['name'],
+                        empty_count : 1
+                    })
+                }else{
+                    columns_empty[index_empty]['empty_count'] = columns_empty[index_empty]['empty_count'] + 1
+                }
             }
         })
 
@@ -293,10 +325,8 @@ controller.ValCellsFile = async (workbook) => {
         let unidad_medida       = row[properties[13]].toString()
         let precio_unitario     = row[properties[15]]/row[properties[12]]
 
-        const pk_venta_so           = row[properties[0]].toString() + row[properties[10]].toString().trim()
-        const pk_extractor_venta_so = row[properties[0]].toString() + row[properties[10]].toString().trim() + cod_unidad_medida + unidad_medida
-
-        const fechaJavaScript = XLSX.SSF.parse_date_code(row[properties[1]])
+        const pk_venta_so           = row[properties[0]].toString().trim() + row[properties[10]].toString().trim()
+        const pk_extractor_venta_so = row[properties[0]].toString().trim() + row[properties[10]].toString().trim() + cod_unidad_medida + unidad_medida
 
         data.push({
             pro_so_id                       : null,
@@ -304,8 +334,8 @@ controller.ValCellsFile = async (workbook) => {
             pk_venta_so                     : pk_venta_so,
             m_cl_grow                       : id_mcl_grow,
             pk_extractor_venta_so           : pk_extractor_venta_so,
-            codigo_distribuidor             : row[properties[0]]    ?  row[properties[0]].toString() : '',
-            fecha                           : fecha_capturada       ?  fecha_capturada.toString() : '',
+            codigo_distribuidor             : row[properties[0]]    ?  row[properties[0]].toString().trim() : '',
+            fecha                           : date_final            ?  date_final.toString() : '',
             nro_factura                     : row[properties[2]]    ?  row[properties[2]].toString() : '',
             codigo_cliente                  : row[properties[3]]    ?  row[properties[3]].toString().trim() : '',
             ruc                             : row[properties[4]]    ?  row[properties[4]].toString() : '',
@@ -321,13 +351,37 @@ controller.ValCellsFile = async (workbook) => {
             unidad_medida                   : unidad_medida,
             precio_unitario                 : precio_unitario,
             precio_total_sin_igv            : row[properties[15]] === 0 ? '0' : row[properties[15]].toString(),
-            dia                             : fechaJavaScript.d,
-            mes                             : fechaJavaScript.m,
-            anio                            : fechaJavaScript.y,
+            dia                             : parseInt(day_date),
+            mes                             : parseInt(month_date),
+            anio                            : parseInt(year_date),
         })
 
         num_row = num_row + 1
     }
+
+    const messages_emptys = columns_empty.filter(col => col.empty_count == size_rows)
+    const cols_emptys = columns_empty.filter(col => col.empty_count == size_rows).map(emp => emp.name)
+
+    if(messages_emptys.length > 0){
+        messages_emptys.forEach(mes => {
+            let rows_error  = messages_error.findIndex(meserror => meserror.columna == mes.name)
+            controller.ValAddMessageLog(rows_error, messages_error, mes.name, -1, 'empty rows')
+        });
+    }
+
+    const messages_error_copy = [...messages_error]
+    messages_error = []
+
+    messages_error_copy.forEach(msg => {
+        if(!cols_emptys.includes(msg.columna)){
+            messages_error.push(msg)
+        }else{
+            messages_error.push({
+                columna : msg.columna,
+                notificaciones : msg.notificaciones.filter(not => not.type == 'empty rows')
+            })
+        }
+    })
 
     return { messages_error, add_dt_manuales, borrar_data, data, codcli_esp, cods_dts }
 }
@@ -354,6 +408,9 @@ controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row,
             break;
         case 'distributor not found':
             msg_log = `El código ${name_dts} no se encuentra en la maestra distribuidoras`
+            break;
+        case 'empty rows':
+            msg_log = `Lo sentimos, la columna ${name_column} se encuentra completamente vacia`
             break;
         default:
             msg_log = `Lo sentimos, el tipo de dato para ${name_column} es inválido`
