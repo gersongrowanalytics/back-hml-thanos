@@ -16,6 +16,10 @@ const ValEditarPermiso = require('../../Controllers/Validations/Administrar/Perm
 
 const ValObtenerUsuarios = require('../../Controllers/Validations/Administrar/Usuarios/MostrarUsuarios/MostrarUsuarios')
 
+const ValObtenerUsuario = require('../../Controllers/Validations/Administrar/Usuarios/ObtenerUsuario/ObtenerUsuario')
+const ValEditarUsuario = require('../../Controllers/Validations/Administrar/Usuarios/EditarUsuario/EditarUsuario')
+const ValEliminarUsuario = require('../../Controllers/Validations/Administrar/Usuarios/EliminarUsuario/EliminarUsuario')
+
 const protectedRoutes = express.Router()
 
 protectedRoutes.post('/create-users', ValCrearUsuarios.ValCrearUsuarios)
@@ -30,6 +34,9 @@ protectedRoutes.post('/get-permissions', ValObtenerPermisos.ValObtenerPermisos)
 protectedRoutes.post('/get-permission', ValObtenerPermiso.ValObtenerPermiso)
 protectedRoutes.post('/delete-permission', ValEliminarPermiso.ValEliminarPermiso)
 protectedRoutes.post('/edit-permission', ValEditarPermiso.ValEditarPermiso)
+protectedRoutes.post('/get-user', ValObtenerUsuario.ValObtenerUsuario)
+protectedRoutes.post('/edit-user', ValEditarUsuario.ValEditarUsuario)
+protectedRoutes.post('/delete-user', ValEliminarUsuario.ValEliminarUsuario)
 
 
 protectedRoutes.post('/get-users', ValObtenerUsuarios.ValMostrarUsuarios)

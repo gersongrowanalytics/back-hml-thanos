@@ -18,6 +18,7 @@ controller.MetCrearUsuarios = async (req, res) => {
     } = req.body
 
     let message = 'El usuario ha sido creado correctamente'
+    let alert = false
 
     try{
         const nombre_completo = per_nombre + " " + per_apellido_paterno + " " + per_apellido_materno
@@ -67,6 +68,7 @@ controller.MetCrearUsuarios = async (req, res) => {
             })
         }else{
             message = 'El usuario ya ha sido creado anteriormente.'
+            alert   = true
         }
         
     }catch(error){
@@ -81,7 +83,8 @@ controller.MetCrearUsuarios = async (req, res) => {
         res.status(200)
         res.json({
             message : message,
-            respuesta : true
+            respuesta : true,
+            alert
         })
     }
 }

@@ -8,6 +8,10 @@ controller.MetObtenerTiposusuarios = async ( req, res ) => {
 
         const tpus = await prisma.tputiposusuarios.findMany({})
 
+        tpus.forEach((tpu, index_tpu) => {
+            tpus[index_tpu]['value'] = tpu.tpunombre
+        });
+
         res.status(200).json({
             response    : true,
             message     : 'Tipos de usuarios obtenidos con éxito',
