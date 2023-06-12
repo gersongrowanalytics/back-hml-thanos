@@ -32,10 +32,37 @@ controller.MetTokenUsuario = async (req, res) => {
                     },
                 }
             })
-        }else{
+        }else if(req_token == 'wJL2jt1E1RZ7amztrPicbAMiwDFq'){
             usu = await prisma.usuusuarios.findFirst({
                 where : {
                     tpuid : 2
+                },
+                select : {
+                    usutoken : true,
+                    perpersonas : true,
+                    tputiposusuarios : {
+                        select : {
+                            tpuprivilegio : true,
+                            tuptiposusuariospermisos : {
+                                select : {
+                                    pempermisos : {
+                                        select : {
+                                            pemnombre : true,
+                                            pemslug  : true,
+                                            pemruta : true,
+                                            tpeid : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+        }else{
+            usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    tpuid : 3
                 },
                 select : {
                     usutoken : true,
