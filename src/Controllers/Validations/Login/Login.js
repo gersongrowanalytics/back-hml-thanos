@@ -19,7 +19,23 @@ controller.ValLogin = async (req, res) => {
                 },
                 include : {
                     perpersonas : true,
-                    tputiposusuarios : true
+                    tputiposusuarios : {
+                        select : {
+                            tpuprivilegio : true,
+                            tuptiposusuariospermisos : {
+                                select : {
+                                    pempermisos : {
+                                        select : {
+                                            pemnombre : true,
+                                            pemslug  : true,
+                                            pemruta : true,
+                                            tpeid : true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             });
 

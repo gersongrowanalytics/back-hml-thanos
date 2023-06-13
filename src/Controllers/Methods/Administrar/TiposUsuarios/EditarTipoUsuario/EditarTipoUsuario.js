@@ -36,7 +36,8 @@ controller.MetEditarTipoUsuario = async ( req, res ) => {
                 },
                 data : {
                     tpuprivilegio   : req_tpu.tpuprivilegio,
-                    estid           : req_tpu.estid
+                    estid           : req_tpu.estid,
+                    tpunombre       : req_tpu.tpunombre
                 }
             })
     

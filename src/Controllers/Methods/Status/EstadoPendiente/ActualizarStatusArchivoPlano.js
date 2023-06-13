@@ -4,31 +4,41 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 
-controller.MetActualizarStatusArchivoPlano = async (usutoken) => {
+controller.MetActualizarStatusArchivoPlano = async (usutoken, date, perid) => {
     try{
 
-        const usu = await prisma.usuusuarios.findFirst({
-            where: {
-                usutoken : usutoken
-            },
-            select: {
-                usuid: true,
-                usuusuario: true,
-                perid : true
-            }
-        })
+        let perid_usu
+        let fecid
 
-        const fec = await prisma.fecfechas.findFirst({
-            where : {
-                fecmesabierto : true,
-            },
-            select : {
-                fecid : true
-            }
-        })
+        if(!date){
+            const usu = await prisma.usuusuarios.findFirst({
+                where: {
+                    usutoken : usutoken
+                },
+                select: {
+                    usuid: true,
+                    usuusuario: true,
+                    perid : true
+                }
+            })
+
+            perid_usu = usu.perid
+    
+            const fec = await prisma.fecfechas.findFirst({
+                where : {
+                    fecmesabierto : true,
+                },
+                select : {
+                    fecid : true
+                }
+            })
+            
+            fecid = fec.fecid
+        }else{
+            perid_usu = perid
+            fecid = date
+        }
         
-        const fecid = fec.fecid
-
         const are = await prisma.areareasestados.findFirst({
             where : {
                 fecid       : fecid,
@@ -73,7 +83,7 @@ controller.MetActualizarStatusArchivoPlano = async (usutoken) => {
                     espid : espe.espid
                 },
                 data : {
-                    perid                   : usu.perid,
+                    perid                   : perid_usu,
                     espfechactualizacion    : new Date().toISOString(),
                     espdiaretraso           : esp_day_late
                 }
