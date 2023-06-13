@@ -10,7 +10,7 @@ controller.MetMostrarHomologados = async (req, res) => {
 
         const productos_hml = await prisma.master_productos_so.findMany({
             where: {
-                proid : {
+                m_pro_grow : {
                     not: null
                 }
             },
@@ -30,10 +30,16 @@ controller.MetMostrarHomologados = async (req, res) => {
                         sucursal_hml : true
                     }
                 },
-                master_productos: {
+                // master_productos: {
+                //     select: {
+                //         cod_producto : true,
+                //         nomb_producto : true
+                //     }
+                // },
+                master_productos_grow: {
                     select: {
-                        cod_producto : true,
-                        nomb_producto : true
+                        codigo_material : true,
+                        material_softys : true
                     }
                 },
                 id : true,

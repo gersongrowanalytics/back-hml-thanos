@@ -2,14 +2,15 @@ const controller = {}
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const XLSX = require('xlsx')
-const ListadoHomologacionesController = require('../../../Methods/CargaArchivos/ListadoHomologaciones/ListadoHomologaciones')
+const HomologacionesController = require('../../../Methods/CargaArchivos/Homologaciones/Homologaciones')
 
-controller.ValListadoHomologaciones = async (req, res) => {
+controller.ValHomologaciones = async (req, res) => {
 
     const {
         req_action_file
     } = req.body
-    const file          = req.files.listado_homologaciones
+    
+    const file = req.files.listado_homologaciones
 
     try{
 
@@ -37,14 +38,7 @@ controller.ValListadoHomologaciones = async (req, res) => {
             })
         }
 
-        // if(action_file.process_data){
-            ListadoHomologacionesController.MetListadoHomologaciones(req, res, data)
-        // }else{
-        //     res.status(200).json({
-        //         respuesta   : false,
-        //         message     : 'Se ha validado la data correctamente'
-        //     })
-        // }
+        HomologacionesController.MetHomologaciones(req, res, data)
 
     }catch(error){
         console.log(error)
@@ -117,60 +111,60 @@ controller.ValCellsFile = async (workbook) => {
     for await (const row of rows){
 
         if(!row[properties[0]]){
-            add_list_approvals = false
+            // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_cod_distribuidor)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_distribuidor, num_row, 'empty')
         }
 
         if(!row[properties[1]]){
-            add_list_approvals = false
+            // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_cod_grow)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_grow, num_row, 'empty')
         }
 
         if(!row[properties[2]]){
-            add_list_approvals = false
+            // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_nom_distribuidor)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_nom_distribuidor, num_row, 'empty')
         }
 
         if(!row[properties[3]]){
-            add_list_approvals = false
+            // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_cod_prod_dist)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_prod_dist, num_row, 'empty')
         }
 
         if(!row[properties[4]]){
-            add_list_approvals = false
+            // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_nom_prod_dist)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_nom_prod_dist, num_row, 'empty')
         }
 
         if(!row[properties[5]]){
-            add_list_approvals = false
+            // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_cod_prod_maestro)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_prod_maestro, num_row, 'empty')
         }
 
         if(!row[properties[6]]){
-            add_list_approvals = false
+            // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_fecha_inicial)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_fecha_inicial, num_row, 'empty')
         }
         if(!row[properties[7]]){
-            add_list_approvals = false
+            // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_fecha_final)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_fecha_final, num_row, 'empty')
         }
 
         if(!row[properties[8]]){
-            add_list_approvals = false
+            // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_homologado)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_homologado, num_row, 'empty')
         }
 
         if(!row[properties[9]]){
-            add_list_approvals = false
+            // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_status_actualizacion)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_status_actualizacion, num_row, 'empty')
         }

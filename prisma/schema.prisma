@@ -229,6 +229,7 @@ model master_productos {
 model master_productos_so {
   id                            Int         @id @default(autoincrement()) @db.UnsignedInt
   proid                         Int?        @db.UnsignedInt   //Retornar
+  m_pro_grow                    Int?        @db.UnsignedInt   //Retornar
   m_dt_id                       Int?        @db.UnsignedInt
   m_cl_grow                     Int?        @db.UnsignedInt
   pk_venta_so_hml               String?     @db.VarChar(255)
@@ -255,6 +256,7 @@ model master_productos_so {
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
   master_productos              master_productos?        @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "master_productos_so_id_foreign")
+  master_productos_grow         master_productos_grow?        @relation(fields: [m_pro_grow], references: [id], onUpdate: Restrict, map: "master_productos_grow_id_master_productos_so_m_pro_grow_foreign")
   master_distribuidoras         master_distribuidoras?   @relation(fields: [m_dt_id], references: [id], onUpdate: Restrict, map: "master_distribuidoras_m_dt_id_foreign")
   masterclientes_grow           masterclientes_grow?    @relation(fields: [m_cl_grow], references: [id], onUpdate: Restrict, map: "masterclientes_grow_master_productos_so_id_foreign")
   ventas_so                     ventas_so[]
@@ -563,6 +565,7 @@ model master_productos_grow {
   disponible                  String?     @db.VarChar(255)
   created_at                  DateTime?   @default(now())
   updated_at                  DateTime?   @db.Timestamp(0)
+  master_productos_so         master_productos_so[]
 }
 
 model master_clientes_softys{
