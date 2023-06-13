@@ -19,6 +19,15 @@ controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data
         return a == b ? opts.fn(this) : opts.inverse(this);
     })
 
+    handlebars.registerHelper('formatDate', function(dateString) {
+        const date = new Date(dateString)
+        const day = String(date.getDate()).padStart(2, '0')
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const year = date.getFullYear()
+      
+        return `${day}/${month}/${year}`
+    })
+
     const html = fs.readFileSync(url_mail, 'utf8')
     const template = handlebars.compile(html)
     const renderedTemplate = template({data_mail})
@@ -29,7 +38,7 @@ controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data
         subject: subject_mail,
         html: renderedTemplate,
     }).catch((e) => {
-        console.log(e)
+        console.log("Send Mail", e)
     })
 }
 
