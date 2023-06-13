@@ -246,7 +246,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             error_message_mail: message_errors
         }
         
-        // await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
+        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
         if(!error){
             return res.status(200).json({
