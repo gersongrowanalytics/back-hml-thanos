@@ -14,12 +14,16 @@ controller.MetCrearUsuarios = async (req, res) => {
         est_id,
         usu_usuario,
         usu_correo,
-        usu_contrasenia
+        usu_contrasenia,
+        usu_token
     } = req.body
 
     let message = 'El usuario ha sido creado correctamente'
+    let alert = false
 
     try{
+        
+        let token_user
         const nombre_completo = per_nombre + " " + per_apellido_paterno + " " + per_apellido_materno
         let per = await prisma.perpersonas.findFirst({
             where : {
@@ -42,7 +46,11 @@ controller.MetCrearUsuarios = async (req, res) => {
             })
         }
 
-        const token_user = crypto.randomBytes(30).toString('hex')
+        if(usu_token?.length > 0){
+            token_user = usu_token
+        }else{
+            token_user = crypto.randomBytes(30).toString('hex')
+        }
 
         let usu = await prisma.usuusuarios.findFirst({
             where : {
@@ -67,6 +75,7 @@ controller.MetCrearUsuarios = async (req, res) => {
             })
         }else{
             message = 'El usuario ya ha sido creado anteriormente.'
+            alert   = true
         }
         
     }catch(error){
@@ -81,7 +90,8 @@ controller.MetCrearUsuarios = async (req, res) => {
         res.status(200)
         res.json({
             message : message,
-            respuesta : true
+            respuesta : true,
+            alert
         })
     }
 }

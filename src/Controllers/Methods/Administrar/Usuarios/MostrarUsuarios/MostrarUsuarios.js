@@ -8,9 +8,10 @@ controller.MetMostrarUsuarios = async ( req, res ) => {
 
         const usu = await prisma.usuusuarios.findMany({
             select : {
-                usuusuario : true,
-                usucorreo : true,
-                estid : true,
+                usuusuario  : true,
+                usuid       : true,
+                usucorreo   : true,
+                estid       : true,
                 tputiposusuarios : {
                     select : {
                         tpunombre : true
