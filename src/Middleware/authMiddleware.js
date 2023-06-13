@@ -1,7 +1,7 @@
 
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
-const Usuusuarios = require('../../sequelize/models')
+// const Usuusuarios = require('../../sequelize/models')
 
 async function authMiddleware (req, res, next) {
     // Lógica del middleware

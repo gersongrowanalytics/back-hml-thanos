@@ -31,8 +31,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
         const usu = await prisma.usuusuarios.findFirst({
             where: {
-                // usutoken : req.headers.usutoken
-                usutoken : req.headers.Usutoken
+                usutoken : usutoken
             },
             select: {
                 usuid: true,
@@ -96,7 +95,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                             espchacargareal     : null,
                             espfechactualizacion: null,
                             espbasedato         : 'DTS (Sell Out)',
-                            espresponsable      : 'Usu Dev',
+                            espresponsable      : 'Ventas',
                             espdiaretraso       : '0',
                             esporden            : false,
                         })
@@ -232,9 +231,6 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         })
 
         const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html');
-        
-        // const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
-        // const success_mail_html = "/var/www/softys/hml_thanos/back/src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
         // const to_mail_data = process.env.TO_MAIL
         const to_mail_data = "gerson.vilca@grow-analytics.com.pe"

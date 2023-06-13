@@ -91,9 +91,16 @@ controller.ValCellsFile = async (workbook) => {
     const rows      = XLSX.utils.sheet_to_json(workbook.Sheets['data'], {defval:""})
     let properties  = Object.keys(rows[0])
 
-    const cod_dts = await prisma.master_distribuidoras.findMany({
+    // const cod_dts = await prisma.master_distribuidoras.findMany({
+    //     select : {
+    //         codigo_dt   : true,
+    //         id          : true
+    //     }
+    // })
+
+    const cod_dts = await prisma.masterclientes_grow.findMany({
         select : {
-            codigo_dt   : true,
+            codigo_destinatario   : true,
             id          : true
         }
     })
@@ -173,12 +180,13 @@ controller.ValCellsFile = async (workbook) => {
                 cods_dts.push(row[properties[0]].toString().trim())
             }
 
-            if(cod_dts.findIndex(dts => dts.codigo_dt == row[properties[0]]) == -1){
+            if(cod_dts.findIndex(dts => dts.codigo_destinatario == row[properties[0]]) == -1){
+                add_dt_manuales = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[0]['name'])
                 controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'distributor not found', row[properties[0]])
             }else{
 
-                let find_dts = cod_dts.find(dt => dt.codigo_dt == row[properties[0]].toString().trim())
+                let find_dts = cod_dts.find(dt => dt.codigo_destinatario == row[properties[0]].toString().trim())
                 m_dt_id = find_dts.id
     
                 let existe_cod = false
