@@ -16,7 +16,8 @@ const path = require('path');
 controller.MetDTManuales = async (req, res, data, delete_data, error, message_errors) => {
 
     const {
-        req_action_file
+        req_action_file,
+        req_type_file
     } = req.body
 
     const {
@@ -24,6 +25,8 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
     } = req.headers
 
     try{
+
+        const baseUrl = req.protocol + '://' + req.get('host');
 
         const action_file = JSON.parse(req_action_file)
 
@@ -212,9 +215,9 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
         const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
         
-        const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
-        const nombre_archivo = 'PlanoSo-'+cadenaAleatorio
-        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/planoso/'+nombre_archivo+'.xlsx'
+        const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
+        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/planoso/'+ token_name + '-' + req.files.carga_manual.name
+
         const archivoExcel = req.files.carga_manual.data
         const excelSize = req.files.carga_manual.size
         
@@ -224,9 +227,14 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         const car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usu.usuid,
-                carnombre   : nombre_archivo,
+                // carnombre   : nombre_archivo+'.xlsx',
+                carnombre   : token_name + '-' + req.files.carga_manual.name,
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
+                cartipo     : req_type_file,
+                carurl      : baseUrl + '/carga-archivos/generar-descarga?token=' + token_excel,
+                carexito    : error ? false : true,
+                carnotificaciones : error ? JSON.stringify(message_errors) : 'Las ventas manuales fueron cargadas correctamente'
             }
         })
 
