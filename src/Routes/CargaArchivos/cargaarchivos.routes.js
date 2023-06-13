@@ -21,6 +21,8 @@ const ValMasterCliSof = require('../../Controllers/Validations/CargaArchivos/Mas
 
 const ValSellin = require('../../Controllers/Validations/CargaArchivos/SI/CargaSellin/Sellin')
 
+const ValListaHomologaciones = require('../../Controllers/Validations/CargaArchivos/ListadoHomologaciones/ListadoHomologaciones')
+
 const ValInventories = require('../../Controllers/Validations/CargaArchivos/Inventarios/ValInventarios')
 
 const protectedRoutes = express.Router();
@@ -63,6 +65,11 @@ protectedRoutes.post('/master-clientes-grow', ValMasterCliGrow.ValMasterClientes
 // RUTAS CARGAR MASTER CLIENTES SOFTYS
 // **** **** **** **** **** //
 protectedRoutes.post('/master-clientes-softys', ValMasterCliSof.ValMasterClientesSoftys)
+
+// **** **** **** **** **** //
+// RUTAS CARGAR LISTA HOMOLOGACIONES
+// **** **** **** **** **** //
+protectedRoutes.post('/list-approvals', ValListaHomologaciones.ValListadoHomologaciones)
 
 // **** **** **** **** **** //
 // RUTAS CARGAR MASTER PRODUCTOS GROW
