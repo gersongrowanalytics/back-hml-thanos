@@ -1,6 +1,8 @@
 const controller = {}
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const bcryptjs = require('bcryptjs')
+const crypto = require('crypto')
 
 controller.MetEditarUsuario = async ( req, res ) => {
 
@@ -14,7 +16,8 @@ controller.MetEditarUsuario = async ( req, res ) => {
         req_perapellidopaterno,
         req_tpuid,
         req_estid,
-        req_contrasenia
+        req_contrasenia,
+        req_usutoken
     } = req.body
 
     try{
@@ -27,7 +30,13 @@ controller.MetEditarUsuario = async ( req, res ) => {
         }
 
         if(req_contrasenia?.length > 0){
-            usue = {...usue, usucontrasenia : bcryptjs.hashSync(req_contrasenia, 8)}
+            usue = {...usue, usucontrasena : bcryptjs.hashSync(req_contrasenia, 8)}
+        }
+
+        if(req_usutoken?.length > 0){
+            usue = {...usue, usutoken : req_usutoken}
+        }else{
+            usue = {...usue, usutoken : crypto.randomBytes(30).toString('hex')}
         }
 
         await prisma.usuusuarios.update({
@@ -40,10 +49,14 @@ controller.MetEditarUsuario = async ( req, res ) => {
         let pere = {
             pernombre : req_pernombre,
             perapellidopaterno : req_perapellidopaterno,
+            pernombrecompleto : req_pernombre + " " + req_perapellidopaterno
         }
 
         if(req_perapellidomaterno.length > 0){
-            pere = {...pere, perapellidomaterno : req_perapellidomaterno}
+            pere = {...pere, 
+                perapellidomaterno : req_perapellidomaterno,
+                pernombrecompleto : req_pernombre + " " + req_perapellidopaterno + " " + req_perapellidomaterno
+            }
         }
 
         await prisma.perpersonas.update({

@@ -17,17 +17,18 @@ controller.MetObtenerUsuario = async ( req, res ) => {
                 usuid : req_usuid
             },
             select : {
-                usuid : true,
-                tpuid : true,
-                perid : true,
-                estid : true,
-                usuusuario : true,
-                usucorreo : true,
+                usuid       : true,
+                tpuid       : true,
+                perid       : true,
+                estid       : true,
+                usuusuario  : true,
+                usucorreo   : true,
+                usutoken    : true,
                 perpersonas : {
                     select : {
-                        pernombre : true,
-                        perapellidopaterno : true,
-                        perapellidomaterno : true
+                        pernombre           : true,
+                        perapellidopaterno  : true,
+                        perapellidomaterno  : true
                     }
                 }
             }
