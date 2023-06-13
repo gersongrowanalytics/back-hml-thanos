@@ -26,9 +26,21 @@ controller.MetTokenUsuario = async (req, res) => {
                 perpersonas : true,
                 tputiposusuarios : {
                     select : {
-                        tpuprivilegio : true
+                        tpuprivilegio : true,
+                        tuptiposusuariospermisos : {
+                            select : {
+                                pempermisos : {
+                                    select : {
+                                        pemnombre : true,
+                                        pemslug  : true,
+                                        pemruta : true,
+                                        tpeid : true
+                                    }
+                                }
+                            }
+                        }
                     }
-                },
+                }
             }
         })
 
