@@ -17,76 +17,93 @@ controller.MetTokenUsuario = async (req, res) => {
     let usu
     try{
 
-        if(req_token == '54Fm8K5SsBuT998CuwJL2jt1E1RZ7amztrPicb'){
-            usu = await prisma.usuusuarios.findFirst({
-                where : {
-                    tpuid : 1
-                },
-                select : {
-                    usutoken : true,
-                    perpersonas : true,
-                    tputiposusuarios : {
-                        select : {
-                            tpuprivilegio : true
-                        }
-                    },
-                }
-            })
-        }else if(req_token == 'wJL2jt1E1RZ7amztrPicbAMiwDFq'){
-            usu = await prisma.usuusuarios.findFirst({
-                where : {
-                    tpuid : 2
-                },
-                select : {
-                    usutoken : true,
-                    perpersonas : true,
-                    tputiposusuarios : {
-                        select : {
-                            tpuprivilegio : true,
-                            tuptiposusuariospermisos : {
-                                select : {
-                                    pempermisos : {
-                                        select : {
-                                            pemnombre : true,
-                                            pemslug  : true,
-                                            pemruta : true,
-                                            tpeid : true
-                                        }
-                                    }
-                                }
-                            }
-                        }
+        usu = await prisma.usuusuarios.findFirst({
+            where : {
+                usutoken : req_token
+            },
+            select : {
+                usutoken : true,
+                perpersonas : true,
+                tputiposusuarios : {
+                    select : {
+                        tpuprivilegio : true
                     }
-                }
-            })
-        }else{
-            usu = await prisma.usuusuarios.findFirst({
-                where : {
-                    tpuid : 3
                 },
-                select : {
-                    usutoken : true,
-                    perpersonas : true,
-                    tputiposusuarios : {
-                        select : {
-                            tpuprivilegio : true,
-                            tuptiposusuariospermisos : {
-                                select : {
-                                    pempermisos : {
-                                        select : {
-                                            pemnombre : true,
-                                            pemslug  : true,
-                                            pemruta : true,
-                                            tpeid : true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            })
-        }
+            }
+        })
+
+
+
+        // if(req_token == '54Fm8K5SsBuT998CuwJL2jt1E1RZ7amztrPicb'){
+        //     usu = await prisma.usuusuarios.findFirst({
+        //         where : {
+        //             tpuid : 1
+        //         },
+        //         select : {
+        //             usutoken : true,
+        //             perpersonas : true,
+        //             tputiposusuarios : {
+        //                 select : {
+        //                     tpuprivilegio : true
+        //                 }
+        //             },
+        //         }
+        //     })
+        // }else if(req_token == 'wJL2jt1E1RZ7amztrPicbAMiwDFq'){
+        //     usu = await prisma.usuusuarios.findFirst({
+        //         where : {
+        //             tpuid : 2
+        //         },
+        //         select : {
+        //             usutoken : true,
+        //             perpersonas : true,
+        //             tputiposusuarios : {
+        //                 select : {
+        //                     tpuprivilegio : true,
+        //                     tuptiposusuariospermisos : {
+        //                         select : {
+        //                             pempermisos : {
+        //                                 select : {
+        //                                     pemnombre : true,
+        //                                     pemslug  : true,
+        //                                     pemruta : true,
+        //                                     tpeid : true
+        //                                 }
+        //                             }
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     })
+        // }else{
+        //     usu = await prisma.usuusuarios.findFirst({
+        //         where : {
+        //             tpuid : 3
+        //         },
+        //         select : {
+        //             usutoken : true,
+        //             perpersonas : true,
+        //             tputiposusuarios : {
+        //                 select : {
+        //                     tpuprivilegio : true,
+        //                     tuptiposusuariospermisos : {
+        //                         select : {
+        //                             pempermisos : {
+        //                                 select : {
+        //                                     pemnombre : true,
+        //                                     pemslug  : true,
+        //                                     pemruta : true,
+        //                                     tpeid : true
+        //                                 }
+        //                             }
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     })
+        // }
 
     }catch(error){
         console.log(error)

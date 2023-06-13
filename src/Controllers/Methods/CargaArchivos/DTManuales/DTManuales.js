@@ -96,7 +96,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                             espchacargareal     : null,
                             espfechactualizacion: null,
                             espbasedato         : 'DTS (Sell Out)',
-                            espresponsable      : 'Usu Dev',
+                            espresponsable      : 'Ventas',
                             espdiaretraso       : '0',
                             esporden            : false,
                         })
@@ -232,9 +232,6 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         })
 
         const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html');
-        
-        // const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
-        // const success_mail_html = "/var/www/softys/hml_thanos/back/src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
         // const to_mail_data = process.env.TO_MAIL
         const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
@@ -249,7 +246,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             error_message_mail: message_errors
         }
         
-        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
+        // await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
         if(!error){
             return res.status(200).json({
