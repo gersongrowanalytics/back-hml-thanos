@@ -143,7 +143,6 @@ controller.ValCellsFile = async (workbook) => {
 
         let m_dt_id = null
 
-
         let date_excel
         let day_date
         let month_date
@@ -171,9 +170,12 @@ controller.ValCellsFile = async (workbook) => {
         }
 
         if(!row[properties[0]]){
+
+            //Si no existe el código distribuidor
             add_dt_manuales = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[0]['name'])
             controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'empty')
+
         }else{
 
             if(!cods_dts.includes(row[properties[0]].toString().trim())){
@@ -338,7 +340,7 @@ controller.ValCellsFile = async (workbook) => {
 
         data.push({
             pro_so_id                       : null,
-            m_dt_id                         : m_dt_id,
+            m_dt_id                         : null,
             pk_venta_so                     : pk_venta_so,
             m_cl_grow                       : id_mcl_grow,
             pk_extractor_venta_so           : pk_extractor_venta_so,
