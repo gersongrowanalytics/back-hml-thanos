@@ -11,7 +11,8 @@ const RemoveFileS3 = require('../../S3/RemoveFileS3')
 const SendMail = require('../../Reprocesos/SendMail')
 const UploadFileExcel = require('../../S3/UploadFileExcelS3')
 const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadenaAleatorio')
-const path = require('path');
+const path = require('path')
+const DTActualizarEstadoSelloutController = require('./DTActualizarEstadoSellOut')
 
 controller.MetDTManuales = async (req, res, data, delete_data, error, message_errors) => {
 
@@ -26,8 +27,9 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
     try{
 
         const action_file = JSON.parse(req_action_file)
-
-        const espn = []
+        let messages_delete_data_acc
+        let error_actualizar_esp    = false
+        let error_actualizar_so     = false
 
         const usu = await prisma.usuusuarios.findFirst({
             where: {
@@ -40,174 +42,14 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             }
         })
 
-        let messages_delete_data_acc
-
         if(!error){
-            // const fec = await prisma.fecfechas.findFirst({
-            //     where : {
-            //         fecmesabierto : true,
-            //     },
-            //     select : {
-            //         fecid : true
-            //     }
-            // })
-            
-            // const fecid = fec.fecid
 
-            // const are = await prisma.areareasestados.findFirst({
-            //     where : {
-            //         fecid       : fecid,
-            //         arenombre   : 'Ventas'
-            //     }
-            // })
+            const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
+            messages_delete_data_acc = messages_delete_data
 
-            // const data_espn = data.filter(dat => dat.m_cl_grow != null)
-            
-            // for await (const esp of data_espn){
-
-            //     const espo = await prisma.espestadospendientes.findFirst({
-            //         where : {
-            //             fecid       : fecid,
-            //             m_cl_grow   : esp.m_cl_grow
-            //         }
-            //     })
-
-            //     if(espo){
-            //         await prisma.espestadospendientes.update({
-            //             where : {
-            //                 espid : espo.espid
-            //             },
-            //             data : {
-            //                 espfechactualizacion    : new Date(),
-            //                 perid                   : usu.perid
-            //             }
-            //         })
-            //     }else{
-            //         if(espn.findIndex(es => es.m_cl_grow == esp.m_cl_grow) == -1){
-            //             espn.push({
-            //                 fecid               : fec.fecid,
-            //                 perid               : usu.perid,
-            //                 tprid               : 1,
-            //                 espdts              : true,
-            //                 areid               : are.areid,
-            //                 m_cl_grow           : esp.m_cl_grow,
-            //                 espfechaprogramado  : new Date(),
-            //                 espchacargareal     : null,
-            //                 espfechactualizacion: null,
-            //                 espbasedato         : 'DTS (Sell Out)',
-            //                 espresponsable      : 'Ventas',
-            //                 espdiaretraso       : '0',
-            //                 esporden            : false,
-            //             })
-            //         }
-            //     }
-            // }
-
-            // await prisma.espestadospendientes.createMany({
-            //     data : espn
-            // })
-
-            // const espe = await prisma.espestadospendientes.findFirst({
-            //     where : {
-            //         AND : [
-            //             {
-            //                 fecid : fecid
-            //             },
-            //             {
-            //                 espbasedato : 'Archivo plano SO (plantilla)'
-            //             }
-            //         ]
-            //     }
-            // })
-            
-            // const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
-
-            // messages_delete_data_acc = messages_delete_data
-
-            // if(action_file.delete_data){
-            //     for await (const dat of delete_data ){
-
-            //         let dat_cod = dat.cod_dt.toString()
-            
-            //         await prisma.ventas_so.deleteMany({
-            //             where: {
-            //                 fecha: {
-            //                     startsWith: dat.fecha
-            //                 },
-            //                 codigo_distribuidor: dat_cod
-            //             }
-            //         })
-            //     }
-            // }
-            
-            // await prisma.ventas_so.createMany({
-            //     data
-            // })
-
-            // if(espe){
-
-            //     let date_one = moment()
-            //     let date_two = moment(espe.espfechaprogramado)
-        
-            //     let esp_day_late
-            //     if(date_one > date_two){
-        
-            //         let diff_days_date_one_two = date_one.diff(date_two, 'days')
-        
-            //         if( diff_days_date_one_two > 0){
-            //             esp_day_late = diff_days_date_one_two.toString()
-            //         }else{
-            //             esp_day_late = '0'
-            //         }
-            //     }else{
-            //         esp_day_late = '0'
-            //     }
-        
-            //     const espu = await prisma.espestadospendientes.update({
-            //         where : {
-            //             espid : espe.espid
-            //         },
-            //         data : {
-            //             perid                   : usu.perid,
-            //             espfechactualizacion    : new Date().toISOString(),
-            //             espdiaretraso           : esp_day_late
-            //         }
-            //     })
-        
-            //     const aree = await prisma.areareasestados.findFirst({
-            //         where : {
-            //             areid : espe.areid
-            //         }
-            //     })
-        
-            //     if(aree){
-            //         let are_percentage
-            //         const espcount = await prisma.espestadospendientes.findMany({
-            //             where : {
-            //                 fecid       : fecid,
-            //                 areid       : espe.areid,
-            //                 espdts      : false,
-            //                 espfechactualizacion : null
-            //             }
-            //         })
-        
-            //         if(espcount.length == 0){
-            //             are_percentage = '100'
-            //         }else{
-            //             are_percentage = (100-(espcount.length*50)).toString()
-            //         }
-                    
-            //         const areu = await prisma.areareasestados.update({
-            //             where : {
-            //                 areid : aree.areid
-            //             },
-            //             data : {
-            //                 areporcentaje : are_percentage
-            //             }
-            //         })
-            //     }
-            // }
-        }   
+            error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res)
+            error_actualizar_so   =  await controller.DTActualizarVentasSO(action_file)
+        }
 
         // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
         // const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
@@ -245,14 +87,15 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             error_message_mail: message_errors
         }
         
-        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
+        // await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
         if(!error){
+
+            // if(error_actualizar_esp ||)
             return res.status(200).json({
                 message : 'Las ventas manuales fueron cargadas correctamente',
                 messages_delete_data_acc,
                 respuesta : true,
-                espn
             })
         }else{
             return true
@@ -294,7 +137,37 @@ controller.DistribuitorOverWrittern = (messages_dts) => {
     ]
 
     return { messages_delete_data }
+}
 
+controller.DTActualizarVentasSO = async (delete_data) => {
+
+    try{
+        if(delete_data){
+            for await (const dat of delete_data ){
+    
+                let dat_cod = dat.cod_dt.toString()
+        
+                await prisma.ventas_so.deleteMany({
+                    where: {
+                        fecha: {
+                            startsWith: dat.fecha
+                        },
+                        codigo_distribuidor: dat_cod
+                    }
+                })
+            }
+        }
+        
+        await prisma.ventas_so.createMany({
+            data
+        })
+
+        return true
+
+    }catch(err){
+        console.log(err)
+        return false
+    }
 }
 
 module.exports = controller
