@@ -2,10 +2,8 @@ const controller = {}
 const moment = require('moment');
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const SendMail = require('../../Reprocesos/SendMail')
-const path = require('path')
 
-controller.MetMostrarEstadoPendiente = async ( req, res ) => {
+controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
 
     let {
         date_final
@@ -141,11 +139,8 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
                         return a.espbasedato < b.espbasedato ? 1 : -1
                     })
                 }
-            });
+            })
 
-
-    
-            //
             arr_dts.forEach((ndts, index_ndts) => {
                 arr_dts[index_ndts]['key'] = index_ndts + 1
                 arr_dts[index_ndts]['zona'] = ndts.masterclientes_grow.zona
@@ -155,7 +150,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
                 arr_dts[index_ndts]['conexion'] = ndts.masterclientes_grow.conexion
                 arr_dts[index_ndts]['pernombrecompleto'] = ndts.perpersonas.pernombrecompleto
                 arr_dts[index_ndts]['index_mcl_grow'] = ndts.masterclientes_grow.id
-            });
+            })
         }
 
         const mc_grow = []
@@ -188,59 +183,42 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
                     pernombrecompleto : '',
                     espresponsable : 'SAC',
                     espdiaretraso : espdiasretrasomcl.toString()
-    
-                    
                 })
             }
-
-        });
-
-        const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoStatus.html')
-        const from_mail_data = process.env.USER_MAIL
-        const to_mail_data = process.env.TO_MAIL
-        // const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
-        const subject_mail_success = "Status"
-
-        const fechaActual = new Date()
-        const diaActual = fechaActual.getDate().toString().padStart(2, '0')
-        const mesActual = (fechaActual.getMonth() + 1).toString().padStart(2, '0')
-        const anioActual = fechaActual.getFullYear().toString()
-        const fechaFormateada = diaActual + mesActual + anioActual
-
-        const data_mail = {
-            data: ares,
-            dataExcludeDt: ares.filter(a => a.arenombre != 'DT'),
-            dtsCantidad: arr_dts.concat(mc_grow).length,
-            fechaActual: fechaFormateada
-        }
-
-        const success_mail_html_dts = path.resolve(__dirname, '../../Mails/CorreoDts.html')
-        const subject_mail_success_dts = "Status DTS"
-        const data_dts = arr_dts.concat(mc_grow)
-        await data_dts.map((dts, index) => data_dts[index]['indice'] = index + 1)
-        const data_total = data_dts
-        const data_mail_dts = {
-            data: data_total,
-            fechaActual: fechaFormateada
-        }
-        
-        // await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
-        // await SendMail.MetSendMail(success_mail_html_dts, from_mail_data, to_mail_data, subject_mail_success_dts, data_mail_dts)
-
-        res.status(200).json({
-            response    : true,
-            messagge    : 'Se obtuvo el estado pendiente de status con éxito',
-            espsDistribuidoras : arr_dts.concat(mc_grow),
-            datos: ares,
         })
+
+        if(res){
+            res.status(200).json({
+                response    : true,
+                messagge    : 'Se obtuvo el estado pendiente de status con éxito',
+                espsDistribuidoras : arr_dts.concat(mc_grow),
+                datos: ares,
+            })
+        }else{
+            return {
+                response    : true,
+                messagge    : 'Se obtuvo el estado pendiente de status con éxito',
+                espsDistribuidoras : arr_dts.concat(mc_grow),
+                datos: ares,
+            }
+        }
 
     }catch(err){
         console.log(err)
-        res.status(500).json({
-            response    : false,
-            messagge    : 'Ha ocurrido un error al obtener el estado pendiente de status',
-            msgdev      : err
-        })
+        if(res){
+            res.status(500).json({
+                response    : false,
+                messagge    : 'Ha ocurrido un error al obtener el estado pendiente de status',
+                msgdev      : err
+            })
+        }else{
+            return {
+                response    : false,
+                messagge    : 'Ha ocurrido un error al obtener el estado pendiente de status',
+                espsDistribuidoras : '',
+                datos: '',
+            }
+        }
     }
 }
 

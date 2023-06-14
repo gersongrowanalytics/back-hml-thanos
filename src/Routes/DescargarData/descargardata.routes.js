@@ -9,8 +9,10 @@ const permissionMiddleware = require('../../Middleware/permissionMiddleware')
 const ValDescargarHomologados = require('../../Controllers/Validations/DescargarData/DescargarHomologados/ValDescargarHomologados')
 const ValDescargarMasterDistribuidoras = require('../../Controllers/Validations/DescargarData/DescargarMasterDistribuidoras/ValDescargarMasterDistribuidoras')
 const ValDescargarMasterProductos = require('../../Controllers/Validations/DescargarData/DescargarMasterProductos/ValDescargarMasterProductos')
-
+const ValDescargarMasterClientesGrow = require('../../Controllers/Validations/DescargarData/DescargarMasterClientesGrow/ValDescargarMasterClientesGrow')
+const ValDescargarMasterProductosGrow = require('../../Controllers/Validations/DescargarData/DescargarMasterProductosGrow/ValDescargarMasterProductosGrow')
 const ValDescargarMasterProductosSo = require('../../Controllers/Validations/DescargarData/DescargarMasterProductosSo/ValDescargarMasterProductosSo')
+const ValRemoveDescargarExcel = require('../../Controllers/Validations/DescargarData/RemoveDescargarExcel/ValRemoveDescargarExcel')
 
 
 const protectedRoutes = express.Router();
@@ -24,6 +26,9 @@ protectedRoutes.post('/products-approveds', ValDescargarHomologados.ValDescargar
 protectedRoutes.post('/distributors', ValDescargarMasterDistribuidoras.ValDescargarMasterDistribuidoras)
 protectedRoutes.post('/products', ValDescargarMasterProductos.ValDescargarMasterProductos)
 protectedRoutes.post('/products-so', ValDescargarMasterProductosSo.ValDescargarMasterProductosSo)
+protectedRoutes.post('/master-prducts', ValDescargarMasterProductosGrow.ValDescargarMasterProductosGrow)
+protectedRoutes.post('/master-clients', ValDescargarMasterClientesGrow.ValDescargarMasterClientesGrow)
+protectedRoutes.post('/remove-excel', ValRemoveDescargarExcel.ValRemoveDescargarExcel)
 
 protectedRoutes.get('/download-file/:type/:namefile', (req, res) => {
 
