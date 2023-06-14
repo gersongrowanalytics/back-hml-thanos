@@ -29,6 +29,11 @@ controller.MetMostrarCargaArchivos = async (req, res) => {
             }
         })
 
+        cars.forEach((car, index_car) => {
+            cars[index_car]['index'] = index_car + 1
+            cars[index_car]['usuusuario'] = car.usuusuarios.usuusuario
+        });
+
         res.status(200).json({
             message: 'Lista de carga de archivos obtenida correctamente',
             data : cars,

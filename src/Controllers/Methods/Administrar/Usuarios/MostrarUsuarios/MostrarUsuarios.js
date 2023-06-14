@@ -25,6 +25,10 @@ controller.MetMostrarUsuarios = async ( req, res ) => {
             }
         })
 
+        usu.forEach((us, index_usu) => {
+            usu[index_usu]['index'] = index_usu + 1
+        });
+
         res.status(200).json({
             response    : true,
             message     : 'Usuarios obtenidos con éxito',
