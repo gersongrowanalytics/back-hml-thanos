@@ -16,7 +16,8 @@ const DTActualizarEstadoSelloutController = require('./DTActualizarEstadoSellOut
 controller.MetDTManuales = async (req, res, data, delete_data, error, message_errors) => {
 
     const {
-        req_action_file
+        req_action_file,
+        req_type_file
     } = req.body
 
     const {
@@ -29,6 +30,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         let messages_delete_data_acc    = []
         let error_actualizar_esp        = false
         let error_actualizar_so         = false
+        const baseUrl = req.protocol + '://' + req.get('host');
 
         const usu = await prisma.usuusuarios.findFirst({
             where: {
@@ -53,28 +55,46 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
         // const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
         
-        const cadenaAleatorio   = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
-        const nombre_archivo    = 'PlanoSo-'+cadenaAleatorio
-        const ubicacion_s3      = 'hmlthanos/pe/tradicional/archivosgenerados/planoso/'+nombre_archivo+'.xlsx'
-        const archivoExcel      = req.files.carga_manual.data
-        const excelSize         = req.files.carga_manual.size
+        const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
+        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/planoso/'+ token_name + '-' + req.files.carga_manual.name
+
+        const archivoExcel = req.files.carga_manual.data
+        const excelSize = req.files.carga_manual.size
         
-        // await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
-        
+        await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
+
+        let carexito_bd = true
+        let carnotificaciones_bd = 'Las ventas manuales fueron cargadas correctamente'
+
+        if(error){
+            carexito_bd = false
+            carnotificaciones_bd = await controller.FormatMessageError(message_errors)
+        }
+
         const token_excel = crypto.randomBytes(30).toString('hex')
         const car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usu.usuid,
-                carnombre   : nombre_archivo,
+                // carnombre   : nombre_archivo+'.xlsx',
+                carnombre   : token_name + '-' + req.files.carga_manual.name,
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
+                cartipo     : req_type_file,
+                carurl      : baseUrl + '/carga-archivos/generar-descarga?token=' + token_excel,
+                carexito    : carexito_bd,
+                carnotificaciones : carnotificaciones_bd
             }
         })
 
         const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html');
         const from_mail_data = process.env.USER_MAIL
         // const to_mail_data = process.env.TO_MAIL
-        const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
+
+        let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
+        if(usu.usuid == 1){
+            to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
+        }
+        
         const subject_mail_success = "Carga de Archivo"
 
         const data_mail = {
@@ -177,6 +197,34 @@ controller.DTActualizarVentasSO = async (action_delete, delete_data, data) => {
         console.log(err)
         return true
     }
+}
+
+controller.FormatMessageError = async ( messages ) => {
+
+    let message_notifications = []
+
+    if(JSON.stringify(messages).length > 1000){
+
+        messages.forEach((msg, index_msg) => {
+
+            if(JSON.stringify(message_notifications).length < 1000){
+
+                if(JSON.stringify(msg).length < 1000){
+                    message_notifications.push(msg)
+                }else{
+                    msg.notificaciones.forEach((not, index_not) => {
+                        let row_slice = not['rows'].slice(1, 20)
+                        messages[index_msg]['notificaciones'][index_not]['rows'] = row_slice
+                    })
+                    message_notifications.push(msg)
+                }
+            }
+        })
+    }else{
+        message_notifications = messages        
+    }
+
+    return JSON.stringify(message_notifications)
 }
 
 module.exports = controller

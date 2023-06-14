@@ -18,7 +18,8 @@ const path = require('path');
 controller.MetMasterMateriales = async (req, res, data, error, message_errors) => {
 
     const {
-        req_action_file
+        req_action_file,
+        req_type_file
     } = req.body
 
     const {
@@ -27,6 +28,8 @@ controller.MetMasterMateriales = async (req, res, data, error, message_errors) =
 
 
     try{
+
+        const baseUrl = req.protocol + '://' + req.get('host');
 
         const action_file = JSON.parse(req_action_file)
         
@@ -163,20 +166,43 @@ controller.MetMasterMateriales = async (req, res, data, error, message_errors) =
             // }
         }
 
-        const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
-        const nombre_archivo = 'MasterProductos-'+cadenaAleatorio
-        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/masterproductos/'+nombre_archivo+'.xlsx'
+        let path_file
+        
+        const name_file = req.files.maestra_producto.name.substring(0, req.files.maestra_producto.name.lastIndexOf("."));
+        const ext_file = req.files.maestra_producto.name.substring(req.files.maestra_producto.name.lastIndexOf(".") + 1);
+
+        if(process.env.ENTORNO == 'PREPRODUCTIVO'){
+            path_file = 'hmlthanos/prueba/pe/tradicional/carga_archivos/'+req_type_file+'/'
+        }else{
+            path_file = 'hmlthanos/pe/tradicional/archivosgenerados/masterproductos/'
+        }
+
+        const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
+        const ubicacion_s3 = path_file + name_file + '-' + token_name + '.' + ext_file
         const archivoExcel = req.files.maestra_producto.data
         const excelSize = req.files.maestra_producto.size
 
+        let carexito_bd = true
+        let carnotificaciones_bd = 'La maestra de Producto fue cargada correctamente'
+
+        if(error){
+            carexito_bd = false
+            carnotificaciones_bd = await controller.FormatMessageError(message_errors)
+        }
+
         await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
         const token_excel = crypto.randomBytes(30).toString('hex')
+
         const car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usu.usuid,
-                carnombre   : nombre_archivo,
+                carnombre   : req.files.maestra_producto.name,
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
+                cartipo     : req_type_file,
+                carurl      : baseUrl + '/carga-archivos/generar-descarga?token='+token_excel,
+                carexito    : carexito_bd,
+                carnotificaciones : carnotificaciones_bd
             }
         })
 
@@ -217,5 +243,32 @@ controller.MetMasterMateriales = async (req, res, data, error, message_errors) =
     }
 }
 
+controller.FormatMessageError = async ( messages ) => {
+
+    let message_notifications = []
+
+    if(JSON.stringify(messages).length > 1000){
+
+        messages.forEach((msg, index_msg) => {
+
+            if(JSON.stringify(message_notifications).length < 1000){
+
+                if(JSON.stringify(msg).length < 1000){
+                    message_notifications.push(msg)
+                }else{
+                    msg.notificaciones.forEach((not, index_not) => {
+                        let row_slice = not['rows'].slice(1, 20)
+                        messages[index_msg]['notificaciones'][index_not]['rows'] = row_slice
+                    })
+                    message_notifications.push(msg)
+                }
+            }
+        })
+    }else{
+        message_notifications = messages        
+    }
+
+    return JSON.stringify(message_notifications)
+}
 
 module.exports = controller
