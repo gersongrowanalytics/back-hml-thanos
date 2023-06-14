@@ -50,7 +50,7 @@ controller.MetObtenerProductosSO = async () => {
             })
         })
         
-        await prisma.master_productos_so.deleteMany({})
+        // await prisma.master_productos_so.deleteMany({})
         await prisma.master_productos_so.createMany({
             data: new_data_master_productos_so
         })
