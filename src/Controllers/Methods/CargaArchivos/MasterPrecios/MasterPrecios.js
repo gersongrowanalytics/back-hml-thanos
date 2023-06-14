@@ -154,24 +154,42 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
             }
         })
 
-        const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
-        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/masterprecios/'+ token_name + '-' + req.files.master_precios.name
+        let path_file
+        
+        const name_file = req.files.master_precios.name.substring(0, req.files.master_precios.name.lastIndexOf("."));
+        const ext_file = req.files.master_precios.name.substring(req.files.master_precios.name.lastIndexOf(".") + 1);
 
+        if(process.env.ENTORNO == 'PREPRODUCTIVO'){
+            path_file = 'hmlthanos/prueba/pe/tradicional/carga_archivos/'+req_type_file+'/'
+        }else{
+            path_file = 'hmlthanos/pe/tradicional/archivosgenerados/masterprecios/'
+        }
+
+        const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
+        const ubicacion_s3 = path_file + name_file + '-' + token_name + '.' + ext_file
         const archivoExcel = req.files.master_precios.data
         const excelSize = req.files.master_precios.size
+
+        let carexito_bd = true
+        let carnotificaciones_bd = 'La data de Maestro precios fue cargada con éxito'
+
+        if(error){
+            carexito_bd = false
+            carnotificaciones_bd = await controller.FormatMessageError(message_errors)
+        }
 
         await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
         const token_excel = crypto.randomBytes(30).toString('hex')
         const car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usun.usuid,
-                carnombre   : token_name + '-' + req.files.master_precios.name,
+                carnombre   : req.files.master_precios.name,
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
                 cartipo     : req_type_file,
                 carurl      : baseUrl + '/carga-archivos/generar-descarga?token='+token_excel,
-                carexito    : error ? false : true,
-                carnotificaciones : error ? JSON.stringify(message_errors) : 'La data de Maestro precios fue cargada con éxito'
+                carexito    : carexito_bd,
+                carnotificaciones : carnotificaciones_bd
             }
         })
 
@@ -211,6 +229,34 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
             respuesta   : false
         })
     }
+}
+
+controller.FormatMessageError = async ( messages ) => {
+
+    let message_notifications = []
+
+    if(JSON.stringify(messages).length > 1000){
+
+        messages.forEach((msg, index_msg) => {
+
+            if(JSON.stringify(message_notifications).length < 1000){
+
+                if(JSON.stringify(msg).length < 1000){
+                    message_notifications.push(msg)
+                }else{
+                    msg.notificaciones.forEach((not, index_not) => {
+                        let row_slice = not['rows'].slice(1, 20)
+                        messages[index_msg]['notificaciones'][index_not]['rows'] = row_slice
+                    })
+                    message_notifications.push(msg)
+                }
+            }
+        })
+    }else{
+        message_notifications = messages        
+    }
+
+    return JSON.stringify(message_notifications)
 }
 
 module.exports = controller

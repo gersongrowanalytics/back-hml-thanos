@@ -27,14 +27,6 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
 
     try{
 
-        // const action_file = JSON.parse(req_action_file)
-        
-        const baseUrl = req.protocol + '://' + req.get('host');
-        
-        const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
-        const filePath = 'hmlthanos/prueba/cargas3/'+ token_name + '-' + req.files.file_s3.name
-        const fileSize = req.files.file_s3.size
-
         const usu = await prisma.usuusuarios.findFirst({
             where : {
                 usutoken : usutoken
@@ -44,6 +36,24 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
                 usuid : true
             }
         })
+        
+        const baseUrl = req.protocol + '://' + req.get('host');
+        let path_file
+        
+        const name_file = req.files.file_s3.name.substring(0, req.files.file_s3.name.lastIndexOf("."));
+        const ext_file = req.files.file_s3.name.substring(req.files.file_s3.name.lastIndexOf(".") + 1);
+
+
+        if(process.env.ENTORNO == 'PREPRODUCTIVO'){
+            path_file = 'hmlthanos/prueba/pe/tradicional/carga_archivos/'
+        }else{
+            path_file = 'hmlthanos/pe/tradicional/carga_archivos/'
+        }
+
+        
+        const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
+        const filePath = path_file + req_type_file +'/' + name_file + '-' + token_name + '.' + ext_file
+        const fileSize = req.files.file_s3.size
 
         // const success_mail_html = "src/Controllers/Methods/Mails/CargaArchivoS3.html"
         // const success_mail_html = "/var/www/softys/hml_thanos/back/src/Controllers/Methods/Mails/CargaArchivoS3.html"
@@ -67,7 +77,7 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
         const car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usu.usuid,
-                carnombre   : token_name + '-' + req.files.file_s3.name,
+                carnombre   : req.files.file_s3.name,
                 cararchivo  : filePath,
                 cartoken    : token_excel,
                 cartipo     : req_type_file,
