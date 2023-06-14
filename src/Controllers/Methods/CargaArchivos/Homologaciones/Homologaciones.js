@@ -29,7 +29,7 @@ controller.MetHomologaciones = async (req, res, ex_data) => {
             
             dat.cod_grow = dat.cod_grow.toString()
             dat.cod_producto_maestro = dat.cod_producto_maestro.toString()
-
+            dat.cod_producto_distribuidor = dat.cod_producto_distribuidor.toString()
 
             // ************************************************************************************
             // VALIDAR SI EXISTE EL CODIGO DE CLIENTE GROW
@@ -109,18 +109,18 @@ controller.MetHomologaciones = async (req, res, ex_data) => {
                         pk_venta_so_hml : n_pk_venta_so_hml
                     })
 
-                    // await prisma.master_productos_so.createMany({
-                    //     data: {
-                    //         m_pro_grow : pro_grow.id,
-                    //         m_cl_grow : cli_grow.id,
-                    //         codigo_producto : dat.cod_producto_distribuidor,
-                    //         descripcion_producto : dat.nom_producto_distribuidor,
-                    //         desde: dat.fecha_inicial,
-                    //         pk_venta_so : n_pk_venta_so,
-                    //         pk_extractor_venta_so : n_pk_extractor_venta_so,
-                    //         pk_venta_so_hml : n_pk_venta_so_hml
-                    //     }
-                    // })
+                    await prisma.master_productos_so.createMany({
+                        data: {
+                            m_pro_grow : pro_grow.id,
+                            m_cl_grow : cli_grow.id,
+                            codigo_producto : dat.cod_producto_distribuidor,
+                            descripcion_producto : dat.nom_producto_distribuidor,
+                            desde: dat.fecha_inicial,
+                            pk_venta_so : n_pk_venta_so,
+                            pk_extractor_venta_so : n_pk_extractor_venta_so,
+                            pk_venta_so_hml : n_pk_venta_so_hml
+                        }
+                    })
                 }else{
                     obs_pro_hml.push(n_pk_venta_so_hml)
                 }
@@ -129,9 +129,11 @@ controller.MetHomologaciones = async (req, res, ex_data) => {
 
         }
 
-        await prisma.master_productos_so.createMany({
-            data
-        })
+        console.log("ALMACENAR !!");
+
+        // await prisma.master_productos_so.createMany({
+        //     data
+        // })
 
         return res.status(200).json({
             "respuesta"   : true,
