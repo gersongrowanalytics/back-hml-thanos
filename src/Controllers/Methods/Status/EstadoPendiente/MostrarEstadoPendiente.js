@@ -210,8 +210,8 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
             fechaActual: fechaFormateada
         }
         
-        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
-        await SendMail.MetSendMail(success_mail_html_dts, from_mail_data, to_mail_data, subject_mail_success_dts, data_mail_dts)
+        // await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
+        // await SendMail.MetSendMail(success_mail_html_dts, from_mail_data, to_mail_data, subject_mail_success_dts, data_mail_dts)
 
         res.status(200).json({
             response    : true,
