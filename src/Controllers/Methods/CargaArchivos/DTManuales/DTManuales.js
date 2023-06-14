@@ -4,7 +4,6 @@ const XLSX = require('xlsx')
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const crypto = require('crypto')
-const moment = require('moment')
 const ObtenerProductosSO = require('../Helpers/ObtenerProductosSO')
 const AsignarDTVentasSO = require('../Helpers/AsignarDTVentasSO')
 const RemoveFileS3 = require('../../S3/RemoveFileS3')
@@ -26,10 +25,10 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
     try{
 
-        const action_file = JSON.parse(req_action_file)
-        let messages_delete_data_acc
-        let error_actualizar_esp    = false
-        let error_actualizar_so     = false
+        const action_file               = JSON.parse(req_action_file)
+        let messages_delete_data_acc    = []
+        let error_actualizar_esp        = false
+        let error_actualizar_so         = false
 
         const usu = await prisma.usuusuarios.findFirst({
             where: {
@@ -47,20 +46,20 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
             messages_delete_data_acc = messages_delete_data
 
-            error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res)
-            error_actualizar_so   =  await controller.DTActualizarVentasSO(action_file)
+            error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data)
+            error_actualizar_so   = await controller.DTActualizarVentasSO(action_file.delete_data, delete_data, data)
         }
 
         // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
         // const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
         
-        const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
-        const nombre_archivo = 'PlanoSo-'+cadenaAleatorio
-        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/planoso/'+nombre_archivo+'.xlsx'
-        const archivoExcel = req.files.carga_manual.data
-        const excelSize = req.files.carga_manual.size
+        const cadenaAleatorio   = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
+        const nombre_archivo    = 'PlanoSo-'+cadenaAleatorio
+        const ubicacion_s3      = 'hmlthanos/pe/tradicional/archivosgenerados/planoso/'+nombre_archivo+'.xlsx'
+        const archivoExcel      = req.files.carga_manual.data
+        const excelSize         = req.files.carga_manual.size
         
-        await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
+        // await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
         
         const token_excel = crypto.randomBytes(30).toString('hex')
         const car = await prisma.carcargasarchivos.create({
@@ -91,12 +90,22 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
         if(!error){
 
-            // if(error_actualizar_esp ||)
-            return res.status(200).json({
-                message : 'Las ventas manuales fueron cargadas correctamente',
+            let status      = 200
+            let message     = 'Las ventas manuales fueron cargadas correctamente'
+            let respuesta   = true
+
+            if(error_actualizar_esp || error_actualizar_so){
+                status      = 500
+                message     = 'Ha ocurrido un error al crear los registros para Carga manual' 
+                respuesta   = false
+            }
+
+            return res.status(status).json({
+                message,
                 messages_delete_data_acc,
-                respuesta : true,
+                respuesta,
             })
+
         }else{
             return true
         }
@@ -139,10 +148,10 @@ controller.DistribuitorOverWrittern = (messages_dts) => {
     return { messages_delete_data }
 }
 
-controller.DTActualizarVentasSO = async (delete_data) => {
+controller.DTActualizarVentasSO = async (action_delete, delete_data, data) => {
 
     try{
-        if(delete_data){
+        if(action_delete){
             for await (const dat of delete_data ){
     
                 let dat_cod = dat.cod_dt.toString()
@@ -162,11 +171,11 @@ controller.DTActualizarVentasSO = async (delete_data) => {
             data
         })
 
-        return true
+        return false
 
     }catch(err){
         console.log(err)
-        return false
+        return true
     }
 }
 

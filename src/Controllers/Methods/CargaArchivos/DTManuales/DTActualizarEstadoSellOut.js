@@ -1,8 +1,9 @@
 const controller = {}
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+const moment = require('moment')
 
-controller.ActualizarEstadoSellOut = async ( req, res ) => {
+controller.ActualizarEstadoSellOut = async ( req, res, data ) => {
 
     const {
         usutoken
@@ -164,11 +165,13 @@ controller.ActualizarEstadoSellOut = async ( req, res ) => {
             }
         }
 
-        return true
+        console.log('Actualizar estado sell out')
+
+        return false
 
     }catch(err){
         console.log(err)
-        return false
+        return true
     }
 }
 
