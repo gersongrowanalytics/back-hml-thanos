@@ -13,7 +13,8 @@ const path = require('path');
 controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_errors) => {
 
     const {
-        req_action_file
+        req_action_file,
+        req_type_file
     } = req.body
 
     const {
@@ -21,6 +22,8 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
     } = req.headers
 
     try{
+        
+        const baseUrl = req.protocol + '://' + req.get('host');
 
         if(!error){
 
@@ -151,9 +154,9 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
             }
         })
 
-        const cadenaAleatorio = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
-        const nombre_archivo = 'MasterPrecios-'+cadenaAleatorio
-        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/masterprecios/'+nombre_archivo+'.xlsx'
+        const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
+        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/masterprecios/'+ token_name + '-' + req.files.master_precios.name
+
         const archivoExcel = req.files.master_precios.data
         const excelSize = req.files.master_precios.size
 
@@ -162,9 +165,13 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
         const car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usun.usuid,
-                carnombre   : nombre_archivo,
+                carnombre   : token_name + '-' + req.files.master_precios.name,
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
+                cartipo     : req_type_file,
+                carurl      : baseUrl + '/carga-archivos/generar-descarga?token='+token_excel,
+                carexito    : error ? false : true,
+                carnotificaciones : error ? JSON.stringify(message_errors) : 'La data de Maestro precios fue cargada con éxito'
             }
         })
 

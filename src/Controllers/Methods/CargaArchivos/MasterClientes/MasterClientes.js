@@ -17,7 +17,8 @@ const path = require('path');
 controller.MetMasterClientes = async ( req, res, data, error, message_errors) => {
 
     const {
-        req_action_file
+        req_action_file,
+        req_type_file
     } = req.body
 
     const {
@@ -26,6 +27,8 @@ controller.MetMasterClientes = async ( req, res, data, error, message_errors) =>
 
 
     try{
+
+        const baseUrl = req.protocol + '://' + req.get('host');
 
         const action_file = JSON.parse(req_action_file)
         const usu = await prisma.usuusuarios.findFirst({
@@ -173,9 +176,13 @@ controller.MetMasterClientes = async ( req, res, data, error, message_errors) =>
         const car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usu.usuid,
-                carnombre   : nombre_archivo,
+                carnombre   : nombre_archivo+'.xlsx',
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
+                cartipo     : req_type_file,
+                carurl      : baseUrl + '/carga-archivos/generar-descarga?token='+token_excel,
+                carexito    : error ? false : true,
+                carnotificaciones : error ? JSON.stringify(message_errors) : 'La maestra de Clientes fue cargada correctamente'
             }
         })
 

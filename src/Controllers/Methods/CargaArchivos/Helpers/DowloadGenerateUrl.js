@@ -20,9 +20,11 @@ controller.MetDownloadGenerateUrl = async (req, res) => {
                 cararchivo: true,
             }
         })
+
         const url = await GenerateUrl.GenerateUrlS3(car.cararchivo)
 
         res.redirect(url)
+
     }catch(error){
         // console.log(error);
         // res.status(500)

@@ -98,9 +98,23 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
                         
                         if(date_one > date_two){
                             let diff_days_date_one_two = date_one.diff(date_two, 'days')
+                            if( diff_days_date_one_two > 0){
+                                day_late = (diff_days_date_one_two).toString()
+                            }else{
+                                day_late = '0'
+                            }
+                        }else{
+                            day_late = '0'
+                        }
+                    }else{
+                        date_two    = moment(esp.espfechaprogramado)
+                        date_one    = moment(esp.espfechactualizacion)
+
+                        if(date_one > date_two){
+                            let diff_days_date_one_two = date_one.diff(date_two, 'days')
                             
                             if( diff_days_date_one_two > 0){
-                                day_late = diff_days_date_one_two
+                                day_late = diff_days_date_one_two.toString()
                             }else{
                                 day_late = '0'
                             }
