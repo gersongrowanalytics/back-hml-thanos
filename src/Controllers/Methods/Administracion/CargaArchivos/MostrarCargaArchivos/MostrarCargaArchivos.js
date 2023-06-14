@@ -21,7 +21,11 @@ controller.MetMostrarCargaArchivos = async (req, res) => {
                     select : {
                         usuusuario : true
                     }
-                }
+                },
+                created_at: true
+            },
+            orderBy: {
+                created_at : 'desc'
             }
         })
 
