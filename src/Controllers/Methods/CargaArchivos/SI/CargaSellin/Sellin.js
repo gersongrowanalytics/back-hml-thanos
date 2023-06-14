@@ -13,7 +13,8 @@ const path = require('path');
 controller.MetSellin = async (req, res, data, delete_data, error, message_errors) => {
 
     const {
-        req_action_file
+        req_action_file,
+        req_type_file
     } = req.body
 
     const {
@@ -22,6 +23,7 @@ controller.MetSellin = async (req, res, data, delete_data, error, message_errors
 
     try{
 
+        const baseUrl = req.protocol + '://' + req.get('host');
         let messages_delete_data_acc
 
         if(!error){
@@ -169,9 +171,13 @@ controller.MetSellin = async (req, res, data, delete_data, error, message_errors
         const car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usun.usuid,
-                carnombre   : nombre_archivo,
+                carnombre   : nombre_archivo+'.xlsx',
                 cararchivo  : ubicacion_s3,
-                cartoken    : token_excel
+                cartoken    : token_excel,
+                cartipo     : req_type_file,
+                carurl      : baseUrl + '/carga-archivos/generar-descarga?token='+token_excel,
+                carexito    : error ? false : true,
+                carnotificaciones : error ? JSON.stringify(message_errors) : 'Los datos de Sell In fueron cargados correctamente'
             }
         })
 

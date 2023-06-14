@@ -148,8 +148,12 @@ model carcargasarchivos {
   carid              Int                 @id @default(autoincrement()) @db.UnsignedInt
   usuid              Int?                @db.UnsignedInt
   carnombre          String?             @db.VarChar(255)
+  cartipo            String?             @db.VarChar(255)
   cararchivo         String?             @db.VarChar(255)
   cartoken           String?             @db.VarChar(255)
+  carnotificaciones  String?             @db.LongText
+  carexito           Boolean?            @default(false)
+  carurl             String?             @db.VarChar(255)
   created_at         DateTime?           @default(now())
   updated_at         DateTime?           @db.Timestamp(0)
   usuusuarios        usuusuarios?        @relation(fields: [usuid], references: [usuid], onUpdate: Restrict, map: "carcargasarchivos_usuid_foreign")
@@ -611,6 +615,22 @@ model master_clientes_softys{
   hml_cod_distrito            String?     @db.VarChar(255)
   hml_distrito                String?     @db.VarChar(255)
   hml_direccion               String?     @db.VarChar(255)
+  created_at                  DateTime?   @default(now())
+  updated_at                  DateTime?   @db.Timestamp(0)
+}
+
+model listado_homologacion {
+  id                              Int         @id @default(autoincrement()) @db.UnsignedInt
+  cod_distribuidor                String?     @db.VarChar(255)
+  cod_grow                        String?     @db.VarChar(255)
+  nombre_distribuidor             String?     @db.VarChar(255)
+  cod_producto_distribuidor       String?     @db.VarChar(255)
+  nom_producto_distribuidor       String?     @db.VarChar(255)
+  cod_producto_maestro            String?     @db.VarChar(255)
+  fecha_inicial                   String?     @db.VarChar(255)
+  fecha_final                     String?     @db.VarChar(255)
+  homologado                      String?     @db.VarChar(255)
+  status_actualizacion            String?     @db.VarChar(255)
   created_at                  DateTime?   @default(now())
   updated_at                  DateTime?   @db.Timestamp(0)
 }
