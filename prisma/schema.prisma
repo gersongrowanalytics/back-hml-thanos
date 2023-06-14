@@ -268,6 +268,7 @@ model ventas_so {
   pro_so_id                     Int?        @db.UnsignedInt
   m_dt_id                       Int?        @db.UnsignedInt
   m_cl_grow                     Int?        @db.UnsignedInt
+  c_date                        String?     @db.VarChar(255)
   dia                           Int?        @db.UnsignedInt
   mes                           Int?        @db.UnsignedInt
   anio                          Int?        @db.UnsignedInt
@@ -277,6 +278,7 @@ model ventas_so {
   fecha                         String?     @db.VarChar(255)
   nro_factura                   String?     @db.VarChar(255)
   codigo_cliente                String?     @db.VarChar(255)
+  cliente_so                    String?     @db.VarChar(255)
   ruc                           String?     @db.VarChar(255)
   razon_social                  String?     @db.VarChar(255)
   mercado_categoria_tipo        String?     @db.VarChar(255)
@@ -290,6 +292,7 @@ model ventas_so {
   unidad_medida                 String?     @db.VarChar(255)
   precio_unitario               Decimal     @db.Decimal(17,10)
   precio_total_sin_igv          String?     @db.VarChar(255)
+  extractor                     Boolean     @default(false)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
   masterclientes_grow           masterclientes_grow?   @relation(fields: [m_cl_grow], references: [id], onUpdate: Restrict, map: "masterclientes_grow_ventas_so_id_foreign")
@@ -332,6 +335,8 @@ model inventarios {
   id                            Int         @id @default(autoincrement()) @db.UnsignedInt
   pro_so_id                     Int?        @db.UnsignedInt
   m_dt_id                       Int?        @db.UnsignedInt
+  m_cl_grow                     Int?        @db.UnsignedInt
+  c_date                        String?     @db.VarChar(255)
   dia                           Int?        @db.UnsignedInt
   mes                           Int?        @db.UnsignedInt
   anio                          Int?        @db.UnsignedInt
@@ -354,10 +359,14 @@ model inventarios {
   unidad_medida                 String?     @db.VarChar(255)
   precio_unitario               Decimal     @db.Decimal(17,10)
   precio_total_sin_igv          String?     @db.VarChar(255)
+  cod_almacen_dist              String?     @db.VarChar(255)
+  almacen_dist                  String?     @db.VarChar(255)
+  extractor                     Boolean     @default(false)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
   master_productos_so           master_productos_so?   @relation(fields: [pro_so_id], references: [id], onUpdate: Restrict, map: "inventarios_id_foreign")
   master_distribuidoras         master_distribuidoras?   @relation(fields: [m_dt_id], references: [id], onUpdate: Restrict, map: "master_distribuidoras_m_dt_id_inventarios_foreign")
+  masterclientes_grow           masterclientes_grow?   @relation(fields: [m_cl_grow], references: [id], onUpdate: Restrict, map: "masterclientes_grow_inventarios_id_foreign")
 }
 
 model sellin {
@@ -523,6 +532,7 @@ model masterclientes_grow {
   ventas_so                   ventas_so[]
   espestadospendientes        espestadospendientes[]
   master_productos_so         master_productos_so[]
+  inventarios                 inventarios[]
 }
 
 model master_productos_grow {

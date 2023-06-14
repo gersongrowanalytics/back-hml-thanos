@@ -17,8 +17,12 @@ protectedRoutes.use(authMiddleware);
 
 // CONTROLADORES DE RUTAS
 const Login = require('../Controllers/Validations/Login/Login')
+const MigrarVentas = require('../Controllers/Methods/Reprocesos/MigrarVentas')
+const MigrarInventario = require('../Controllers/Methods/Reprocesos/MigrarInventario')
 
 const publicRoutes = express.Router();
+publicRoutes.post('/athena-ventas', MigrarVentas.MetMigrarVentas)
+publicRoutes.post('/athena-inventario', MigrarInventario.MetMigrarInventario)
 publicRoutes.post('/log-in', Login.ValLogin)
 protectedRoutes.get('/validation-user', UserValidation.ValUserValidation)
 protectedRoutes.get('/log-out', LogOut.ValLogOut)

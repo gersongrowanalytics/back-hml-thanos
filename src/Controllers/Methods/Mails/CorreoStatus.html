@@ -1,0 +1,210 @@
+<html>
+
+<head>
+</head>
+
+<body>
+    <style type="text/css">
+    table tr td 
+    { 
+        vertical-align: middle;
+    }
+    .Status-Row{
+        padding: 0px;
+        margin: 0px;
+    }
+    .Status-Row:last-child{
+        border-bottom: 1px solid;
+        border-color: #F1F7FF;
+    }
+    .Status-Col{
+        color: #706C64;
+        background: #FFFFFF;
+        font-weight: 400;
+        font-size: 9px;
+        font-style: normal;
+        padding:2px;
+    }
+    .Status-Col:last-child{
+        border-bottom: 2px solid #F1F7FF;
+    }
+    .Status-Col-Days{
+        background: #FFFFFF;
+        font-weight: bold;
+        font-size: 9px; 
+        font-style: normal;
+    }
+    .Status-Col-Days:last-child{
+        border-bottom: 2px solid #F1F7FF;
+    }
+    </style>
+
+        <table style="width: 100%; background: #F3F4F8">
+            <tr>
+                <td align="center">
+                    <div style="width: 1226px; background: #F3F4F8">
+                        <br>
+                        <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: -0.051em; color: #706C64; margin-bottom: 2px">
+                            Equipo de Softys,
+                        </div>
+                        <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: -0.051em; color: #706C64">
+                            Se les está compartiendo un update de información que ha sido actualizado al {{ data_mail.fechaActual }}; con ello, se les está brindando visibilidad de los <span style="font-weight: 700"> Cargados correspondientes a cada área/usuario.</span>
+                        </div>
+                        <br>
+                        <br>
+                        <table style="width: 1000px; font-family: 'Segoe UI', sans-serif;">
+                            <tr>
+                                {{#each data_mail.data as |dt|}}
+                                    {{#isEqual dt.arenombre "Revenue"}}
+                                        <td style="width: 250px; padding-right: 38px;">
+                                            <table style="background: #FFFFFF; width: 100%; border-radius: 9px">
+                                                <tr style="height: 35px;">
+                                                    <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
+                                                        {{dt.arenombre}}
+                                                    </td>
+                                                    <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 17px; line-height: 27px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
+                                                        {{dt.areporcentaje}}%
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    {{/isEqual}}
+                                    {{#isEqual dt.arenombre "Ventas"}}
+                                        <td style="width: 250px; padding-right: 38px;">
+                                            <table style="background: #FFFFFF; width: 100%; border-radius: 9px">
+                                                <tr style="height: 35px;">
+                                                    <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
+                                                        {{dt.arenombre}}
+                                                    </td>
+                                                    <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 17px; line-height: 27px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
+                                                        {{dt.areporcentaje}}%
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    {{/isEqual}}
+                                    {{#isEqual dt.arenombre "SAC"}}
+                                        <td style=" width: 250px; padding-right: 38px;">
+                                            <table style="background: #FFFFFF; width: 100%; border-radius: 9px;">
+                                                <tr style="height: 35px;">
+                                                    <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
+                                                        {{dt.arenombre}}
+                                                    </td>
+                                                    <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 17px; line-height: 27px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
+                                                        {{dt.areporcentaje}} %
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    {{/isEqual}}
+                                    {{#isEqual dt.arenombre "DT"}}
+                                        <td style=" width: 250px">
+                                            <table style="background: #FFFFFF; width: 100%; border-radius: 9px;">
+                                                <tr style="height: 35px;">
+                                                    <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
+                                                        DTS <span style="font-weight: 400">(Sell Out)</span>
+                                                    </td>
+                                                    <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 17px; line-height: 27px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
+                                                        {{../data_mail.dtsCantidad}} DT
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    {{/isEqual}}
+                                {{/each}}
+                            </tr>
+                        </table>
+                        <br>
+                        <table border="0" cellspacing="0" cellpadding="0" style="font-family: 'Segoe UI', sans-serif; padding-left: 30px; padding-right: 30px; width: 1000px; border-collapse: collapse;">
+                            <tr style="color: #1E1E1E; height: 10px; padding: 0px; margin: 0px; ">
+                                <td align="center" style="border-top-left-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Áreas</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal; padding: 6px">Base de datos</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Responsable</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Usuario</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">DeadLine</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">DeadLine Actualizado</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Días de Retraso</td>
+                                <td align="center" style="border-top-right-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Status</td>
+                            </tr>
+                            
+                            {{#each data_mail.dataExcludeDt as |data|}}
+                                {{#each data.esps as |esp|}}
+                                <tr class="Status-Row">
+                                    {{#isEqual @index 0}}
+                                    <td rowspan="{{ data.esps.length }}" align="left" style="border-top: 1px solid; border-bottom: 1px solid; color: #004FB8; background: #FFFFFF; border-color: #F1F7FF; font-weight: 700; font-size: 11px;  font-style: normal; padding-left: 18px;">
+                                        {{data.arenombre}}
+                                    </td>
+                                    {{/isEqual}}
+                                    <td align="center" class="Status-Col">
+                                        {{esp.espbasedato}}
+                                    </td>
+                                    <td align="center" class="Status-Col"> 
+                                        {{esp.espresponsable}}
+                                    </td>
+                                    <td align="center" class="Status-Col">
+                                        {{#if esp.perpersonas}}
+                                            {{esp.perpersonas.pernombrecompleto}}
+                                        {{else}}
+                                            -
+                                        {{/if}}
+                                    </td>
+                                    <td align="center" class="Status-Col">
+                                        {{#if esp.espfechaprogramado}}
+                                            {{formatDate esp.espfechaprogramado}}
+                                        {{else}}
+                                            -
+                                        {{/if}}
+                                    </td>
+                                    <td align="center" class="Status-Col">
+                                        {{#if esp.espfechactualizacion}}
+                                            {{formatDate esp.espfechactualizacion}}
+                                        {{else}}
+                                            -
+                                        {{/if}}
+                                    </td>
+                                    <td align="center" class="Status-Col"> 
+                                        <div style="place-content: center; display: flex; justify-content: center; width: 50%;">
+                                            {{#isEqual esp.espdiaretraso 0}}
+                                                <div style="background: #FFFFFF; color: #2FDA36; font-weight: 400; font-size: 9px;  font-style: normal">
+                                                    {{esp.espdiaretraso}} días
+                                                </div>
+                                                <div style="width: 17px; height: 10px; border-radius: 8px; background: #2FDA36; margin-left: 5px; margin-top: 2px"></div>
+                                            {{else}}
+                                                <div style="background: #FFFFFF; color: #FF0000; font-weight: 400; font-size: 9px;  font-style: normal">
+                                                    {{esp.espdiaretraso}} días 
+                                                </div>
+                                                <div style="width: 17px; height: 10px; border-radius: 8px; background: #FF0000; margin-left: 5px; margin-top: 2px"></div>
+                                            {{/isEqual}}
+                                        </div>
+                                    </td>
+                                    {{#if esp.espfechactualizacion}}
+                                    <td align="center" class="Status-Col-Days" style="color: #2FDA36;">
+                                        Cargado
+                                    </td>
+                                    {{else}}
+                                    <td align="center" class="Status-Col-Days" style="color: #FF0000;">
+                                        Pendiente
+                                    </td>
+                                    {{/if}}
+                                </tr>
+                                {{/each}}
+                            {{/each}}
+                        </table>
+                        <br>
+                        <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: -0.051em; color: #9C9BB0; margin-bottom: 2px">
+                            ¡Que tengan un excelente día!
+                        </div>
+                        <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: -0.051em; color: #9C9BB0; margin-bottom: 2px">
+                            Recuerda que puedes recibir ayuda, escríbenos a: soporte@grow-analytics.com.pe
+                        </div>
+                        <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: -0.051em; color: #9C9BB0; margin-bottom: 15px">
+                            © 2023 GROW ANALYTICS. Todos los Derechos Reservados.
+                        </div>
+                        <br>
+                    </div>
+                </td>
+            </tr>
+        </table>
+</body>
+
+</html>
