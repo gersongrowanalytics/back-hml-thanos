@@ -12,6 +12,7 @@ const ValDescargarMasterProductos = require('../../Controllers/Validations/Desca
 const ValDescargarMasterClientesGrow = require('../../Controllers/Validations/DescargarData/DescargarMasterClientesGrow/ValDescargarMasterClientesGrow')
 const ValDescargarMasterProductosGrow = require('../../Controllers/Validations/DescargarData/DescargarMasterProductosGrow/ValDescargarMasterProductosGrow')
 const ValDescargarMasterProductosSo = require('../../Controllers/Validations/DescargarData/DescargarMasterProductosSo/ValDescargarMasterProductosSo')
+const ValRemoveDescargarExcel = require('../../Controllers/Validations/DescargarData/RemoveDescargarExcel/ValRemoveDescargarExcel')
 
 
 const protectedRoutes = express.Router();
@@ -27,6 +28,7 @@ protectedRoutes.post('/products', ValDescargarMasterProductos.ValDescargarMaster
 protectedRoutes.post('/products-so', ValDescargarMasterProductosSo.ValDescargarMasterProductosSo)
 protectedRoutes.post('/master-prducts', ValDescargarMasterProductosGrow.ValDescargarMasterProductosGrow)
 protectedRoutes.post('/master-clients', ValDescargarMasterClientesGrow.ValDescargarMasterClientesGrow)
+protectedRoutes.post('/remove-excel', ValRemoveDescargarExcel.ValRemoveDescargarExcel)
 
 protectedRoutes.get('/download-file/:type/:namefile', (req, res) => {
 

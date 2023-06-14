@@ -12,8 +12,8 @@ controller.MetDescargarHomologados = async (req, res) => {
 
     try{
 
-        const nombre_archivo = 'Master Productos So'
-        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/masterproductosso/'+nombre_archivo+'.xlsx'
+        const nombre_archivo = 'Homologaciones'
+        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/homologaciones/'+nombre_archivo+'.xlsx'
         const respuestaFile = await CheckFile.CheckFileS3(ubicacion_s3)
 
         if(!respuestaFile){

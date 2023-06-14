@@ -9,11 +9,23 @@ const GenerateUrl = require('../../S3/GenerateUrlS3')
 
 controller.MetDescargarMasterProductosSo = async (req, res) => {
 
-    const {  } = req.body
+    const { 
+        re_date
+    } = req.body
 
+    // El archivo recibe parametro de fecha ()
+    // hmlthanos/pe/tradicional/archivosgenerados/ventas/yyyymm/archivo.xlsx -> si tiene fecha
+    // hmlthanos/pe/tradicional/archivosgenerados/ventas/total/archivo.xlsx -> si no tiene fecha
     try{
-        const nombre_archivo = 'Homologados'
-        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/homologaciones/'+nombre_archivo+'.xlsx'
+        const nombre_archivo = 'Ventas'
+        let ubicacion_s3
+        if(re_date){
+            const separateDate = re_date.split("/")
+            const joinDate = separateDate[1]+""+separateDate[0]
+            ubicacion_s3 = `hmlthanos/pe/tradicional/archivosgenerados/ventas/${joinDate}/${nombre_archivo}.xlsx`
+        }else{
+            ubicacion_s3 = `hmlthanos/pe/tradicional/archivosgenerados/ventas/total/${nombre_archivo}.xlsx`
+        }
         const respuestaFile = await CheckFile.CheckFileS3(ubicacion_s3)
 
         if(!respuestaFile){

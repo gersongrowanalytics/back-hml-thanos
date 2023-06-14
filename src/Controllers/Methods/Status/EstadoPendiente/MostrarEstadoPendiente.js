@@ -3,7 +3,7 @@ const moment = require('moment');
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
-controller.MetMostrarEstadoPendiente = async ( req, res ) => {
+controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
 
     let {
         date_final
@@ -139,11 +139,8 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
                         return a.espbasedato < b.espbasedato ? 1 : -1
                     })
                 }
-            });
+            })
 
-
-    
-            //
             arr_dts.forEach((ndts, index_ndts) => {
                 arr_dts[index_ndts]['key'] = index_ndts + 1
                 arr_dts[index_ndts]['zona'] = ndts.masterclientes_grow.zona
@@ -153,7 +150,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
                 arr_dts[index_ndts]['conexion'] = ndts.masterclientes_grow.conexion
                 arr_dts[index_ndts]['pernombrecompleto'] = ndts.perpersonas.pernombrecompleto
                 arr_dts[index_ndts]['index_mcl_grow'] = ndts.masterclientes_grow.id
-            });
+            })
         }
 
         const mc_grow = []
@@ -190,20 +187,38 @@ controller.MetMostrarEstadoPendiente = async ( req, res ) => {
             }
         })
 
-        res.status(200).json({
-            response    : true,
-            messagge    : 'Se obtuvo el estado pendiente de status con éxito',
-            espsDistribuidoras : arr_dts.concat(mc_grow),
-            datos: ares,
-        })
+        if(res){
+            res.status(200).json({
+                response    : true,
+                messagge    : 'Se obtuvo el estado pendiente de status con éxito',
+                espsDistribuidoras : arr_dts.concat(mc_grow),
+                datos: ares,
+            })
+        }else{
+            return {
+                response    : true,
+                messagge    : 'Se obtuvo el estado pendiente de status con éxito',
+                espsDistribuidoras : arr_dts.concat(mc_grow),
+                datos: ares,
+            }
+        }
 
     }catch(err){
         console.log(err)
-        res.status(500).json({
-            response    : false,
-            messagge    : 'Ha ocurrido un error al obtener el estado pendiente de status',
-            msgdev      : err
-        })
+        if(res){
+            res.status(500).json({
+                response    : false,
+                messagge    : 'Ha ocurrido un error al obtener el estado pendiente de status',
+                msgdev      : err
+            })
+        }else{
+            return {
+                response    : false,
+                messagge    : 'Ha ocurrido un error al obtener el estado pendiente de status',
+                espsDistribuidoras : '',
+                datos: '',
+            }
+        }
     }
 }
 
