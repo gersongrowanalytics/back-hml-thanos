@@ -32,7 +32,7 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
         const baseUrl = req.protocol + '://' + req.get('host');
         
         const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
-        const filePath = 'hmlthanos/prueba/cargas3/'+ token_name + req.files.file_s3.name 
+        const filePath = 'hmlthanos/prueba/cargas3/'+ token_name + '-' + req.files.file_s3.name
         const fileSize = req.files.file_s3.size
 
         const usu = await prisma.usuusuarios.findFirst({
@@ -40,7 +40,8 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
                 usutoken : usutoken
             },
             select : {
-                usuusuario : true
+                usuusuario : true,
+                usuid : true
             }
         })
 
@@ -66,9 +67,13 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
         const car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usu.usuid,
-                carnombre   : req_type_file.replace(' ', '') + token_name,
+                carnombre   : token_name + '-' + req.files.file_s3.name,
                 cararchivo  : filePath,
                 cartoken    : token_excel,
+                cartipo     : req_type_file,
+                carurl      : baseUrl + '/carga-archivos/generar-descarga?token='+token_excel,
+                carexito    : true,
+                carnotificaciones : 'El archivo de ' + req_type_file + ' fue cargado exitosamente'
             }
         })
 

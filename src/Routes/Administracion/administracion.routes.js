@@ -19,6 +19,8 @@ const ValMosMpg = require('../../Controllers/Validations/Administracion/MasterPr
 const ValMosMcg = require('../../Controllers/Validations/Administracion/MasterClientesGrow/MostrarMasterClientesGrow/MostrarMasterClientesGrow')
 const ValMosMcs = require('../../Controllers/Validations/Administracion/MasterClientesSoftys/MostrarMasterClientesSoftys/MostrarMasterClientesSoftys')
 
+const ValMosCarAr = require('../../Controllers/Validations/Administracion/CargaArchivos/MostrarCargaArchivos/MostrarCargaArchivos')
+
 const protectedRoutes = express.Router();
 // protectedRoutes.use(authMiddleware);
 
@@ -53,6 +55,11 @@ protectedRoutes.post('/edit-distributors', ValEdiDts.ValEditarDistribuidora)
 // **** **** **** **** **** //
 protectedRoutes.post('/create-list-price', ValCreLpr.ValCrearListaPrecio)
 protectedRoutes.post('/get-list-price', ValMosLpr.ValMostrarListaPrecio)
+
+// **** **** **** **** **** //
+// RUTAS CARGA ARCHIVOS
+// **** **** **** **** **** //
+protectedRoutes.post('/get-upload-files', ValMosCarAr.ValMostrarCargaArchivos)
 
 router.use('/administration', protectedRoutes);
 
