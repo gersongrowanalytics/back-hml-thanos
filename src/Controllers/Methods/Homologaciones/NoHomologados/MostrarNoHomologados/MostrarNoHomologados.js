@@ -50,10 +50,14 @@ controller.MetMostrarNoHomologados = async (req, res) => {
         })
 
         productosSinProid.map((pro, index) => productosSinProid[index]['key']  = index)
+
+        productosSinProid.map((produt, pos) => {
+            productosSinProid[pos]['s_mtd'] = parseFloat(produt.s_mtd)
+            productosSinProid[pos]['s_ytd'] = parseFloat(produt.s_ytd)
+        })
         
-            
         res.status(200)
-        res.json({
+        return res.json({
             message : 'Productos no homologados obtenidos correctamente',
             data    : productosSinProid,
             respuesta : true
@@ -62,7 +66,7 @@ controller.MetMostrarNoHomologados = async (req, res) => {
     }catch(error){
         console.log(error)
         res.status(500)
-        res.json({
+        return res.json({
             message : 'Lo sentimos hubo un error al momento de ...',
             devmsg  : error
         })
