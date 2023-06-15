@@ -12,7 +12,7 @@ controller.MetMigrarInventario = async (req, res) => {
         const separateDate = dateRange.split("/")
         const joinDate = separateDate[1]+""+separateDate[0]
 
-        const query = `SELECT c_date, year, month, day, cod_ship_to, cod_almacen_dist, almacen_dist, cod_material_dist, material_dist, cod_tipo_inventario_dist, tipo_inventario_dist FROM "traditional_warehouse_supplier_inventories" WHERE c_date LIKE '${joinDate}%'`
+        const query = `SELECT c_date, year, month, day, cod_ship_to, cod_almacen_dist, almacen_dist, cod_material_dist, material_dist, cod_tipo_inventario_dist, tipo_inventario_dist, c_cod_material, c_material FROM "traditional_warehouse_supplier_inventories" WHERE c_date LIKE '${joinDate}%'`
         const { respuesta, data, message } = await AthenaQuery.MetAthenaQuery(query)
 
         if(respuesta){
