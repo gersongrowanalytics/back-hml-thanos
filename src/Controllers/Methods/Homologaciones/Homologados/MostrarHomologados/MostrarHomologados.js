@@ -4,8 +4,8 @@ const prisma = new PrismaClient()
 
 controller.MetMostrarHomologados = async (req, res) => {
 
-    const page = req.query.page;
-    const req_total = req.query.total;
+    let page = req.query.page;
+    let req_total = req.query.total;
 
     const {
         req_region,
@@ -15,12 +15,15 @@ controller.MetMostrarHomologados = async (req, res) => {
         req_prod_hml,
         req_desde,
         req_column,
-        req_orden
+        req_orden,
+        req_filtro_input
     } = req.body
 
     try{
 
         let query_order = {}
+        let total = []
+        const desde_modificado = req_desde.split("/").reverse().join('-')
 
         if(req_orden){
             if(req_column == 'territorio' || req_column == 'codigo_destinatario'){
@@ -37,6 +40,48 @@ controller.MetMostrarHomologados = async (req, res) => {
             }
         }else{
             query_order = {...query_order, updated_at: 'desc'}
+        }
+
+        if(req_total == 'true' || req_filtro_input == true){
+            total = await prisma.master_productos_so.findMany({
+                where: {
+                    m_pro_grow : {
+                        not: null
+                    },
+                    masterclientes_grow : {
+                        territorio : {
+                            contains : req_region,
+                        },
+                        codigo_destinatario : {
+                            contains : req_cod_prod_not,
+                        }
+                    },
+                    descripcion_producto : {
+                        contains : req_pro_not_hml
+                    },
+                    master_productos_grow : {
+                        codigo_material : {
+                            contains : req_cod_pro_hml
+                        },
+                        material_softys : {
+                            contains : req_prod_hml
+                        }
+                    },
+                    desde : {
+                        contains : desde_modificado
+                    }
+                },
+                distinct : ['pk_venta_so_hml'],
+            })
+        }
+
+        if(req_filtro_input){
+            if((total.length)/10 < page){
+                page = Math.ceil((total.length)/10)
+            }
+            if(total.length == 0){
+                page = 1
+            }
         }
 
         const productos_hml = await prisma.master_productos_so.findMany({
@@ -64,7 +109,7 @@ controller.MetMostrarHomologados = async (req, res) => {
                     }
                 },
                 desde : {
-                    contains : req_desde
+                    contains : desde_modificado
                 }
             },
             select: {
@@ -78,17 +123,11 @@ controller.MetMostrarHomologados = async (req, res) => {
                 masterclientes_grow : {
                     select : {
                         cliente_hml: true,
-                        territorio : true, // En el front se muestra región, validar con Jazmin
+                        territorio : true,
                         codigo_destinatario : true,
                         sucursal_hml : true
                     }
                 },
-                // master_productos: {
-                //     select: {
-                //         cod_producto : true,
-                //         nomb_producto : true
-                //     }
-                // },
                 master_productos_grow: {
                     select: {
                         codigo_material : true,
@@ -110,43 +149,10 @@ controller.MetMostrarHomologados = async (req, res) => {
             skip: (page - 1) * 10
         })
 
-        let total = []
-        if(req_total == 'true'){
-            total = await prisma.master_productos_so.findMany({
-                where: {
-                    m_pro_grow : {
-                        not: null
-                    },
-                    masterclientes_grow : {
-                        territorio : {
-                            contains : req_region,
-                        },
-                        codigo_destinatario : {
-                            contains : req_cod_prod_not,
-                        }
-                    },
-                    descripcion_producto : {
-                        contains : req_pro_not_hml
-                    },
-                    master_productos_grow : {
-                        codigo_material : {
-                            contains : req_cod_pro_hml
-                        },
-                        material_softys : {
-                            contains : req_prod_hml
-                        }
-                    },
-                    desde : {
-                        contains : req_desde
-                    }
-                },
-                distinct : ['pk_venta_so_hml'],
-            })
-        }
-        productos_hml.map((pro, index) => {
+        productos_hml.forEach((pro, index) => {
             productos_hml[index]['key'] = index
-        })
-        
+        });
+
         res.status(200)
         res.json({
             message : 'Productos homologados obtenidos correctamente',
@@ -154,6 +160,7 @@ controller.MetMostrarHomologados = async (req, res) => {
             respuesta : true,
             total : total.length
         })
+
 
     }catch(error){
         console.log(error)
@@ -165,6 +172,5 @@ controller.MetMostrarHomologados = async (req, res) => {
         })
     }
 }
-
 
 module.exports = controller

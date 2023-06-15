@@ -26,7 +26,9 @@ controller.MetMostrarUsuarios = async ( req, res ) => {
         })
 
         usu.forEach((us, index_usu) => {
-            usu[index_usu]['index'] = index_usu + 1
+            usu[index_usu]['index']             = index_usu + 1
+            usu[index_usu]['tpunombre']         = us.tputiposusuarios.tpunombre
+            usu[index_usu]['pernombrecompleto'] = us.perpersonas.pernombrecompleto
         });
 
         res.status(200).json({
