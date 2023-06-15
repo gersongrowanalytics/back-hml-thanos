@@ -20,6 +20,9 @@ const Login = require('../Controllers/Validations/Login/Login')
 const MigrarVentas = require('../Controllers/Methods/Reprocesos/MigrarVentas')
 const MigrarInventario = require('../Controllers/Methods/Reprocesos/MigrarInventario')
 
+// CONTROLADORES DE ACTUALIZACIONES
+const routes_actualizacion = require('./Actualizaciones/Actualizaciones')
+
 const publicRoutes = express.Router();
 publicRoutes.post('/athena-ventas', MigrarVentas.MetMigrarVentas)
 publicRoutes.post('/athena-inventario', MigrarInventario.MetMigrarInventario)
@@ -37,5 +40,6 @@ router.use(routes_carga_archivos);
 router.use(routes_administrar);
 router.use(routes_descargar_data);
 router.use(routes_status);
+router.use(routes_actualizacion);
 
 module.exports = router

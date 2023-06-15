@@ -123,29 +123,31 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             //     }
             // })
             
-            // const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
+            const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
 
-            // messages_delete_data_acc = messages_delete_data
+            messages_delete_data_acc = messages_delete_data
 
-            // if(action_file.delete_data){
-            //     for await (const dat of delete_data ){
+            if(action_file.delete_data){
+                for await (const dat of delete_data ){
 
-            //         let dat_cod = dat.cod_dt.toString()
+                    let dat_cod = dat.cod_dt.toString()
             
-            //         await prisma.ventas_so.deleteMany({
-            //             where: {
-            //                 fecha: {
-            //                     startsWith: dat.fecha
-            //                 },
-            //                 codigo_distribuidor: dat_cod
-            //             }
-            //         })
-            //     }
-            // }
+                    await prisma.ventas_so.deleteMany({
+                        where: {
+                            fecha: {
+                                startsWith: dat.fecha
+                            },
+                            codigo_distribuidor: dat_cod
+                        }
+                    })
+                }
+            }
             
-            // await prisma.ventas_so.createMany({
-            //     data
-            // })
+            if(usu.usuid == 1){
+                await prisma.ventas_so.createMany({
+                    data
+                })
+            }
 
             // if(espe){
 
@@ -213,7 +215,9 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         }   
 
         // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
-        // const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+        if(usu.usuid == 1){
+            const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+        }
         
         const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
         const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/planoso/'+ token_name + '-' + req.files.carga_manual.name
