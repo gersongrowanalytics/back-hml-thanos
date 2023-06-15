@@ -33,19 +33,19 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
 
         for await (const dhm of req_datos_homologados ){
 
-            const prod_hml = await prisma.master_productos.findFirst({
+            const prod_hml = await prisma.master_productos_grow.findFirst({
                 where : {
                     id : dhm.req_id_producto_homologado
                 }
             })
 
             let data_mpso = { 
-                proid : dhm.req_id_producto_homologado, 
+                m_pro_grow : dhm.req_id_producto_homologado, 
                 unidad_minima: dhm.req_unidad_minima_homologado 
             }
 
             if(dhm.req_combo){
-                data_mpso = { ...data_mpso, 
+                data_mpso = { ...data_mpso,
                                 combo                   : dhm.req_combo, 
                                 cod_unidad_medida_hml   : dhm.req_cod_unidad_medida_homologado,
                                 unidad_medida_hml       : dhm.req_unidad_medida_homologado,
@@ -55,10 +55,11 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                                 desde                   : moment(req_rango_fecha.desde).format('YYYY-MM-DD').toString(),
                                 hasta                   : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
                                 cod_unidad_medida   : dhm.req_cod_unidad_medida,
-                                pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.cod_producto
+                                pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.codigo_material
                             }
             }
             if(dhm.req_id){
+
                 await prisma.master_productos_so.update({
                     where : {
                         id : dhm.req_id
@@ -67,12 +68,13 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                 })
             }else{
                 if(dhm.req_combo){
+
                     await prisma.master_productos_so.create({
                         data : {
                             proid : dhm.req_id_producto_homologado,
                             m_dt_id : req_select_product_so.m_dt_id,
                             pk_venta_so : req_select_product_so.pk_venta_so,
-                            pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.cod_producto,
+                            pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.codigo_material,
                             pk_extractor_venta_so : req_select_product_so.pk_extractor_venta_so,
                             codigo_distribuidor : req_select_product_so.codigo_distribuidor,
                             codigo_producto : req_select_product_so.codigo_producto,
@@ -95,12 +97,13 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                         }
                     })
                 }else{
+
                     await prisma.master_productos_so.create({
                         data : {
                             proid : dhm.req_id_producto_homologado,
                             m_dt_id : req_select_product_so.m_dt_id,
                             pk_venta_so : req_select_product_so.pk_venta_so,
-                            pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.cod_producto,
+                            pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.codigo_material,
                             pk_extractor_venta_so : req_select_product_so.pk_extractor_venta_so,
                             codigo_distribuidor : req_select_product_so.codigo_distribuidor,
                             codigo_producto : req_select_product_so.codigo_producto,

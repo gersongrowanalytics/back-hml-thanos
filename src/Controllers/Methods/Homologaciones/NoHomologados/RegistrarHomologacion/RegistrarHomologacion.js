@@ -8,11 +8,19 @@ controller.MetRegistrarHomologacion = async (req, res) => {
         producto_so_id,
         producto_hml_id,
         req_envio_otros,
-        productos_so_ids
+        productos_so_ids,
+        producto_uni_medida
     } = req.body;
 
     try{
 
+        let cod_unidad_medida   = producto_uni_medida
+        let unidad_medida       = producto_uni_medida
+
+        if(producto_uni_medida.length > 3){
+            cod_unidad_medida   = producto_uni_medida.substring(0,3)
+            unidad_medida       = producto_uni_medida
+        }
 
         if(req_envio_otros == true){
 
@@ -29,13 +37,16 @@ controller.MetRegistrarHomologacion = async (req, res) => {
             }
 
         }else{
+            console.log('Edita homologacion')
             await prisma.master_productos_so.update({
                 where: {
                     id : producto_so_id
                 },
     
                 data: {
-                    proid : producto_hml_id
+                    proid               : producto_hml_id,
+                    cod_unidad_medida   : cod_unidad_medida,
+                    unidad_medida       : unidad_medida
                 }
             })
         }

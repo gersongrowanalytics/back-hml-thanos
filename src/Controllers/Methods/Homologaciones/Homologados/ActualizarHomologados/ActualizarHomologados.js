@@ -8,10 +8,19 @@ controller.MetActualizarHomologados = async (req, res) => {
         producto_so_id,
         producto_hml_id,
         req_desde,
-        req_cod_producto_hml
+        req_cod_producto_hml,
+        producto_uni_medida
     } = req.body;
 
     try{
+
+        let cod_unidad_medida   = producto_uni_medida
+        let unidad_medida       = producto_uni_medida
+
+        if(producto_uni_medida.length > 3){
+            cod_unidad_medida   = producto_uni_medida.substring(0,3)
+            unidad_medida       = producto_uni_medida
+        }
 
         const producto_so = await prisma.master_productos_so.findUnique({
             where: {
@@ -22,20 +31,22 @@ controller.MetActualizarHomologados = async (req, res) => {
         if(producto_so){
             await prisma.master_productos_so.create({
                 data: {
-                    proid : producto_hml_id,
-                    m_dt_id : producto_so.m_dt_id,
-                    codigo_distribuidor  : producto_so.codigo_distribuidor,
-                    codigo_producto      : producto_so.codigo_producto,
-                    descripcion_producto : producto_so.descripcion_producto,
-                    precio_unitario      : producto_so.precio_unitario,
-                    ruc   : producto_so.ruc,
-                    desde : req_desde,
+                    proid                   : producto_hml_id,
+                    m_dt_id                 : producto_so.m_dt_id,
+                    codigo_distribuidor     : producto_so.codigo_distribuidor,
+                    codigo_producto         : producto_so.codigo_producto,
+                    descripcion_producto    : producto_so.descripcion_producto,
+                    precio_unitario         : producto_so.precio_unitario,
+                    ruc                     : producto_so.ruc,
+                    desde                   : req_desde,
                     // hasta : producto_so.hasta,
-                    s_ytd : producto_so.s_ytd,
-                    s_mtd : producto_so.s_mtd,
-                    m_cl_grow : producto_so.m_cl_grow,
-                    pk_venta_so_hml: producto_so.pk_venta_so + req_cod_producto_hml,
-                    pk_venta_so : producto_so.pk_venta_so 
+                    s_ytd                   : producto_so.s_ytd,
+                    s_mtd                   : producto_so.s_mtd,
+                    m_cl_grow               : producto_so.m_cl_grow,
+                    pk_venta_so_hml         : producto_so.pk_venta_so + req_cod_producto_hml,
+                    pk_venta_so             : producto_so.pk_venta_so,
+                    cod_unidad_medida       : cod_unidad_medida,
+                    unidad_medida           : unidad_medida
                 }
             })
         }else{
