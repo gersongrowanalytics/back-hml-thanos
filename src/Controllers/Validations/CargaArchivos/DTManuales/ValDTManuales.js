@@ -41,7 +41,6 @@ controller.ValDTManuales = async (req, res) => {
                 message         : 'Lo sentimos se encontraron algunas observaciones',
                 notificaciones  : messages_error,
                 messages_error  : messages
-                
             })
         }
 

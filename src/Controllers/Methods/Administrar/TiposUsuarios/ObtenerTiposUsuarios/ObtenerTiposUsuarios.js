@@ -10,6 +10,7 @@ controller.MetObtenerTiposusuarios = async ( req, res ) => {
 
         tpus.forEach((tpu, index_tpu) => {
             tpus[index_tpu]['value'] = tpu.tpunombre
+            tpus[index_tpu]['index'] = index_tpu + 1
         });
 
         res.status(200).json({
