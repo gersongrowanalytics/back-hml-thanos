@@ -29,9 +29,10 @@ controller.MetActualizarHomologados = async (req, res) => {
         })
 
         if(producto_so){
+
             await prisma.master_productos_so.create({
                 data: {
-                    proid                   : producto_hml_id,
+                    m_pro_grow              : producto_hml_id,
                     m_dt_id                 : producto_so.m_dt_id,
                     codigo_distribuidor     : producto_so.codigo_distribuidor,
                     codigo_producto         : producto_so.codigo_producto,
