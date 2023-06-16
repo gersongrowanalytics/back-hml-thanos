@@ -47,7 +47,8 @@ controller.MetActualizarHomologados = async (req, res) => {
                     pk_venta_so_hml         : producto_so.pk_venta_so + req_cod_producto_hml,
                     pk_venta_so             : producto_so.pk_venta_so,
                     cod_unidad_medida       : cod_unidad_medida,
-                    unidad_medida           : unidad_medida
+                    unidad_medida           : unidad_medida,
+                    homologado              : true
                 }
             })
         }else{

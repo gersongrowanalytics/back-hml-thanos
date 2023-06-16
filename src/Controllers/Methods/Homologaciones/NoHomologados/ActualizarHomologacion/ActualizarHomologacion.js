@@ -40,8 +40,9 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
             })
 
             let data_mpso = { 
-                m_pro_grow : dhm.req_id_producto_homologado, 
-                unidad_minima: dhm.req_unidad_minima_homologado 
+                m_pro_grow      : dhm.req_id_producto_homologado, 
+                unidad_minima   : dhm.req_unidad_minima_homologado,
+                homologado      : true
             }
 
             if(dhm.req_combo){

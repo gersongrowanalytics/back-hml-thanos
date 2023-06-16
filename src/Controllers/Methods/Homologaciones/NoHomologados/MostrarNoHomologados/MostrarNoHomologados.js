@@ -41,7 +41,7 @@ controller.MetMostrarNoHomologados = async (req, res) => {
                 ruc : true
             },
             where: {
-                m_pro_grow : null
+                homologado : false
             },
             orderBy: {
                 updated_at: 'desc'

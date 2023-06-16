@@ -30,12 +30,20 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
                         cliente_hml: true,
                         territorio : true, // En el front se muestra región, validar con Jazmin
                         codigo_destinatario : true,
-                        sucursal_hml : true
+                        sucursal_hml : true,
+                    }
+                },
+                master_productos_grow : {
+                    select : {
+                        paquetes_bulto  : true,
+                        codigo_material : true,
+                        material_softys : true
                     }
                 },
                 proid                   : true,
                 m_dt_id                 : true,
                 pk_venta_so             : true,
+                unidad_minima           : true,
                 pk_extractor_venta_so   : true,
                 codigo_distribuidor     : true,
                 codigo_producto         : true,
@@ -47,7 +55,8 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
                 desde                   : true,
                 hasta                   : true,
                 s_ytd                   : true,
-                s_mtd                   : true
+                s_mtd                   : true,
+                m_pro_grow              : true
             }
         })
 

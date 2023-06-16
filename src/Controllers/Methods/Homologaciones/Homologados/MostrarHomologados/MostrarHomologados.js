@@ -12,7 +12,8 @@ controller.MetMostrarHomologados = async (req, res) => {
             where: {
                 m_pro_grow : {
                     not: null
-                }
+                },
+                homologado : true
             },
             select: {
                 master_distribuidoras: {
@@ -42,14 +43,15 @@ controller.MetMostrarHomologados = async (req, res) => {
                         material_softys : true
                     }
                 },
-                id : true,
-                codigo_producto : true,
-                descripcion_producto : true,
-                desde : true,
-                hasta : true,
-                combo: true,
-                pk_venta_so: true,
-                pk_venta_so_hml : true
+                id                      : true,
+                codigo_producto         : true,
+                descripcion_producto    : true,
+                desde                   : true,
+                hasta                   : true,
+                combo                   : true,
+                pk_venta_so             : true,
+                pk_venta_so_hml         : true,
+                unidad_medida           : true
             },
             orderBy: {
                 updated_at: 'desc'

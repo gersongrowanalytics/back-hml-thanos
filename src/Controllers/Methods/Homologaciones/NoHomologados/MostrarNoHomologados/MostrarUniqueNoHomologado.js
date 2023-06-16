@@ -28,6 +28,7 @@ controller.MetMostrarUniqueNoHomologados = async (req, res) => {
                 pk_extractor_venta_so: true,
                 cod_unidad_medida : true,
                 unidad_medida : true,
+                unidad_minima : true,
                 ruc : true
             },
             where: {
