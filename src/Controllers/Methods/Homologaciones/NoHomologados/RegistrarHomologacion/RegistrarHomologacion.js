@@ -17,9 +17,11 @@ controller.MetRegistrarHomologacion = async (req, res) => {
         let cod_unidad_medida   = producto_uni_medida
         let unidad_medida       = producto_uni_medida
 
-        if(producto_uni_medida.length > 3){
-            cod_unidad_medida   = producto_uni_medida.substring(0,3)
-            unidad_medida       = producto_uni_medida
+        if(producto_uni_medida){
+            if(producto_uni_medida.length > 3){
+                cod_unidad_medida   = producto_uni_medida.substring(0,3)
+                unidad_medida       = producto_uni_medida
+            }
         }
 
         if(req_envio_otros == true){
@@ -31,7 +33,8 @@ controller.MetRegistrarHomologacion = async (req, res) => {
                     },
         
                     data: {
-                        proid : producto_hml_id
+                        // proid : producto_hml_id
+                        m_pro_grow : 268
                     }
                 })
             }
@@ -44,7 +47,8 @@ controller.MetRegistrarHomologacion = async (req, res) => {
                 },
     
                 data: {
-                    proid               : producto_hml_id,
+                    // proid               : producto_hml_id,
+                    m_pro_grow          : 268,
                     cod_unidad_medida   : cod_unidad_medida,
                     unidad_medida       : unidad_medida
                 }
