@@ -258,6 +258,7 @@ model master_productos_so {
   unidad_minima_unitaria        String?     @db.VarChar(50)
   bonificado                    Boolean     @default(false)
   extractor                     Boolean     @default(false)
+  homologado                    Boolean     @default(false)
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @updatedAt
   master_productos              master_productos?        @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "master_productos_so_id_foreign")
