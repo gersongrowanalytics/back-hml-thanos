@@ -96,7 +96,8 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             unidad_medida_hml       : dhm.req_unidad_medida_homologado,
                             coeficiente             : dhm.req_coeficiente,
                             unidad_minima_unitaria  : dhm.req_unidad_minima_unitario,
-                            bonificado              : dhm.req_bonificado
+                            bonificado              : dhm.req_bonificado,
+                            homologado      : true
                         }
                     })
                 }else{
@@ -122,7 +123,8 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             s_ytd : "0",
                             s_mtd : "0",
                             unidad_minima : dhm.req_unidad_minima_homologado,
-                            combo : dhm.req_combo
+                            combo : dhm.req_combo,
+                            homologado      : true
                         }
                     })
                 }
