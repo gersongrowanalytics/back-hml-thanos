@@ -71,8 +71,10 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
 
                     await prisma.master_productos_so.create({
                         data : {
-                            proid : dhm.req_id_producto_homologado,
-                            m_dt_id : req_select_product_so.m_dt_id,
+                            // proid : dhm.req_id_producto_homologado,
+                            m_pro_grow : dhm.req_id_producto_homologado,
+                            // m_dt_id : req_select_product_so.m_dt_id,
+                            m_cl_grow : req_select_product_so.masterclientes_grow.id,
                             pk_venta_so : req_select_product_so.pk_venta_so,
                             pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.codigo_material,
                             pk_extractor_venta_so : req_select_product_so.pk_extractor_venta_so,
@@ -100,8 +102,10 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
 
                     await prisma.master_productos_so.create({
                         data : {
-                            proid : dhm.req_id_producto_homologado,
-                            m_dt_id : req_select_product_so.m_dt_id,
+                            // proid : dhm.req_id_producto_homologado,
+                            m_pro_grow : dhm.req_id_producto_homologado,
+                            // m_dt_id : req_select_product_so.m_dt_id,
+                            m_cl_grow : req_select_product_so.masterclientes_grow.id,
                             pk_venta_so : req_select_product_so.pk_venta_so,
                             pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.codigo_material,
                             pk_extractor_venta_so : req_select_product_so.pk_extractor_venta_so,

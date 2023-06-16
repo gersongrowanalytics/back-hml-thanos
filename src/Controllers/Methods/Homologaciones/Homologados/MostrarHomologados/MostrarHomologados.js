@@ -27,7 +27,8 @@ controller.MetMostrarHomologados = async (req, res) => {
                         cliente_hml: true,
                         territorio : true, // En el front se muestra región, validar con Jazmin
                         codigo_destinatario : true,
-                        sucursal_hml : true
+                        sucursal_hml : true,
+                        destinatario : true
                     }
                 },
                 // master_productos: {
@@ -58,7 +59,7 @@ controller.MetMostrarHomologados = async (req, res) => {
         })
 
         productos_hml.map((pro, index) => productos_hml[index]['key'] = index)
-        
+
         res.status(200)
         res.json({
             message : 'Productos homologados obtenidos correctamente',
