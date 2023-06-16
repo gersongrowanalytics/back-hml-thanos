@@ -31,20 +31,19 @@ controller.MetRegistrarHomologacion = async (req, res) => {
                     },
         
                     data: {
-                        proid : producto_hml_id
+                        m_pro_grow : producto_hml_id
                     }
                 })
             }
 
         }else{
-            console.log('Edita homologacion')
             await prisma.master_productos_so.update({
                 where: {
                     id : producto_so_id
                 },
     
                 data: {
-                    proid               : producto_hml_id,
+                    m_pro_grow               : producto_hml_id,
                     cod_unidad_medida   : cod_unidad_medida,
                     unidad_medida       : unidad_medida
                 }
