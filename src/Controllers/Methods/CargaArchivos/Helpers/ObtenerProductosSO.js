@@ -30,6 +30,9 @@ controller.MetObtenerProductosSO = async () => {
         let new_data_master_productos_so = []
 
         distinct_ventas_so.map((venta_so) => {
+            const posibleCombo = venta_so.descripcion_producto 
+                            ? venta_so.descripcion_producto.includes('+') ? true : false
+                            : false
             new_data_master_productos_so.push({
                 m_dt_id : venta_so.m_dt_id,
                 m_cl_grow : venta_so.m_cl_grow,
@@ -46,7 +49,8 @@ controller.MetObtenerProductosSO = async () => {
                 s_ytd : "0",
                 s_mtd : "0",
                 cod_unidad_medida : venta_so.cod_unidad_medida,
-                unidad_medida : venta_so.unidad_medida
+                unidad_medida : venta_so.unidad_medida,
+                posible_combo : posibleCombo,
             })
         })
         

@@ -117,7 +117,8 @@ controller.MetMostrarNoHomologados = async (req, res) => {
                 pk_extractor_venta_so   : true,
                 cod_unidad_medida       : true,
                 unidad_medida           : true,
-                ruc                     : true
+                ruc                     : true,
+                posible_combo : true,
             },
             where : {
                 homologado : false,

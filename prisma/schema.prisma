@@ -252,6 +252,7 @@ model master_productos_so {
   s_mtd                         String?     @db.VarChar(50) //Retornar
   unidad_minima                 String?     @db.VarChar(50)
   combo                         Boolean     @default(false)
+  posible_combo                 Boolean     @default(false)
   cod_unidad_medida_hml         String?     @db.VarChar(50)
   unidad_medida_hml             String?     @db.VarChar(50)
   coeficiente                   String?     @db.VarChar(50)
