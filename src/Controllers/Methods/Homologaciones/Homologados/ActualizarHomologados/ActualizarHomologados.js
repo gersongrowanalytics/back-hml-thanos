@@ -1,8 +1,11 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const controller = {}
+const RegisterAudits = require('../../../Audits/CreateAudits/RegisterAudits')
 
 controller.MetActualizarHomologados = async (req, res) => {
+
+    const { usutoken } = req.header
 
     const { 
         producto_so_id,
@@ -11,6 +14,16 @@ controller.MetActualizarHomologados = async (req, res) => {
         req_cod_producto_hml,
         producto_uni_medida
     } = req.body;
+
+    let message = 'El producto ha sido actualizado correctamente'
+    let respuesta = true
+    let devmsg = ''
+    let jsonentrada = {
+        producto_so_id,
+        producto_hml_id,
+    }
+    let jsonsalida
+    let audpk = null
 
     try{
 
@@ -29,8 +42,7 @@ controller.MetActualizarHomologados = async (req, res) => {
         })
 
         if(producto_so){
-
-            await prisma.master_productos_so.create({
+            const create_producto_so = await prisma.master_productos_so.create({
                 data: {
                     m_pro_grow              : producto_hml_id,
                     m_dt_id                 : producto_so.m_dt_id,
@@ -51,28 +63,44 @@ controller.MetActualizarHomologados = async (req, res) => {
                     homologado              : true
                 }
             })
+
+            audpk = ["master_productos_so-"+create_producto_so.id]
+
+            jsonsalida = { message, respuesta }
+            await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'HOMOLOGADOS', 'ACTUALIZAR', '/approvals/upload-approved', null, audpk)
         }else{
+            message = 'Lo sentimos no se encontro el producto seleccionado, recomendamos actualizar la pagina'
+            respuesta = false
+            jsonsalida = { message, respuesta }
+            await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'HOMOLOGADOS', 'ACTUALIZAR', '/approvals/upload-approved', message, audpk)
+
             res.status(500)
             res.json({
-                message : 'Lo sentimos no se encontro el producto seleccionado, recomendamos actualizar la pagina',
-                respuesta : false
+                message,
+                respuesta
             })    
         }
 
     }catch(error){
+        message = 'Lo sentimos hubo un error al momento de actualizar homologados'
+        devmsg = error
+        respuesta = false
+        jsonsalida = { message, devmsg, respuesta }
+        await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'HOMOLOGADOS', 'ACTUALIZAR', '/approvals/upload-approved', JSON.stringify(error.toString()), audpk)
+
         console.log(error)
         res.status(500)
         res.json({
-            message : 'Lo sentimos hubo un error al momento de actualizar homologados',
-            devmsg  : error,
-            respuesta : false
+            message,
+            devmsg,
+            respuesta
         })
     } finally {
         await prisma.$disconnect()
         res.status(200)
         res.json({
-            message : 'El producto ha sido actualizado correctamente',
-            respuesta : true
+            message,
+            respuesta
         })
     }
 }
