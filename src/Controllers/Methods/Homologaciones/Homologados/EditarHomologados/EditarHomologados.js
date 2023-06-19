@@ -27,21 +27,21 @@ controller.MetEditarHomologados = async (req, res) => {
             where: {
                 id : producto_so_id
             },
-
             data: {
                 proid : producto_hml_id
             }
         })
 
+        audpk = ["master_productos_so-"+producto_so_id]
         jsonsalida = { message, respuesta }
-        await RegisterAudits.MetRegisterAudits(1, usutoken, 'ip', jsonentrada, jsonsalida, message, 'EDITAR HOMOLOGADOS', '/approvals/upload-approved', null, null)
+        await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'HOMOLOGADOS', 'EDITAR', '/approvals/upload-approved', null, audpk)
 
     }catch(error){
         message = 'Lo sentimos hubo un error al momento de editar homologados'
         respuesta = false
         devmsg = error
         jsonsalida = { message, devmsg, respuesta }
-        await RegisterAudits.MetRegisterAudits(1, usutoken, 'ip', jsonentrada, jsonsalida, message, 'EDITAR HOMOLOGADOS', '/approvals/edit-approved', error, null)
+        await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'HOMOLOGADOS', 'EDITAR', '/approvals/edit-approved', JSON.stringify(error.toString()), audpk)
 
         console.log(error)
         res.status(500)

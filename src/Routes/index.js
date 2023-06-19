@@ -5,6 +5,8 @@ const routes_administration = require('./Administracion/administracion.routes')
 const routes_carga_archivos = require('./CargaArchivos/cargaarchivos.routes')
 const routes_administrar = require('./Administrar/administrar.routes')
 const routes_descargar_data = require('./DescargarData/descargardata.routes')
+const routes_audits = require('./Audits/audits.routes')
+const routes_date = require('./Date/Date.routes')
 const UserValidation = require('../Controllers/Validations/Login/ValUserValidation')
 const ValTokenUsuario = require('../Controllers/Validations/Administrar/TokenUsuario/ValTokenUsuario')
 const LogOut = require('../Controllers/Validations/Login/ValLogOut')
@@ -37,5 +39,7 @@ router.use(routes_carga_archivos);
 router.use(routes_administrar);
 router.use(routes_descargar_data);
 router.use(routes_status);
+router.use(routes_audits);
+router.use(routes_date);
 
 module.exports = router

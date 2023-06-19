@@ -22,6 +22,7 @@ controller.MetActualizarHomologados = async (req, res) => {
         producto_hml_id,
     }
     let jsonsalida
+    let audpk = null
 
     try{
 
@@ -32,7 +33,7 @@ controller.MetActualizarHomologados = async (req, res) => {
         })
 
         if(producto_so){
-            await prisma.master_productos_so.create({
+            const create_producto_so = await prisma.master_productos_so.create({
                 data: {
                     proid : producto_hml_id,
                     m_dt_id : producto_so.m_dt_id,
@@ -51,13 +52,15 @@ controller.MetActualizarHomologados = async (req, res) => {
                 }
             })
 
+            audpk = ["master_productos_so-"+create_producto_so.id]
+
             jsonsalida = { message, respuesta }
-            await RegisterAudits.MetRegisterAudits(1, usutoken, 'ip', jsonentrada, jsonsalida, message, 'Actualizar HOMOLOGADOS', '/approvals/upload-approved', null, null)
+            await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'HOMOLOGADOS', 'ACTUALIZAR', '/approvals/upload-approved', null, audpk)
         }else{
             message = 'Lo sentimos no se encontro el producto seleccionado, recomendamos actualizar la pagina'
             respuesta = false
             jsonsalida = { message, respuesta }
-            await RegisterAudits.MetRegisterAudits(1, usutoken, 'ip', jsonentrada, jsonsalida, message, 'Actualizar HOMOLOGADOS', '/approvals/upload-approved', message, null)
+            await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'HOMOLOGADOS', 'ACTUALIZAR', '/approvals/upload-approved', message, audpk)
 
             res.status(500)
             res.json({
@@ -71,7 +74,7 @@ controller.MetActualizarHomologados = async (req, res) => {
         devmsg = error
         respuesta = false
         jsonsalida = { message, devmsg, respuesta }
-        await RegisterAudits.MetRegisterAudits(1, usutoken, 'ip', jsonentrada, jsonsalida, message, 'Actualizar HOMOLOGADOS', '/approvals/upload-approved', JSON.stringify(error), null)
+        await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'HOMOLOGADOS', 'ACTUALIZAR', '/approvals/upload-approved', JSON.stringify(error.toString()), audpk)
 
         console.log(error)
         res.status(500)
