@@ -21,9 +21,7 @@ controller.MetMostrarNoHomologados = async (req, res) => {
 
     try{
 
-
         let total = []
-
         let query_order = {}
 
         if(req_orden == null){
@@ -80,12 +78,15 @@ controller.MetMostrarNoHomologados = async (req, res) => {
                 },
                 distinct : ['pk_venta_so']
             })
-        }
 
-        if(Math.ceil(total.length/10) < page){
-            page = total.length/10
+            if((total.length)/10 < page){
+                page = Math.ceil((total.length)/10)
+            }
+            if(total.length == 0){
+                page = 1
+            }
         }
-
+        
         const productosSinProid = await prisma.master_productos_so.findMany({
             select: {
                 master_distribuidoras: {
