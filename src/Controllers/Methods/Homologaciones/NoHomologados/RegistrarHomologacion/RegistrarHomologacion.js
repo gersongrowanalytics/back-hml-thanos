@@ -40,7 +40,6 @@ controller.MetRegistrarHomologacion = async (req, res) => {
             }
 
         }else{
-            console.log('Edita homologacion')
             await prisma.master_productos_so.update({
                 where: {
                     id : producto_so_id

@@ -173,6 +173,8 @@ controller.MetMostrarNoHomologados = async (req, res) => {
         productosSinProid.map((produt, pos) => {
             productosSinProid[pos]['s_mtd'] = parseFloat(produt.s_mtd)
             productosSinProid[pos]['s_ytd'] = parseFloat(produt.s_ytd)
+            productosSinProid[pos]['cliente_hml'] = produt.masterclientes_grow.cliente_hml
+            productosSinProid[pos]['territorio'] = produt.masterclientes_grow.territorio
         })
         
         res.status(200)
