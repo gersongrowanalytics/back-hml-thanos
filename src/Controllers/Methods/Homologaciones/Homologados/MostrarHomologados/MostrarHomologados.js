@@ -16,21 +16,23 @@ controller.MetMostrarHomologados = async (req, res) => {
         req_desde,
         req_column,
         req_orden,
-        req_filtro_input
+        req_filtro_input,
+        req_destinatario,
+        req_updated_at
     } = req.body
 
     try{
 
         let query_order = {}
         let total = []
-        const desde_modificado = req_desde.split("/").reverse().join('-')
+        const desde_modificado      = req_desde.split("/").reverse().join('-')
 
         if(req_orden){
-            if(req_column == 'territorio' || req_column == 'codigo_destinatario'){
+            if(req_column == 'territorio' || req_column == 'codigo_destinatario' || req_column == 'destinatario'){
 
                 query_order = {...query_order, masterclientes_grow : { [req_column] : req_orden}}
 
-            }else if(req_column == 'descripcion_producto' || req_column == 'desde'){
+            }else if(req_column == 'descripcion_producto' || req_column == 'desde' || req_column == 'updated_at'){
 
                 query_order = {...query_order, [req_column] : req_orden}
 
@@ -55,6 +57,9 @@ controller.MetMostrarHomologados = async (req, res) => {
                         },
                         codigo_destinatario : {
                             contains : req_cod_prod_not,
+                        },
+                        destinatario : {
+                            contains : req_destinatario
                         }
                     },
                     descripcion_producto : {
@@ -70,7 +75,11 @@ controller.MetMostrarHomologados = async (req, res) => {
                     },
                     desde : {
                         contains : desde_modificado
-                    }
+                    },
+                    // updated_at : {
+                    //     lte :  req_updated_at != '' ? new Date(updated_at_modificado_final_add_day) : new Date(),
+                    //     gte :  req_updated_at != '' ? updated_at_modificado_final : new Date('1999-01-01'),
+                    // }
                 },
                 distinct : ['pk_venta_so_hml'],
             })
@@ -85,6 +94,7 @@ controller.MetMostrarHomologados = async (req, res) => {
             }
         }
 
+
         const productos_hml = await prisma.master_productos_so.findMany({
             where: {
                 m_pro_grow : {
@@ -97,6 +107,9 @@ controller.MetMostrarHomologados = async (req, res) => {
                     },
                     codigo_destinatario : {
                         contains : req_cod_prod_not,
+                    },
+                    destinatario : {
+                        contains : req_destinatario
                     }
                 },
                 descripcion_producto : {
@@ -112,7 +125,11 @@ controller.MetMostrarHomologados = async (req, res) => {
                 },
                 desde : {
                     contains : desde_modificado
-                }
+                },
+                // updated_at : {
+                //     lte :  req_updated_at != ''  ? new Date(updated_at_modificado_final_add_day) : new Date(),
+                //     gte :  req_updated_at != ''  ? updated_at_modificado_final : new Date('1999-01-01'),
+                // }
             },
             select: {
                 master_distribuidoras: {
@@ -145,7 +162,8 @@ controller.MetMostrarHomologados = async (req, res) => {
                 combo                   : true,
                 pk_venta_so             : true,
                 pk_venta_so_hml         : true,
-                unidad_medida           : true
+                unidad_medida           : true,
+                updated_at              : true,
             },
             orderBy: query_order,
             distinct : ['pk_venta_so_hml'],
