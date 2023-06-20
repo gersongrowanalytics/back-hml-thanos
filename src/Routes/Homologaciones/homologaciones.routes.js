@@ -35,7 +35,7 @@ protectedRoutes.post('/get-master-products', ValMosProController.ValMostrarProdu
 // **** **** **** **** **** //
 // RUTAS HOMOLOGACIONES
 // **** **** **** **** **** //
-protectedRoutes.get('/get-approved-products', ValMosHomController.ValMostrarHomologados)
+protectedRoutes.post('/get-approved-products', ValMosHomController.ValMostrarHomologados)
 protectedRoutes.post('/upload-approved', ValActHomController.ValActualizarHomologados)
 protectedRoutes.post('/get-approved-product', ValMostrarHomologadosMasterController.ValMostrarHomologadosMaster)
 
