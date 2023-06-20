@@ -48,6 +48,7 @@ controller.MetMostrarHomologados = async (req, res) => {
                     m_pro_grow : {
                         not: null
                     },
+                    homologado : true,
                     masterclientes_grow : {
                         territorio : {
                             contains : req_region,

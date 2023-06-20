@@ -31,7 +31,7 @@ controller.MetMostrarCargaArchivos = async (req, res) => {
 
         cars.forEach((car, index_car) => {
             cars[index_car]['index'] = index_car + 1
-            cars[index_car]['usuusuario'] = car.usuusuarios.usuusuario
+            cars[index_car]['usuusuario'] = car?.usuusuarios?.usuusuario
             if(car.cartipo == null){
                 cars[index_car]['cartipo'] = ''
             }
