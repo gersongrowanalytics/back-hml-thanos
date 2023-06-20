@@ -44,13 +44,12 @@
                 <td align="center">
                     <div style="width: 1226px; background: #F3F4F8">
                         <br>
-                        <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: -0.051em; color: #706C64; margin-bottom: 2px">
+                        <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 12px; letter-spacing: -0.051em; color: #706C64; margin-bottom: 2px">
                             Equipo de Softys,
                         </div>
                         <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: -0.051em; color: #706C64">
                             Se les está compartiendo un update de información que ha sido actualizado al {{ data_mail.fechaActual }}; con ello, se les está brindando visibilidad de los <span style="font-weight: 700"> Cargados correspondientes a cada área/usuario.</span>
                         </div>
-                        <br>
                         <br>
                         <table style="width: 1000px; font-family: 'Segoe UI', sans-serif;">
                             <tr>
@@ -188,6 +187,118 @@
                                     {{/if}}
                                 </tr>
                                 {{/each}}
+                            {{/each}}
+                        </table>
+                        <br>
+                        <br>
+                        <table border="0" cellspacing="0" cellpadding="0" style="font-family: 'Segoe UI', sans-serif; padding-left: 30px; padding-right: 30px; width: 1000px; border-collapse: collapse;">
+                            <tr style="color: #1E1E1E; height: 10px; padding: 0px; margin: 0px; ">
+                                <td align="center" style="border-top-left-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">N°</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal; padding: 6px">Zona</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Territorio</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Cliente</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Sucursal</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Responsable</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Usuario</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Aplicativo</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">DeadLine</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">DeadLine Actualizado</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Dias de retraso</td>
+                                <td align="center" style="border-top-right-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Status</td>
+                            </tr>
+                            {{#each data_mail.datadts as |dt|}}
+                            <tr class="Status-Row">
+                                <td align="center" class="Status-Col">
+                                    {{dt.indice}}
+                                </td>
+                                <td align="center" class="Status-Col">
+                                    {{#if dt.masterclientes_grow}}
+                                        {{dt.masterclientes_grow.zona}}
+                                    {{else}}
+                                        -
+                                    {{/if}}
+                                </td>
+                                <td align="center" class="Status-Col"> 
+                                    {{#if dt.masterclientes_grow}}
+                                        {{dt.masterclientes_grow.territorio}}
+                                    {{else}}
+                                        -
+                                    {{/if}}
+                                </td>
+                                <td align="center" class="Status-Col">
+                                    {{#if dt.masterclientes_grow}}
+                                        {{dt.masterclientes_grow.cliente_hml}}
+                                    {{else}}
+                                        -
+                                    {{/if}}
+                                </td>
+                                <td align="center" class="Status-Col">
+                                    {{#if dt.masterclientes_grow}}
+                                        {{dt.masterclientes_grow.sucursal_hml}}
+                                    {{else}}
+                                        -
+                                    {{/if}}
+                                </td>
+                                <td align="center" class="Status-Col">
+                                    {{#if dt.espresponsable}}
+                                        {{dt.espresponsable}}
+                                    {{else}}
+                                        -
+                                    {{/if}}
+                                </td>
+                                <td align="center" class="Status-Col">
+                                    {{#if dt.perpersonas}}
+                                        {{dt.perpersonas.pernombrecompleto}}
+                                    {{else}}
+                                        -
+                                    {{/if}}
+                                </td>
+                                <td align="center" class="Status-Col">
+                                    {{#if dt.masterclientes_grow}}
+                                        {{dt.masterclientes_grow.conexion}}
+                                    {{else}}
+                                        -
+                                    {{/if}}
+                                </td>
+                                <td align="center" class="Status-Col">
+                                    {{#if dt.espfechaprogramado}}
+                                        {{formatDate dt.espfechaprogramado}}
+                                    {{else}}
+                                        -
+                                    {{/if}}
+                                </td>
+                                <td align="center" class="Status-Col">
+                                    {{#if dt.espfechactualizacion}}
+                                        {{formatDate dt.espfechactualizacion}}
+                                    {{else}}
+                                        -
+                                    {{/if}}
+                                </td>
+                                <td align="center" class="Status-Col"> 
+                                    <div style="place-content: center; display: flex; justify-content: center; width: 50%;">
+                                        {{#isEqual dt.espdiaretraso 0}}
+                                            <div style="background: #FFFFFF; color: #2FDA36; font-weight: 400; font-size: 9px;  font-style: normal">
+                                                {{dt.espdiaretraso}} días
+                                            </div>
+                                            <div style="width: 17px; height: 10px; border-radius: 8px; background: #2FDA36; margin-left: 5px; margin-top: 2px"></div>
+                                        {{else}}
+                                            <div style="background: #FFFFFF; color: #FF0000; font-weight: 400; font-size: 9px;  font-style: normal">
+                                                {{dt.espdiaretraso}} días 
+                                            </div>
+                                            <div style="width: 17px; height: 10px; border-radius: 8px; background: #FF0000; margin-left: 5px; margin-top: 2px"></div>
+                                        {{/isEqual}}
+                                    </div>
+                                </td>
+                                {{#if dt.espfechactualizacion}}
+                                <td align="center" class="Status-Col-Days" style="color: #2FDA36;">
+                                    Cargado
+                                </td>
+                                {{else}}
+                                <td align="center" class="Status-Col-Days" style="color: #FF0000;">
+                                    Pendiente
+                                </td>
+                                {{/if}}
+                            </tr>
                             {{/each}}
                         </table>
                         <br>
