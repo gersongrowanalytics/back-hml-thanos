@@ -170,7 +170,7 @@ model audauditorias {
   audaccion          String              @db.VarChar(255)
   audruta            String              @db.VarChar(255)
   audlog             String?             @db.Text()
-  audpk              String?             @db.VarChar(255)
+  audpk              String?             @db.Text()
   created_at         DateTime?           @default(now())
   updated_at         DateTime?           @db.Timestamp(0)
   tpatiposauditorias tpatiposauditorias? @relation(fields: [tpaid], references: [tpaid], onUpdate: Restrict, map: "audauditorias_tpaid_foreign")

@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const moment = require('moment')
 
-controller.ActualizarEstadoSellOut = async ( req, res, data ) => {
+controller.ActualizarEstadoSellOut = async ( req, res, data, audpk=[], devmsg=[] ) => {
 
     const {
         usutoken
@@ -54,7 +54,7 @@ controller.ActualizarEstadoSellOut = async ( req, res, data ) => {
             })
 
             if(espo){
-                await prisma.espestadospendientes.update({
+                const updated_esp = await prisma.espestadospendientes.update({
                     where : {
                         espid : espo.espid
                     },
@@ -63,6 +63,7 @@ controller.ActualizarEstadoSellOut = async ( req, res, data ) => {
                         perid                   : usu.perid
                     }
                 })
+                audpk.push("espestadospendientes-update-"+updated_esp.espid)
             }else{
                 if(espn.findIndex(es => es.m_cl_grow == esp.m_cl_grow) == -1){
                     espn.push({
@@ -84,9 +85,14 @@ controller.ActualizarEstadoSellOut = async ( req, res, data ) => {
             }
         }
 
-        await prisma.espestadospendientes.createMany({
-            data : espn
-        })
+        for await (const esp of espn){
+            const create_esp = await prisma.espestadospendientes.create({
+                data : {
+                    ...esp
+                }
+            })
+            audpk.push("espestadospendientes-create-"+create_esp.espid)
+        }
 
         const espe = await prisma.espestadospendientes.findFirst({
             where : {
@@ -130,6 +136,7 @@ controller.ActualizarEstadoSellOut = async ( req, res, data ) => {
                     espdiaretraso           : esp_day_late
                 }
             })
+            audpk.push("espestadospendientes-update"+espu.espid)
     
             const aree = await prisma.areareasestados.findFirst({
                 where : {
@@ -162,6 +169,7 @@ controller.ActualizarEstadoSellOut = async ( req, res, data ) => {
                         areporcentaje : are_percentage
                     }
                 })
+                audpk.push("areareasestados-update"+areu.areid)
             }
         }
 
@@ -171,6 +179,7 @@ controller.ActualizarEstadoSellOut = async ( req, res, data ) => {
 
     }catch(err){
         console.log(err)
+        devmsg.push("ActualizarEstadoSellOut-"+err.toString())
         return true
     }
 }

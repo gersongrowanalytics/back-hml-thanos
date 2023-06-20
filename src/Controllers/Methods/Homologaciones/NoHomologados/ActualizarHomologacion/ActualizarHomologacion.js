@@ -2,14 +2,28 @@ const controller = {}
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const moment = require('moment')
+const RegisterAudits = require('../../../Audits/CreateAudits/RegisterAudits')
 
 controller.MetActualizarHomologacion = async ( req, res ) => {
+
+    const { usutoken } = req.header
 
     let {
         req_datos_homologados,
         req_select_product_so,
         req_rango_fecha
     } = req.body
+
+    let audpk = []
+    let jsonsalida
+    let message = 'Producto homologado con éxito'
+    let respuesta = true
+    let devmsg = ''
+    let jsonentrada = {
+        req_datos_homologados,
+        req_select_product_so,
+        req_rango_fecha,
+    }
 
     try{
 
@@ -61,16 +75,17 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
             }
             if(dhm.req_id){
 
-                await prisma.master_productos_so.update({
+                const updated_product_so = await prisma.master_productos_so.update({
                     where : {
                         id : dhm.req_id
                     },
                     data : data_mpso
                 })
+                audpk.push("master_productos_so-"+updated_product_so.id)
             }else{
                 if(dhm.req_combo){
 
-                    await prisma.master_productos_so.create({
+                    const created_product_so = await prisma.master_productos_so.create({
                         data : {
                             // proid : dhm.req_id_producto_homologado,
                             m_pro_grow : dhm.req_id_producto_homologado,
@@ -100,9 +115,10 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             homologado      : true
                         }
                     })
+                    audpk.push("master_productos_so-"+created_product_so.id)
                 }else{
 
-                    await prisma.master_productos_so.create({
+                    const created_product_so = await prisma.master_productos_so.create({
                         data : {
                             // proid : dhm.req_id_producto_homologado,
                             m_pro_grow : dhm.req_id_producto_homologado,
@@ -127,21 +143,31 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             homologado      : true
                         }
                     })
+                    audpk.push("master_productos_so-"+created_product_so.id)
                 }
             }
         }
 
+        jsonsalida = { message, respuesta }
+        await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'NO HOMOLOGADOS', 'ACTUALIZAR', '/approvals/update-non-approved-products', null, audpk)
+
         res.status(200).json({
-            message     : 'Producto homologado con éxito',
-            response    : true,
+            message     : message,
+            response    : respuesta,
         })    
 
     }catch(err){
         console.log(err)
+        message = 'Ha ocurrido un error al actualizar la homologación'
+        respuesta = false
+        devmsg = err
+        jsonsalida = { message, devmsg, respuesta }
+        await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'NO HOMOLOGADOS', 'ACTUALIZAR', '/approvals/update-non-approved-products', JSON.stringify(devmsg.toString()), null)
+
         res.status(500).json({
-            message     : 'Ha ocurrido un error al actualizar la homologación',
-            response    : false,
-            devmsg      : err
+            message     : message,
+            response    : respuesta,
+            devmsg      : devmsg
         })    
     }
 
