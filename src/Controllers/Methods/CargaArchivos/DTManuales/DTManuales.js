@@ -12,6 +12,7 @@ const UploadFileExcel = require('../../S3/UploadFileExcelS3')
 const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadenaAleatorio')
 const path = require('path')
 const DTActualizarEstadoSelloutController = require('./DTActualizarEstadoSellOut')
+const RegisterAudits = require('../../Audits/CreateAudits/RegisterAudits')
 
 controller.MetDTManuales = async (req, res, data, delete_data, error, message_errors) => {
 
@@ -23,6 +24,16 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
     const {
         usutoken
     } = req.headers
+
+    let message = 'Las ventas manuales fueron cargadas correctamente'
+    let respuesta = true
+    let devmsg = []
+    let jsonentrada = {
+        req_action_file,
+        req_type_file
+    }
+    let jsonsalida
+    let audpk = []
 
     try{
 
@@ -51,15 +62,15 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
             // REVISAR ESTAS LINEAS !!
             
-            error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data)
+            error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data, audpk, devmsg)
             if(usu.usuid == 1){
-                error_actualizar_so   = await controller.DTActualizarVentasSO(action_file.delete_data, delete_data, data)
+                error_actualizar_so   = await controller.DTActualizarVentasSO(action_file.delete_data, delete_data, data, audpk, devmsg)
             }
         }
 
         // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
         if(usu.usuid == 1){
-            const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO()
+            const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO(audpk, devmsg)
         }
         
         const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
@@ -95,12 +106,12 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
         const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html');
         const from_mail_data = process.env.USER_MAIL
-        // const to_mail_data = process.env.TO_MAIL
+        const to_mail_data = process.env.TO_MAIL
 
-        let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
-        if(usu.usuid == 1){
-            to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
-        }
+        // let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
+        // if(usu.usuid == 1){
+            // to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
+        // }
         
         const subject_mail_success = "Carga de Archivo"
 
@@ -113,19 +124,24 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             error_message_mail: message_errors
         }
         
-        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
+        // await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
         if(!error){
 
             let status      = 200
-            let message     = 'Las ventas manuales fueron cargadas correctamente'
-            let respuesta   = true
 
             if(error_actualizar_esp || error_actualizar_so){
                 status      = 500
                 message     = 'Ha ocurrido un error al crear los registros para Carga manual' 
                 respuesta   = false
             }
+
+            jsonsalida = { message, messages_delete_data_acc, respuesta }
+            let log = null
+            if(devmsg.length > 1){
+                log = JSON.stringify(devmsg)
+            }
+            await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'DT MANUALES', 'CREAR', '/carga-archivos/dt-manuales', log, audpk)
 
             return res.status(status).json({
                 message,
@@ -139,6 +155,10 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
     }catch(error){
         console.log(error);
+        devmsg.push("MetDTManuales-"+error.toString())
+        jsonsalida = { message, respuesta, devmsg }
+        await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'DT MANUALES', 'CREAR', '/carga-archivos/dt-manuales', JSON.stringify(devmsg), null)
+
         res.status(500)
         return res.json({
             message : 'Lo sentimos hubo un error al momento de cargar las dt manuales',
@@ -175,7 +195,7 @@ controller.DistribuitorOverWrittern = (messages_dts) => {
     return { messages_delete_data }
 }
 
-controller.DTActualizarVentasSO = async (action_delete, delete_data, data) => {
+controller.DTActualizarVentasSO = async (action_delete, delete_data, data, audpk=[], devmsg=[]) => {
 
     try{
         if(action_delete){
@@ -183,6 +203,16 @@ controller.DTActualizarVentasSO = async (action_delete, delete_data, data) => {
     
                 let dat_cod = dat.cod_dt.toString()
         
+                const find_ventas_so = await prisma.ventas_so.findFirst({
+                    where: {
+                        fecha: {
+                            startsWith: dat.fecha
+                        },
+                        codigo_distribuidor: dat_cod
+                    }
+                })
+                audpk.push("ventas_so-delete-"+find_ventas_so.id)
+
                 await prisma.ventas_so.deleteMany({
                     where: {
                         fecha: {
@@ -193,14 +223,20 @@ controller.DTActualizarVentasSO = async (action_delete, delete_data, data) => {
                 })
             }
         }
-        
-        await prisma.ventas_so.createMany({
-            data
-        })
 
+        for await (const dt of data){
+            const create_ventas_so = await prisma.ventas_so.create({
+                data : {
+                    ...dt
+                }
+            })
+            audpk.push("ventas_so-delete-"+create_ventas_so.id)
+        }
+        
         return false
 
     }catch(err){
+        devmsg.push("DTActualizarVentasSO-"+err.toString())
         console.log(err)
         return true
     }

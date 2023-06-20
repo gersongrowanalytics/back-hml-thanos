@@ -2,7 +2,7 @@ const controller = {}
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-controller.MetObtenerProductosSO = async () => {
+controller.MetObtenerProductosSO = async (audpk=[], devmsg=[]) => {
 
     try{
         const formattedDate = new Date().toISOString().slice(0, 10);
@@ -55,10 +55,14 @@ controller.MetObtenerProductosSO = async () => {
         })
         
         // await prisma.master_productos_so.deleteMany({})
-        await prisma.master_productos_so.createMany({
-            data: new_data_master_productos_so
-        })
-
+        for await (const data_master of new_data_master_productos_so){
+            const create_master_pso = await prisma.master_productos_so.create({
+                data: {
+                    ...data_master
+                }
+            })
+            audpk.push("master_productos_so-create-"+create_master_pso.id)
+        }
 
         for await (const venta_so of distinct_ventas_so){
 
@@ -80,8 +84,18 @@ controller.MetObtenerProductosSO = async () => {
                         pro_so_id : product_so_unique.id
                     }
                 })
-            }else{
-    
+
+                const find_ventas_so = await prisma.ventas_so.findMany({
+                    where: {
+                        pk_venta_so : venta_so.pk_venta_so
+                    },
+                    select: {
+                        id: true,
+                    }
+                })
+                find_ventas_so.map(vso => {
+                    audpk.push("ventas_so-update-"+vso.id)
+                })
             }
         }
 
@@ -92,6 +106,7 @@ controller.MetObtenerProductosSO = async () => {
 
     } catch(error) {
         console.log(error)
+        devmsg.push("MetObtenerProductosSO-"+error.toString())
         return {
             message : 'Lo sentimos hubo un error al momento de obtener los productos SO',
             devmsg  : error,

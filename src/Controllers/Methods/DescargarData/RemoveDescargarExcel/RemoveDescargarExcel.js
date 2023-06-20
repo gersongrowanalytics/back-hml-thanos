@@ -24,7 +24,7 @@ controller.MetRemoveDescargarExcel = async (req, res) => {
         await RemoveFileS3.RemoveFileS3(reqUbi)
 
         res.status(200).json({
-            message : 'Se descargó exitosamente.',
+            message : 'Se elimino correctamente el archivo.',
             respuesta : true,
         })
     }catch(error){
