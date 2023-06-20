@@ -152,6 +152,7 @@ model carcargasarchivos {
   cararchivo         String?             @db.VarChar(255)
   cartoken           String?             @db.VarChar(255)
   carnotificaciones  String?             @db.LongText
+  carplataforma      String?             @db.VarChar(255)
   carexito           Boolean?            @default(false)
   carurl             String?             @db.VarChar(255)
   created_at         DateTime?           @default(now())
