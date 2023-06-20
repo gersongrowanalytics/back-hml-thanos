@@ -14,11 +14,12 @@ controller.MetActualizarStatusBaseDatos = async ( req, res ) => {
     const {
         req_date,
         req_usucorreo,
-        req_espbasedato
+        req_espbasedato,
     } = req.body
 
     try{
 
+        const file_update = req.files.req_file_upload
         let perid
         let response_status = false
         let fecid
@@ -77,16 +78,16 @@ controller.MetActualizarStatusBaseDatos = async ( req, res ) => {
                     response_status =  await StatusArchivoPlano.MetActualizarStatusArchivoPlano(null, fecid, perid)
                     break;
                 case 'Master de Clientes':
-                    response_status =  await StatusMasterClientes.MetActualizarStatusMasterClientes(null, fecid, perid)
+                    response_status =  await StatusMasterClientes.MetActualizarStatusMasterClientes(null, fecid, perid, file_update, req)
                     break;
                 case 'Master de Precios':
                     response_status =  await StatusMasterPrecios.MetActualizarStatusMasterPrecios(null, fecid, perid)
                     break;
                 case 'Master de Producto':
-                    response_status =  await StatusMasterProductos.MetActualizarStatusMasterProductos(null, fecid, perid)
+                    response_status =  await StatusMasterProductos.MetActualizarStatusMasterProductos(null, fecid, perid, file_update, req)
                     break;
                 case 'Sell In Thanos':
-                    response_status =  await StatusSellinThanos.MetActualizarStatusSellinThanos(null, fecid, perid)
+                    response_status =  await StatusSellinThanos.MetActualizarStatusSellinThanos(null, fecid, perid, file_update, req)
                     break;
                 case 'Homologaciones':
                     response_status =  await ActualizarStatusHomologacion.MetActualizarStatusHomologacion(req, res, fecid, perid)
