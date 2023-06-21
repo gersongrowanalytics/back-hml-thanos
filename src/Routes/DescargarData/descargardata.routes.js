@@ -10,6 +10,7 @@ const ValDescargarHomologados = require('../../Controllers/Validations/Descargar
 const ValDescargarMasterDistribuidoras = require('../../Controllers/Validations/DescargarData/DescargarMasterDistribuidoras/ValDescargarMasterDistribuidoras')
 const ValDescargarMasterProductos = require('../../Controllers/Validations/DescargarData/DescargarMasterProductos/ValDescargarMasterProductos')
 const ValDescargarMasterClientesGrow = require('../../Controllers/Validations/DescargarData/DescargarMasterClientesGrow/ValDescargarMasterClientesGrow')
+const ValDescargarInventarios = require('../../Controllers/Validations/DescargarData/DescargarInventarios/ValDescargarInventarios')
 const ValDescargarMasterProductosGrow = require('../../Controllers/Validations/DescargarData/DescargarMasterProductosGrow/ValDescargarMasterProductosGrow')
 const ValDescargarMasterProductosSo = require('../../Controllers/Validations/DescargarData/DescargarMasterProductosSo/ValDescargarMasterProductosSo')
 const ValRemoveDescargarExcel = require('../../Controllers/Validations/DescargarData/RemoveDescargarExcel/ValRemoveDescargarExcel')
@@ -26,8 +27,9 @@ protectedRoutes.post('/products-approveds', ValDescargarHomologados.ValDescargar
 protectedRoutes.post('/distributors', ValDescargarMasterDistribuidoras.ValDescargarMasterDistribuidoras)
 protectedRoutes.post('/products', ValDescargarMasterProductos.ValDescargarMasterProductos)
 protectedRoutes.post('/products-so', ValDescargarMasterProductosSo.ValDescargarMasterProductosSo)
-protectedRoutes.post('/master-prducts', ValDescargarMasterProductosGrow.ValDescargarMasterProductosGrow)
+protectedRoutes.post('/master-products', ValDescargarMasterProductosGrow.ValDescargarMasterProductosGrow)
 protectedRoutes.post('/master-clients', ValDescargarMasterClientesGrow.ValDescargarMasterClientesGrow)
+protectedRoutes.post('/inventories', ValDescargarInventarios.ValDescargarInventarios)
 protectedRoutes.post('/remove-excel', ValRemoveDescargarExcel.ValRemoveDescargarExcel)
 
 protectedRoutes.get('/download-file/:type/:namefile', (req, res) => {
