@@ -14,13 +14,16 @@ controller.MetMasterProductosGrow = async ( req, res, ex_data ) => {
                 where : {
                     codigo_material : data.codigo_material
                 },
+                select : {
+                    id : true
+                }
             })
 
             if(m_pro_grow){
 
                 await prisma.master_productos_grow.update({
                     where: {
-                        codigo_material : data.codigo_material
+                        id : m_pro_grow.id
                     },
                     data
                 })

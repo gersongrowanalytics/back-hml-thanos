@@ -16,145 +16,80 @@ controller.MetMostrarNoHomologados = async (req, res) => {
         req_mtd,
         req_total,
         req_column,
-        req_orden
+        req_orden,
+        req_zona
     } = req.body;
 
     let total = []
     let productosSinProid
+    let data_query
+    let total_query_sql = []
 
     try{
 
-        let query_order = {}
+        let query_order_sql = ''
 
         if(req_orden == null){
-            query_order = {...query_order, updated_at: 'desc'}
-        }
-        else if(req_column == 'cliente_hml' || req_column == 'territorio'){
-            query_order = {...query_order, masterclientes_grow : { [req_column] : req_orden } }
+            query_order_sql = 'ORDER BY master_productos_so.updated_at DESC' 
+        }else if(req_column == 'cliente_hml' || req_column == 'territorio' || req_column == 'zona'){
+            query_order_sql = `ORDER BY masterclientes_grow.${req_column} ${req_orden.toUpperCase()}`
         }else{
-
-            if(req_column == 's_ytd' || req_column == 's_mtd'){
-                if(req_column == 's_ytd'){
-                    query_order = {...query_order, s_ytd_value : req_orden }
-                }else{
-                    query_order = {...query_order, s_mtd_value : req_orden }
-                }
-            }else{
-                query_order = {...query_order, [req_column] : req_orden }
-            }
+            query_order_sql = `ORDER BY master_productos_so.${req_column} ${req_orden.toUpperCase()}`
         }
 
         if(req_total){
 
-            total = await prisma.master_productos_so.findMany({
-                where : {
-                    homologado : false,
-                    masterclientes_grow : {
-                        cliente_hml : {
-                            contains : req_cliente_hml
-                        },
-                        territorio : {
-                            contains : req_territorio
-                        }
-                    },
-                    codigo_producto : {
-                        contains : req_cod_producto
-                    },
-                    descripcion_producto : {
-                        contains : req_des_producto
-                    },
-                    s_ytd : {
-                        startsWith : req_ytd
-                    },
-                    s_mtd : {
-                        startsWith : req_mtd
-                    },
-                },
-                distinct : ['pk_venta_so']
-            })
+            const query_total = await prisma.$queryRawUnsafe(`SELECT DISTINCT(pk_venta_so), master_productos_so.id FROM master_productos_so LEFT JOIN master_distribuidoras ON master_distribuidoras.id = master_productos_so.m_dt_id LEFT JOIN masterclientes_grow ON masterclientes_grow.id = master_productos_so.m_cl_grow WHERE masterclientes_grow.cliente_hml LIKE '%${req_cliente_hml}%' AND masterclientes_grow.zona LIKE '%${req_zona}%' AND masterclientes_grow.territorio LIKE '%${req_territorio}%' AND master_productos_so.homologado = 0 AND master_productos_so.codigo_producto LIKE '%${req_cod_producto}%' AND master_productos_so.descripcion_producto LIKE '%${req_des_producto}%' AND master_productos_so.desde LIKE '%${req_desde}%' AND master_productos_so.s_ytd LIKE '${req_ytd}%' AND master_productos_so.s_mtd LIKE '${req_mtd}%';`)
 
-            if((total.length)/10 < page){
-                page = Math.ceil((total.length)/10)
+            total_query_sql = query_total.map(({id}) => ({
+                id : parseInt(id),
+            }));
+
+            if((total_query_sql.length)/10 < page){
+                page = Math.ceil((total_query_sql.length)/10)
             }
-            if(total.length == 0){
+            if(total_query_sql.length == 0){
                 page = 1
             }
         }
-        
-        productosSinProid = await prisma.master_productos_so.findMany({
-            select: {
-                master_distribuidoras: {
-                    select: {
-                        nomb_dt     : true,
-                        region      : true,
-                        codigo_dt   : true
-                    }
-                },
-                masterclientes_grow : {
-                    select : {
-                        cliente_hml         : true,
-                        territorio          : true, // En el front se muestra región, validar con Jazmin
-                        codigo_destinatario : true,
-                        sucursal_hml        : true
-                    }
-                },
-                id                      : true,
-                m_dt_id                 : true,
-                codigo_distribuidor     : true,
-                codigo_producto         : true,
-                descripcion_producto    : true,
-                desde                   : true,
-                hasta                   : true,
-                s_ytd                   : true,
-                s_mtd                   : true,
-                pk_venta_so             : true,
-                pk_extractor_venta_so   : true,
-                cod_unidad_medida       : true,
-                unidad_medida           : true,
-                ruc                     : true,
-                posible_combo : true,
-            },
-            where : {
-                homologado : false,
-                masterclientes_grow : {
-                    cliente_hml : {
-                        contains : req_cliente_hml
-                    },
-                    territorio : {
-                        contains : req_territorio
-                    }
-                },
-                codigo_producto : {
-                    contains : req_cod_producto
-                },
-                descripcion_producto : {
-                    contains : req_des_producto
-                },
-                desde : {
-                    contains : req_desde
-                },
-                s_ytd : {
-                    startsWith : req_ytd
-                },
-                s_mtd : {
-                    startsWith : req_mtd
-                },
-            },
-            orderBy : query_order,
-            distinct : ['pk_venta_so'],
-            take : 10,
-            skip : (page - 1) * 10
-        })
 
-        productosSinProid.map((pro, index) => productosSinProid[index]['key']  = index)
+        const page_query = (page-1)*10
 
-        productosSinProid.map((produt, pos) => {
-            productosSinProid[pos]['s_mtd'] = parseFloat(produt.s_mtd)
-            productosSinProid[pos]['s_ytd'] = parseFloat(produt.s_ytd)
-            productosSinProid[pos]['cliente_hml'] = produt.masterclientes_grow.cliente_hml
-            productosSinProid[pos]['territorio'] = produt.masterclientes_grow.territorio
-        })
-        
+        productosSinProid = await prisma.$queryRawUnsafe(`SELECT DISTINCT(pk_venta_so), master_productos_so.id, master_productos_so.m_dt_id, master_productos_so.codigo_distribuidor, master_productos_so.codigo_producto, master_productos_so.descripcion_producto, master_productos_so.desde, master_productos_so.hasta, master_productos_so.s_ytd, master_productos_so.s_mtd, master_productos_so.pk_venta_so, master_productos_so.pk_extractor_venta_so, master_productos_so.unidad_medida, master_productos_so.cod_unidad_medida, master_productos_so.ruc, master_productos_so.posible_combo, master_distribuidoras.nomb_dt, master_distribuidoras.region,master_distribuidoras.codigo_dt, masterclientes_grow.cliente_hml, masterclientes_grow.zona, masterclientes_grow.territorio, masterclientes_grow.codigo_destinatario, masterclientes_grow.sucursal_hml FROM master_productos_so LEFT JOIN master_distribuidoras ON master_distribuidoras.id = master_productos_so.m_dt_id LEFT JOIN masterclientes_grow ON masterclientes_grow.id = master_productos_so.m_cl_grow WHERE master_productos_so.homologado = 0 AND masterclientes_grow.cliente_hml LIKE '%${req_cliente_hml}%' AND masterclientes_grow.zona LIKE '%${req_zona}%' AND masterclientes_grow.territorio LIKE '%${req_territorio}%' AND master_productos_so.codigo_producto LIKE '%${req_cod_producto}%' AND master_productos_so.descripcion_producto LIKE '%${req_des_producto}%' AND master_productos_so.desde LIKE '%${req_desde}%' AND master_productos_so.s_ytd LIKE '${req_ytd}%' AND master_productos_so.s_mtd LIKE '${req_mtd}%' ${query_order_sql} LIMIT 10 OFFSET ${page_query};`)
+
+        data_query = productosSinProid.map(({ id, pk_venta_so, m_dt_id, codigo_distribuidor, codigo_producto, descripcion_producto, desde, hasta, s_ytd, s_mtd, pk_extractor_venta_so, unidad_medida, cod_unidad_medida, ruc, posible_combo, nomb_dt, region, codigo_dt, cliente_hml, zona, territorio, codigo_destinatario, sucursal_hml }, index) => ({
+            key : index,
+            id : parseInt(id),
+            pk_venta_so,
+            m_dt_id,
+            codigo_distribuidor, 
+            codigo_producto, 
+            descripcion_producto, 
+            desde, 
+            hasta, 
+            s_ytd, 
+            s_mtd, 
+            pk_extractor_venta_so, 
+            unidad_medida, 
+            cod_unidad_medida, 
+            ruc, 
+            posible_combo,
+            cliente_hml,
+            territorio,
+            master_distribuidoras : {
+                nomb_dt,
+                region,
+                codigo_dt
+            },
+            masterclientes_grow : {
+                cliente_hml, 
+                territorio, 
+                codigo_destinatario, 
+                sucursal_hml,
+                zona
+            },
+        }));
+
     }catch(error){
         console.log(error)
         res.status(500)
@@ -167,8 +102,8 @@ controller.MetMostrarNoHomologados = async (req, res) => {
         res.status(200)
         return res.json({
             message     : 'Productos no homologados obtenidos correctamente',
-            data        : productosSinProid,
-            total_data  : total.length,
+            data        : data_query,
+            total_data  : total_query_sql.length,
             respuesta   : true
         })
     }

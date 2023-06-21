@@ -55,47 +55,47 @@ controller.MetMigrarVentas = async (req, res) => {
         //             const pk_extractor_venta_so = dt.cod_ship_to + dt.cod_material_dist + dt.factor_um + dt.factor_um
         //             const pk_venta_so_hml = pk_venta_so + dt.cod_tipo_vta_dist + dt.tipo_vta_dist
 
-        //             data_ventas_so.push({
-        //                 m_cl_grow: findClientes.id,
-        //                 pk_venta_so: pk_venta_so,
-        //                 pk_extractor_venta_so: pk_extractor_venta_so,
-        //                 c_date: dt.c_date,
-        //                 anio: parseInt(dt.year),
-        //                 mes: parseInt(dt.month),
-        //                 dia: parseInt(dt.day),
-        //                 codigo_distribuidor: dt.cod_ship_to,
-        //                 fecha: fechaSave,
-        //                 codigo_cliente: dt.cod_cliente_so,
-        //                 cliente_so: dt.cliente_so,
-        //                 codigo_producto: dt.cod_material_dist,
-        //                 descripcion_producto: dt.material_dist,
-        //                 precio_unitario: 0,
-        //                 extractor: true,
-        //             })
-        //             data_master_productos_so.push({
-        //                 m_cl_grow: findClientes.id,
-        //                 pk_venta_so: pk_venta_so,
-        //                 pk_extractor_venta_so: pk_extractor_venta_so,
-        //                 m_pro_grow: dt.c_cod_material, // envio parametros para validacion no es el parametro que se guarda en la bd
-        //                 pk_venta_so_hml: pk_venta_so_hml,
-        //                 codigo_distribuidor: dt.cod_ship_to,
-        //                 codigo_producto: dt.cod_material_dist,
-        //                 descripcion_producto: dt.material_dist,
-        //                 precio_unitario: 0,
-        //                 desde : formattedDate,
-        //                 hasta : formattedDate,
-        //                 s_ytd : "0",
-        //                 s_ytd_value : 0,
-        //                 s_mtd : "0",
-        //                 s_mtd_value : 0,
-        //             })
-        //         }else{
-        //             const findObs = obs_ven.find(obs => obs.cod_ship_to == dt.cod_ship_to)
-        //             if(!findObs){
-        //                 obs_ven.push(dt)
-        //             }
-        //         }
-        //     }
+                    data_ventas_so.push({
+                        m_cl_grow: findClientes.id,
+                        pk_venta_so: pk_venta_so,
+                        pk_extractor_venta_so: pk_extractor_venta_so,
+                        c_date: dt.c_date,
+                        anio: parseInt(dt.year),
+                        mes: parseInt(dt.month),
+                        dia: parseInt(dt.day),
+                        codigo_distribuidor: dt.cod_ship_to,
+                        fecha: fechaSave,
+                        codigo_cliente: dt.cod_cliente_so,
+                        cliente_so: dt.cliente_so,
+                        codigo_producto: dt.cod_material_dist,
+                        descripcion_producto: dt.material_dist,
+                        precio_unitario: 0,
+                        extractor: true,
+                    })
+                    data_master_productos_so.push({
+                        m_cl_grow: findClientes.id,
+                        pk_venta_so: pk_venta_so,
+                        pk_extractor_venta_so: pk_extractor_venta_so,
+                        m_pro_grow: dt.c_cod_material, // envio parametros para validacion no es el parametro que se guarda en la bd
+                        pk_venta_so_hml: pk_venta_so_hml,
+                        codigo_distribuidor: dt.cod_ship_to,
+                        codigo_producto: dt.cod_material_dist,
+                        descripcion_producto: dt.material_dist,
+                        precio_unitario: 0,
+                        desde : formattedDate,
+                        hasta : formattedDate,
+                        s_ytd : "0",
+                        s_ytd_value : 0,
+                        s_mtd : "0",
+                        s_mtd_value : 0,
+                    })
+                }else{
+                    const findObs = obs_ven.find(obs => obs.cod_ship_to == dt.cod_ship_to)
+                    if(!findObs){
+                        obs_ven.push(dt)
+                    }
+                }
+            }
 
         //     const idMpso = data_master_productos_so.map(mpso => mpso.m_pro_grow)
         //     const filterIdMpso = [...new Set(idMpso)]

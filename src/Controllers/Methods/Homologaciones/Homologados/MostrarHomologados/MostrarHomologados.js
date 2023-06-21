@@ -18,8 +18,9 @@ controller.MetMostrarHomologados = async (req, res) => {
         req_column,
         req_orden,
         req_filtro_input,
-        req_destinatario,
-        req_updated_at
+        req_cliente_hml,
+        req_updated_at,
+        req_zona
     } = req.body
 
     let productos_hml
@@ -35,7 +36,6 @@ controller.MetMostrarHomologados = async (req, res) => {
             update_filter_more = moment('1999-01-01').format('YYYY-MM-DD')
             update_filter_less = moment().format('YYYY-MM-DD')
         }else{
-            console.log('hay fecha')
             update_filter_more = moment(req_updated_at).format('YYYY-MM-DD')
             update_filter_less = moment(req_updated_at).format('YYYY-MM-DD')
         }
@@ -44,7 +44,7 @@ controller.MetMostrarHomologados = async (req, res) => {
         const desde_modificado      = req_desde.split("/").reverse().join('-')
 
         if(req_orden){
-            if(req_column == 'territorio' || req_column == 'codigo_destinatario' || req_column == 'destinatario'){
+            if(req_column == 'territorio' || req_column == 'codigo_destinatario' || req_column == 'cliente_hml' || req_column == 'zona'){
 
                 query_order = {...query_order, masterclientes_grow : { [req_column] : req_orden}}
 
@@ -74,8 +74,11 @@ controller.MetMostrarHomologados = async (req, res) => {
                         codigo_destinatario : {
                             contains : req_cod_prod_not,
                         },
-                        destinatario : {
-                            contains : req_destinatario
+                        cliente_hml : {
+                            contains : req_cliente_hml
+                        },
+                        zona : {
+                            contains : req_zona
                         }
                     },
                     descripcion_producto : {
@@ -123,8 +126,11 @@ controller.MetMostrarHomologados = async (req, res) => {
                     codigo_destinatario : {
                         contains : req_cod_prod_not,
                     },
-                    destinatario : {
-                        contains : req_destinatario
+                    cliente_hml : {
+                        contains : req_cliente_hml
+                    },
+                    zona : {
+                        contains : req_zona
                     }
                 },
                 descripcion_producto : {
@@ -160,7 +166,8 @@ controller.MetMostrarHomologados = async (req, res) => {
                         territorio : true,
                         codigo_destinatario : true,
                         sucursal_hml : true,
-                        destinatario : true
+                        destinatario : true,
+                        zona        : true
                     }
                 },
                 master_productos_grow: {
