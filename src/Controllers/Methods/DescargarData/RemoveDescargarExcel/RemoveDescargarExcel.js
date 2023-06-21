@@ -12,7 +12,8 @@ controller.MetRemoveDescargarExcel = async (req, res) => {
             "products-so": "hmlthanos/pe/tradicional/archivosgenerados/ventas/",
             "products-approveds": "hmlthanos/pe/tradicional/archivosgenerados/homologaciones/",
             "master-clients": "hmlthanos/pe/tradicional/archivosgenerados/masterclientesgrow/",
-            "master-prducts": "hmlthanos/pe/tradicional/archivosgenerados/masterproductosgrow/"
+            "master-products": "hmlthanos/pe/tradicional/archivosgenerados/masterproductosgrow/",
+            "inventories": "hmlthanos/pe/tradicional/archivosgenerados/inventarios/"
         }
 
         let reqUbi = {
