@@ -94,7 +94,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             data: {
                 usuid       : usu.usuid,
                 // carnombre   : nombre_archivo+'.xlsx',
-                carnombre   : token_name + '-' + req.files.carga_manual.name,
+                carnombre   : req.files.carga_manual.name,
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
                 cartipo     : req_type_file,

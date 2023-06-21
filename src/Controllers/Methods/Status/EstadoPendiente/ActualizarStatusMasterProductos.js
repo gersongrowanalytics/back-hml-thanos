@@ -2,13 +2,24 @@ const controller = {}
 const moment = require('moment');
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+const crypto = require('crypto')
+const bcryptjs = require('bcryptjs')
+const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadenaAleatorio')
+const UploadFileS3 = require('../../S3/UploadFileS3')
 
+controller.MetActualizarStatusMasterProductos = async (usutoken, date, perid, file_update = null, req) => {
 
-controller.MetActualizarStatusMasterProductos = async (usutoken, date, perid) => {
     try{
         
+        const {
+            req_plataforma,
+            req_usucorreo
+        } = req.body
+
         let perid_usu
         let fecid
+
+        const baseUrl = req.protocol + '://' + req.get('host')
 
         if(!date){
             const usu = await prisma.usuusuarios.findFirst({
@@ -113,6 +124,78 @@ controller.MetActualizarStatusMasterProductos = async (usutoken, date, perid) =>
                     }
                 })
             }
+        }
+
+        if(file_update){
+
+            let path_file
+            const token_excel = crypto.randomBytes(30).toString('hex')
+            const name_file = file_update.name.substring(0, file_update.name.lastIndexOf("."));
+            const ext_file = file_update.name.substring(file_update.name.lastIndexOf(".") + 1);
+            const archivoExcel = file_update.data
+
+            const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
+
+            if(process.env.ENTORNO == 'PREPRODUCTIVO'){
+                path_file = 'hmlthanos/prueba/pe/tradicional/carga_archivos/Master de Producto/'
+            }else{
+                path_file = 'hmlthanos/pe/tradicional/archivosgenerados/masterproductos/'
+            }
+            const ubicacion_s3 = path_file + name_file + '-' + token_name + '.' + ext_file
+
+            await UploadFileS3.UploadFileS3(archivoExcel, ubicacion_s3)
+    
+            let usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    usucorreo : req_usucorreo
+                }
+            })
+
+            if(!usu){
+                usu = await prisma.usuusuarios.findFirst({
+                    where : {
+                        usucorreo : 'usuario@gmail.com'
+                    }
+                })
+
+                if(!usu){
+
+                    let per = await prisma.perpersonas.findFirst({
+                        where : {
+                            pernombre : 'Usuario'
+                        }
+                    })
+
+                    usu = await prisma.usuusuarios.create({
+                        data : {
+                            tpuid                   : 1,
+                            perid                   : per.perid,
+                            usuusuario              : 'usuario@gmail.com',
+                            usucorreo               : 'usuario@gmail.com',
+                            estid                   : 1,
+                            usutoken                : crypto.randomBytes(30).toString('hex'),
+                            usupaistodos            : false,
+                            usupermisosespeciales   : false,
+                            usucerrosesion          : false,
+                            usucierreautomatico     : false
+                        }
+                    })
+                }
+            }
+
+            const carn = await prisma.carcargasarchivos.create({
+                data: {
+                    usuid               : usu.usuid,
+                    carnombre           : file_update.name,
+                    cararchivo          : ubicacion_s3,
+                    cartoken            : token_excel,
+                    cartipo             : 'Master de Producto',
+                    carurl              : baseUrl + '/carga-archivos/generar-descarga?token='+token_excel,
+                    carexito            : true,
+                    carnotificaciones   : 'El archivo de Master de Producto fue cargado exitosamente',
+                    carplataforma       : req_plataforma ? req_plataforma : null
+                }
+            })
         }
 
 
