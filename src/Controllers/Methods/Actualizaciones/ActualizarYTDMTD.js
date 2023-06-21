@@ -37,8 +37,8 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data ) => {
                     id : vso.pro_so_id,
                 },
                 data: {
-                    s_mtd : totalytdmtd?.toString(),
-                    s_ytd : totalytdmtd?.toString()
+                    s_mtd : totalytdmtd ? parseFloat(totalytdmtd) : 0,
+                    s_ytd : totalytdmtd ? parseFloat(totalytdmtd) : 0
                 }
             })
 

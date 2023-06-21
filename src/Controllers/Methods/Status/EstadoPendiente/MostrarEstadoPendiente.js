@@ -157,7 +157,8 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
 
         const mcl_grow = await prisma.masterclientes_grow.findMany({
             where : {
-                conexion : 'MANUAL'
+                conexion    : 'MANUAL',
+                estado      : 'ACTIVO'
             },
         })
 

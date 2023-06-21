@@ -10,6 +10,7 @@ controller.MetMostrarCargaArchivos = async (req, res) => {
 
         const cars = await prisma.carcargasarchivos.findMany({
             select : {
+                carid               : true,
                 carnombre           : true,
                 cartoken            : true,
                 cartipo             : true,

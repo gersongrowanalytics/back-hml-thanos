@@ -84,10 +84,8 @@ controller.MetMigrarVentas = async (req, res) => {
                         precio_unitario: 0,
                         desde : formattedDate,
                         hasta : formattedDate,
-                        s_ytd : "0",
-                        s_ytd_value : 0,
-                        s_mtd : "0",
-                        s_mtd_value : 0,
+                        s_ytd : 0,
+                        s_mtd : 0,
                     })
                 }else{
                     const findObs = obs_ven.find(obs => obs.cod_ship_to == dt.cod_ship_to)
