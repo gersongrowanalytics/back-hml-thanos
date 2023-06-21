@@ -19,9 +19,11 @@ controller.MetMostrarNoHomologados = async (req, res) => {
         req_orden
     } = req.body;
 
+    let total = []
+    let productosSinProid
+
     try{
 
-        let total = []
         let query_order = {}
 
         if(req_orden == null){
@@ -30,7 +32,16 @@ controller.MetMostrarNoHomologados = async (req, res) => {
         else if(req_column == 'cliente_hml' || req_column == 'territorio'){
             query_order = {...query_order, masterclientes_grow : { [req_column] : req_orden } }
         }else{
-            query_order = {...query_order, [req_column] : req_orden }
+
+            if(req_column == 's_ytd' || req_column == 's_mtd'){
+                if(req_column == 's_ytd'){
+                    query_order = {...query_order, s_ytd_value : req_orden }
+                }else{
+                    query_order = {...query_order, s_mtd_value : req_orden }
+                }
+            }else{
+                query_order = {...query_order, [req_column] : req_orden }
+            }
         }
 
         if(req_total){
@@ -52,29 +63,12 @@ controller.MetMostrarNoHomologados = async (req, res) => {
                     descripcion_producto : {
                         contains : req_des_producto
                     },
-                    OR : [
-                        {
-                            s_ytd : {
-                                contains : req_ytd
-                            },
-                        },
-                        {
-                            s_ytd : null
-                        }
-                    ],
-                    OR : [
-                        {
-                            s_mtd : {
-                                contains : req_mtd
-                            },
-                        },
-                        {
-                            s_mtd : null
-                        }
-                    ]
-                },
-                orderBy : {
-                    updated_at: 'desc'
+                    s_ytd : {
+                        startsWith : req_ytd
+                    },
+                    s_mtd : {
+                        startsWith : req_mtd
+                    },
                 },
                 distinct : ['pk_venta_so']
             })
@@ -87,7 +81,7 @@ controller.MetMostrarNoHomologados = async (req, res) => {
             }
         }
         
-        const productosSinProid = await prisma.master_productos_so.findMany({
+        productosSinProid = await prisma.master_productos_so.findMany({
             select: {
                 master_distribuidoras: {
                     select: {
@@ -139,28 +133,12 @@ controller.MetMostrarNoHomologados = async (req, res) => {
                 desde : {
                     contains : req_desde
                 },
-                OR : [
-                    {
-                        s_ytd : {
-                            contains : req_ytd
-                        },
-                        
-                    },
-                    {
-                        s_ytd : null
-                       
-                    }
-                ],
-                OR : [
-                    {
-                        s_mtd : {
-                            contains : req_mtd
-                        }
-                    },
-                    {
-                        s_mtd : null
-                    }                    
-                ]
+                s_ytd : {
+                    startsWith : req_ytd
+                },
+                s_mtd : {
+                    startsWith : req_mtd
+                },
             },
             orderBy : query_order,
             distinct : ['pk_venta_so'],
@@ -177,20 +155,21 @@ controller.MetMostrarNoHomologados = async (req, res) => {
             productosSinProid[pos]['territorio'] = produt.masterclientes_grow.territorio
         })
         
-        res.status(200)
-        return res.json({
-            message     : 'Productos no homologados obtenidos correctamente',
-            data        : productosSinProid,
-            total_data  : total.length,
-            respuesta   : true
-        })
-
     }catch(error){
         console.log(error)
         res.status(500)
         return res.json({
             message : 'Lo sentimos hubo un error al momento de ...',
             devmsg  : error
+        })
+    }finally{
+        await prisma.$disconnect()
+        res.status(200)
+        return res.json({
+            message     : 'Productos no homologados obtenidos correctamente',
+            data        : productosSinProid,
+            total_data  : total.length,
+            respuesta   : true
         })
     }
 }

@@ -1,6 +1,7 @@
 const controller = {}
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+const moment = require('moment');
 
 controller.MetMostrarHomologados = async (req, res) => {
 
@@ -21,10 +22,25 @@ controller.MetMostrarHomologados = async (req, res) => {
         req_updated_at
     } = req.body
 
+    let productos_hml
+    let total = []
+
     try{
 
+        let update_filter_less
+        let update_filter_more
         let query_order = {}
-        let total = []
+
+        if(req_updated_at == ''){
+            update_filter_more = moment('1999-01-01').format('YYYY-MM-DD')
+            update_filter_less = moment().format('YYYY-MM-DD')
+        }else{
+            console.log('hay fecha')
+            update_filter_more = moment(req_updated_at).format('YYYY-MM-DD')
+            update_filter_less = moment(req_updated_at).format('YYYY-MM-DD')
+        }
+
+
         const desde_modificado      = req_desde.split("/").reverse().join('-')
 
         if(req_orden){
@@ -76,10 +92,10 @@ controller.MetMostrarHomologados = async (req, res) => {
                     desde : {
                         contains : desde_modificado
                     },
-                    // updated_at : {
-                    //     lte :  req_updated_at != '' ? new Date(updated_at_modificado_final_add_day) : new Date(),
-                    //     gte :  req_updated_at != '' ? updated_at_modificado_final : new Date('1999-01-01'),
-                    // }
+                    updated_at : {
+                        lte :  new Date(update_filter_less+'T23:59:59Z'),
+                        gte :  new Date(update_filter_more+'T00:00:00Z'),
+                    }
                 },
                 distinct : ['pk_venta_so_hml'],
             })
@@ -94,8 +110,7 @@ controller.MetMostrarHomologados = async (req, res) => {
             }
         }
 
-
-        const productos_hml = await prisma.master_productos_so.findMany({
+        productos_hml = await prisma.master_productos_so.findMany({
             where: {
                 m_pro_grow : {
                     not: null
@@ -126,10 +141,10 @@ controller.MetMostrarHomologados = async (req, res) => {
                 desde : {
                     contains : desde_modificado
                 },
-                // updated_at : {
-                //     lte :  req_updated_at != ''  ? new Date(updated_at_modificado_final_add_day) : new Date(),
-                //     gte :  req_updated_at != ''  ? updated_at_modificado_final : new Date('1999-01-01'),
-                // }
+                updated_at : {
+                    lte :  new Date(update_filter_less+'T23:59:59Z'),
+                    gte :  new Date(update_filter_more+'T00:00:00Z'),
+                }
             },
             select: {
                 master_distribuidoras: {
@@ -175,15 +190,6 @@ controller.MetMostrarHomologados = async (req, res) => {
             productos_hml[index]['key'] = index
         });
 
-        res.status(200)
-        res.json({
-            message : 'Productos homologados obtenidos correctamente',
-            data    : productos_hml,
-            respuesta : true,
-            total : total.length
-        })
-
-
     }catch(error){
         console.log(error)
         res.status(500)
@@ -191,6 +197,16 @@ controller.MetMostrarHomologados = async (req, res) => {
             message : 'Lo sentimos hubo un error al momento de mostrar los productos homologados',
             devmsg  : error,
             respuesta : false
+        })
+    }finally{
+
+        await prisma.$disconnect()
+        res.status(200)
+        res.json({
+            message : 'Productos homologados obtenidos correctamente',
+            data    : productos_hml,
+            respuesta : true,
+            total : total.length
         })
     }
 }
