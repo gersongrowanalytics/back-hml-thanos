@@ -25,18 +25,26 @@ controller.MetDescargarHomologados = async (req, res) => {
                     descripcion_producto: true,
                     unidad_medida: true,
                     precio_unitario: true,
+                    desde: true,
                     masterclientes_grow:{
                         select: {
                             codigo_destinatario: true,
+                            destinatario: true
                         }
                     },
-                    master_productos: {
+                    master_productos_grow: {
                         select: {
-                            cod_producto: true,
-                            nomb_producto: true,
+                            codigo_material: true,
+                            material_softys: true
                         }
                     }
                 },
+                where: {
+                    m_pro_grow : {
+                        not: null
+                    },
+                    homologado : true,
+                }
             })
 
             let data_excel = []
@@ -46,39 +54,52 @@ controller.MetDescargarHomologados = async (req, res) => {
                                             ? pso.masterclientes_grow.codigo_destinatario
                                             : ''
                                         : ''
-                const cod_producto_obj = pso.master_productos 
-                                        ? pso.master_productos.cod_producto 
-                                            ? pso.master_productos.cod_producto
+                const cod_producto_obj = pso.master_productos_grow 
+                                        ? pso.master_productos_grow.codigo_material 
+                                            ? pso.master_productos_grow.codigo_material
                                             : ''
                                         : ''
-                const nomb_producto_obj = pso.master_productos 
-                                        ? pso.master_productos.nomb_producto 
-                                            ? pso.master_productos.nomb_producto 
+                const nomb_producto_obj = pso.master_productos_grow 
+                                        ? pso.master_productos_grow.material_softys 
+                                            ? pso.master_productos_grow.material_softys 
                                             : ''
                                         : ''
                 data_excel.push({
-                    "CodigoDistribuidor": masterclientes_obj,
-                    "Fecha": '',
-                    "NroFactura": '',
-                    "CodigoCliente": '',
-                    "RUC": pso.ruc ? pso.ruc : '',
-                    "RazonSocial": '',
-                    "Mercado/Categoria/Tipo": '',
-                    "CodigoVendedorDistribuidor": '',
-                    "DNIVendedorDistribuidor": '',
-                    "NombreVendedorDistribuidor": '',
-                    "CodigoProducto": pso.codigo_producto ? pso.codigo_producto : '',
-                    "DescripcionProducto": pso.descripcion_producto ? pso.descripcion_producto : '',
-                    "Cantidad": pso.cantidad ? pso.cantidad : '',
-                    "UnidadDeMedida": pso.unidad_medida ? pso.unidad_medida : '',
-                    "PrecioUnitario": pso.precio_unitario ? pso.precio_unitario : '',
-                    "PrecioTotalSinIGV": '',
-                    "CodigoProductoHML": cod_producto_obj,
-                    "ProductoHML": nomb_producto_obj,
+                    "codigo_distribuidor": masterclientes_obj,
+                    "nombre_distribuidor": pso?.masterclientes_grow?.destinatario,
+                    // "Fecha": '',
+                    // "NroFactura": '',
+                    // "CodigoCliente": '',
+                    // "RUC": pso.ruc ? pso.ruc : '',
+                    // "RazonSocial": '',
+                    // "Mercado/Categoria/Tipo": '',
+                    // "CodigoVendedorDistribuidor": '',
+                    // "DNIVendedorDistribuidor": '',
+                    // "NombreVendedorDistribuidor": '',
+                    "codigo_producto_distribuidor": pso.codigo_producto ? pso.codigo_producto : '',
+                    "nombre_producto_distribuidor": pso.descripcion_producto ? pso.descripcion_producto : '',
+                    // "Cantidad": pso.cantidad ? pso.cantidad : '',
+                    // "UnidadDeMedida": pso.unidad_medida ? pso.unidad_medida : '',
+                    // "PrecioUnitario": pso.precio_unitario ? pso.precio_unitario : '',
+                    // "PrecioTotalSinIGV": '',
+                    "codigo_producto_maestro": cod_producto_obj,
+                    "fecha_inicial": pso.desde ? pso.desde : '',
+                    // "ProductoHML": nomb_producto_obj,
                 })
             })
 
-            const encabezado = ['CodigoDistribuidor', 'Fecha', 'NroFactura', 'CodigoCliente', 'RUC', 'RazonSocial', 'Mercado/Categoria/Tipo', 'CodigoVendedorDistribuidor', 'DNIVendedorDistribuidor', 'NombreVendedorDistribuidor', 'CodigoProducto', 'DescripcionProducto', 'Cantidad', 'UnidadDeMedida', 'PrecioUnitario', 'PrecioTotalSinIGV', 'CodigoProductoHML', 'ProductoHML']
+            const encabezado = [
+                'codigo_distribuidor', 
+                'nombre_distribuidor', 
+                // 'Fecha', 'NroFactura', 'CodigoCliente', 'RUC', 'RazonSocial', 'Mercado/Categoria/Tipo', 'CodigoVendedorDistribuidor', 'DNIVendedorDistribuidor', 'NombreVendedorDistribuidor', 
+                'codigo_producto_distribuidor', 
+                'nombre_producto_distribuidor', 
+                // 'Cantidad', 'UnidadDeMedida', 'PrecioUnitario', 'PrecioTotalSinIGV', 
+                'codigo_producto_maestro', 
+                // 'ProductoHML'
+                'fecha_inicial'
+
+            ]
 
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet('Datos')
