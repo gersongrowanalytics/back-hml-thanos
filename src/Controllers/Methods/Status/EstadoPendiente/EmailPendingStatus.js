@@ -30,11 +30,57 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
             // await espsDistribuidoras.map((dts, index) => espsDistribuidoras[index]['indice'] = index + 1)
             const filterEspsDistribuidoras = espsDistribuidoras.filter(esp => esp.espfechactualizacion == null)
             await filterEspsDistribuidoras.map((dts, index) => filterEspsDistribuidoras[index]['indice'] = index + 1)
+
+            const get_master_producto_so = await prisma.master_productos_so.findMany({
+                select: {
+                    id: true,
+                    homologado: true,
+                    s_mtd_value: true,
+                    m_cl_grow: true,
+                },
+                where: {
+                    homologado: false,
+                    m_cl_grow: {
+                        not: null,
+                    }
+                }
+            })
+            const idsm_cl_grow = get_master_producto_so.map(d => d.m_cl_grow)
+    
+            const get_master_clientes_grow = await prisma.masterclientes_grow.findMany({
+                where: {
+                    id: {
+                        in: idsm_cl_grow
+                    }
+                },
+                select: {
+                    id: true,
+                    territorio: true,
+                },
+            })
+    
+            const data_final_productos_so = get_master_clientes_grow.map(gmcg => {
+                let totalNoHml = 0
+                let totalmtd = 0
+                get_master_producto_so.map(gmp => {
+                    if(gmp.m_cl_grow == gmcg.id){
+                        totalNoHml = totalNoHml + 1
+                        totalmtd = totalmtd + parseFloat(gmp.s_mtd_value)
+                    }
+                })
+                return {
+                    ...gmcg,
+                    nohml: totalNoHml,
+                    mtd: totalmtd.toFixed(2),
+                }
+            })
+
             const data_mail = {
                 data: datos,
                 dataExcludeDt: datos.filter(a => a.arenombre != 'DT'),
                 dtsCantidad: espsDistribuidoras.length,
                 datadts: filterEspsDistribuidoras,
+                datapso: data_final_productos_so,
                 fechaActual: fechaFormateada
             }
             

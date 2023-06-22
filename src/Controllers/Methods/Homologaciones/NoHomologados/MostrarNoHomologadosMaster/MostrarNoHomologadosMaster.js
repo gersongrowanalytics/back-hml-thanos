@@ -50,6 +50,8 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
                 codigo_producto         : true,
                 cod_unidad_medida       : true,
                 unidad_medida           : true,
+                cod_unidad_medida_hml   : true,
+                unidad_medida_hml       : true,
                 descripcion_producto    : true,
                 precio_unitario         : true,
                 ruc                     : true,
@@ -60,6 +62,23 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
                 m_pro_grow              : true
             }
         })
+
+        const get_data_hml = await prisma.master_productos_so.findMany({
+            select: {
+                cod_unidad_medida_hml: true,
+                unidad_medida_hml: true,
+            },
+            where: {
+                cod_unidad_medida_hml: {
+                    not: null,
+                },
+                unidad_medida_hml: {
+                    not: null,
+                }
+            }
+        })
+
+        get_data_hml.map((m, index) => get_data_hml[index]['key'] = index)
 
         let exist_inv = false
         for await (const mps of mpso ){
@@ -112,7 +131,8 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
         res.status(200).json({
             response    : true,
             message     : 'Información de producto no homologado obtenida con éxito',
-            data        : mpso
+            data        : mpso,
+            data_hml    : get_data_hml,
         })
 
     }catch(err){
