@@ -119,7 +119,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             hasta : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
                             s_ytd : 0,
                             s_mtd : 0,
-                            unidad_minima : dhm.req_unidad_minima_homologado,
+                            unidad_minima : dhm.req_unidad_minima_homologado.toString(),
                             combo : dhm.req_combo,
                             cod_unidad_medida_hml   : dhm.req_cod_unidad_medida_homologado,
                             unidad_medida_hml       : dhm.req_unidad_medida_homologado,
@@ -153,7 +153,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             hasta : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
                             s_ytd : 0,
                             s_mtd : 0,
-                            unidad_minima : dhm.req_unidad_minima_homologado,
+                            unidad_minima : dhm.req_unidad_minima_homologado.toString(),
                             combo : dhm.req_combo,
                             homologado      : true,
                             perid                   : usu.perpersonas.perid
