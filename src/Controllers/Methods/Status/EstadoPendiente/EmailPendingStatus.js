@@ -16,7 +16,7 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
             const diaActual = fechaActual.getDate().toString().padStart(2, '0')
             const mesActual = (fechaActual.getMonth() + 1).toString().padStart(2, '0')
             const anioActual = fechaActual.getFullYear().toString()
-            const fechaFormateada = diaActual + mesActual + anioActual
+            const fechaFormateada = diaActual +'.'+ mesActual +'.'+ anioActual
             const nombresMeses = [
                 "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
@@ -59,21 +59,54 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
                 },
             })
     
-            const data_final_productos_so = get_master_clientes_grow.map(gmcg => {
-                let totalNoHml = 0
-                let totalmtd = 0
-                get_master_producto_so.map(gmp => {
-                    if(gmp.m_cl_grow == gmcg.id){
-                        totalNoHml = totalNoHml + 1
-                        totalmtd = totalmtd + parseFloat(gmp.s_mtd)
-                    }
-                })
-                return {
-                    ...gmcg,
-                    nohml: totalNoHml,
-                    mtd: totalmtd.toFixed(2),
+            // const data_final_productos_so = get_master_clientes_grow.map(gmcg => {
+            //     let totalNoHml = 0
+            //     let totalmtd = 0
+            //     get_master_producto_so.map(gmp => {
+            //         if(gmp.m_cl_grow == gmcg.id){
+            //             totalNoHml = totalNoHml + 1
+            //             totalmtd = totalmtd + parseFloat(gmp.s_mtd)
+            //         }
+            //     })
+            //     return {
+            //         ...gmcg,
+            //         nohml: totalNoHml,
+            //         mtd: totalmtd.toFixed(2),
+            //     }
+            // })
+
+            const data_final_productos_so = [
+                {
+                    "id": 1,
+                    "territorio":  "SUR 1",
+                    "nohml": "7,682",
+                    "mtd": 384.87,
+                },
+                {
+                    "id": 2,
+                    "territorio": "LIMA 4",
+                    "nohml": "970",
+                    "mtd": 0.00,
+                },
+                {
+                    "id": 3,
+                    "territorio": "NORTE 1",
+                    "nohml": "905",
+                    "mtd": 70.91,
+                },
+                {
+                    "id": 4,
+                    "territorio": "TRADICIONAL 2",
+                    "nohml": "2,946",
+                    "mtd": 0.00,
+                },
+                {
+                    "id": 5,
+                    "territorio": "TRADICIONAL 1",
+                    "nohml": "3,074",
+                    "mtd": 0.00,
                 }
-            })
+            ]
 
             const data_mail = {
                 data: datos,

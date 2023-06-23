@@ -63,20 +63,39 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
             }
         })
 
-        const get_data_hml = await prisma.master_productos_so.findMany({
-            select: {
-                cod_unidad_medida_hml: true,
-                unidad_medida_hml: true,
+        // const get_data_hml = await prisma.master_productos_so.findMany({
+        //     select: {
+        //         cod_unidad_medida_hml: true,
+        //         unidad_medida_hml: true,
+        //     },
+        //     where: {
+        //         cod_unidad_medida_hml: {
+        //             not: null,
+        //         },
+        //         unidad_medida_hml: {
+        //             not: null,
+        //         }
+        //     }
+        // })
+
+        const get_data_hml = [
+            {
+                "cod_unidad_medida_hml": "UND",
+                "unidad_medida_hml": "UNIDAD",
             },
-            where: {
-                cod_unidad_medida_hml: {
-                    not: null,
-                },
-                unidad_medida_hml: {
-                    not: null,
-                }
+            {
+                "cod_unidad_medida_hml": "CAJ",
+                "unidad_medida_hml":  "CAJAS",
+            },
+            {
+                "cod_unidad_medida_hml": "BUL",
+                "unidad_medida_hml": "BULTOS",
+            },
+            {
+                "cod_unidad_medida_hml": "OTROS",
+                "unidad_medida_hml": "OTROS",
             }
-        })
+        ]
 
         get_data_hml.map((m, index) => get_data_hml[index]['key'] = index)
 
