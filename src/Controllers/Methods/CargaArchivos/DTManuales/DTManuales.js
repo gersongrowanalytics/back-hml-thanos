@@ -62,7 +62,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
             // REVISAR ESTAS LINEAS !!
             
-            error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data, audpk, devmsg)
+            // error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data, audpk, devmsg)
             if(usu.usuid == 1){
                 error_actualizar_so   = await controller.DTActualizarVentasSO(action_file.delete_data, delete_data, data, audpk, devmsg)
             }
@@ -108,7 +108,8 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         const from_mail_data = process.env.USER_MAIL
         // const to_mail_data = process.env.TO_MAIL
 
-        let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
+        // let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
+        let to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
         if(usu.usuid == 1){
             to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
         }
@@ -211,16 +212,19 @@ controller.DTActualizarVentasSO = async (action_delete, delete_data, data, audpk
                         codigo_distribuidor: dat_cod
                     }
                 })
-                audpk.push("ventas_so-delete-"+find_ventas_so.id)
 
-                await prisma.ventas_so.deleteMany({
-                    where: {
-                        fecha: {
-                            startsWith: dat.fecha
-                        },
-                        codigo_distribuidor: dat_cod
-                    }
-                })
+                if(find_ventas_so){
+                    audpk.push("ventas_so-delete-"+find_ventas_so.id)
+
+                    await prisma.ventas_so.deleteMany({
+                        where: {
+                            fecha: {
+                                startsWith: dat.fecha
+                            },
+                            codigo_distribuidor: dat_cod
+                        }
+                    })   
+                }
             }
         }
 

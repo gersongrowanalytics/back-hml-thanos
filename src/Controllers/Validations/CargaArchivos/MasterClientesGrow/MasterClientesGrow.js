@@ -10,7 +10,7 @@ controller.ValMasterClientesGrow = async ( req, res ) => {
     
     try{
         
-        const file = req.files.masterclientes_grow
+        const file = req.files.maestra_cliente
         const data  = []
 
         const workbook = XLSX.read(file.data)

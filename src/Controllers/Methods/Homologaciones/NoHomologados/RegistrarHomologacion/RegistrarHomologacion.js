@@ -34,7 +34,8 @@ controller.MetRegistrarHomologacion = async (req, res) => {
         
                     data: {
                         // proid : producto_hml_id
-                        m_pro_grow : 268
+                        m_pro_grow : 268,
+                        homologado : true
                     }
                 })
             }
@@ -49,7 +50,8 @@ controller.MetRegistrarHomologacion = async (req, res) => {
                     // proid               : producto_hml_id,
                     m_pro_grow          : 268,
                     cod_unidad_medida   : cod_unidad_medida,
-                    unidad_medida       : unidad_medida
+                    unidad_medida       : unidad_medida,
+                    homologado          : true
                 }
             })
         }
