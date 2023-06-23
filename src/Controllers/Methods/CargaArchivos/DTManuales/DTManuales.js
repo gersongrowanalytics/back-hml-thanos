@@ -108,8 +108,8 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         const from_mail_data = process.env.USER_MAIL
         // const to_mail_data = process.env.TO_MAIL
 
-        // let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
-        let to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
+        let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
+        // let to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
         if(usu.usuid == 1){
             to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
         }
