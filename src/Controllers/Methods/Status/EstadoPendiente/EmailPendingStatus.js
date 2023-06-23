@@ -35,7 +35,7 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
                 select: {
                     id: true,
                     homologado: true,
-                    s_mtd_value: true,
+                    s_mtd: true,
                     m_cl_grow: true,
                 },
                 where: {
@@ -65,7 +65,7 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
                 get_master_producto_so.map(gmp => {
                     if(gmp.m_cl_grow == gmcg.id){
                         totalNoHml = totalNoHml + 1
-                        totalmtd = totalmtd + parseFloat(gmp.s_mtd_value)
+                        totalmtd = totalmtd + parseFloat(gmp.s_mtd)
                     }
                 })
                 return {
@@ -83,7 +83,7 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
                 datapso: data_final_productos_so,
                 fechaActual: fechaFormateada
             }
-            
+                        
             await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
             res.status(200).json({
                 response    : true,

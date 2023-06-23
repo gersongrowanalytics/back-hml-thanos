@@ -89,9 +89,18 @@
                                                     <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
                                                         {{dt.arenombre}}
                                                     </td>
-                                                    <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 17px; line-height: 27px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
-                                                        {{dt.areporcentaje}} %
-                                                    </td>
+                                                    
+
+                                                    {{#isEqual are.areporcentaje "100"}}
+                                                        <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 17px; line-height: 27px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
+                                                            {{dt.areporcentaje}} %
+                                                        </td>
+
+                                                    {{else}}
+                                                        <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 11px; line-height: 10px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
+                                                        Falta homologar
+                                                        </td>
+                                                    {{/isEqual}}
                                                 </tr>
                                             </table>
                                         </td>
@@ -176,15 +185,29 @@
                                             {{/isEqual}}
                                         </div>
                                     </td>
-                                    {{#if esp.espfechactualizacion}}
-                                    <td align="center" class="Status-Col-Days" style="color: #2FDA36;">
-                                        Cargado
-                                    </td>
+                                    
+                                    {{#isEqual esp.espbasedato "Homologaciones"}}
+
+                                        {{#isEqual data.areporcentaje "100"}}
+                                            <td align="center" class="Status-Col-Days" style="color: #2FDA36;">
+                                                Cargado
+                                            </td>
+                                        {{else}}
+                                            <td align="center" class="Status-Col-Days" style="color: #FF0000;">
+                                                Pendiente
+                                            </td>
+                                        {{/isEqual}}
                                     {{else}}
-                                    <td align="center" class="Status-Col-Days" style="color: #FF0000;">
-                                        Pendiente
-                                    </td>
-                                    {{/if}}
+                                        {{#if esp.espfechactualizacion}}
+                                        <td align="center" class="Status-Col-Days" style="color: #2FDA36;">
+                                            Cargado
+                                        </td>
+                                        {{else}}
+                                        <td align="center" class="Status-Col-Days" style="color: #FF0000;">
+                                            Pendiente
+                                        </td>
+                                        {{/if}}
+                                    {{/isEqual}}
                                 </tr>
                                 {{/each}}
                             {{/each}}

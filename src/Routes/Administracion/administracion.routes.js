@@ -21,6 +21,7 @@ const ValMosMcs = require('../../Controllers/Validations/Administracion/MasterCl
 
 const ValMosCarAr = require('../../Controllers/Validations/Administracion/CargaArchivos/MostrarCargaArchivos/MostrarCargaArchivos')
 const ValDelCarAr = require('../../Controllers/Validations/Administracion/CargaArchivos/EliminarCargaArchivo/EliminarCargaArchivo')
+const ValProCarAr = require('../../Controllers/Validations/Administracion/CargaArchivos/ProcesarCargaArchivo/ProcesarCargaArchivo')
 
 const protectedRoutes = express.Router();
 // protectedRoutes.use(authMiddleware);
@@ -62,6 +63,7 @@ protectedRoutes.post('/get-list-price', ValMosLpr.ValMostrarListaPrecio)
 // **** **** **** **** **** //
 protectedRoutes.post('/get-upload-files', ValMosCarAr.ValMostrarCargaArchivos)
 protectedRoutes.post('/delete-upload-file', ValDelCarAr.ValEliminarCargaArchivo)
+protectedRoutes.post('/process-file', ValProCarAr.ValProcesarCargaArchivo)
 
 
 router.use('/administration', protectedRoutes);

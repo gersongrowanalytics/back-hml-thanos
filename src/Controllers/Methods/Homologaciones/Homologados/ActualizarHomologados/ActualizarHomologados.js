@@ -27,6 +27,19 @@ controller.MetActualizarHomologados = async (req, res) => {
 
     try{
 
+        const usu = await prisma.usuusuarios.findFirst({
+            where : {
+                usutoken : usutoken
+            },
+            select : {
+                perpersonas : {
+                    select : {
+                        perid : true
+                    }
+                }
+            }
+        })
+
         let cod_unidad_medida   = producto_uni_medida
         let unidad_medida       = producto_uni_medida
 
@@ -60,7 +73,8 @@ controller.MetActualizarHomologados = async (req, res) => {
                     pk_venta_so             : producto_so.pk_venta_so,
                     cod_unidad_medida       : cod_unidad_medida,
                     unidad_medida           : unidad_medida,
-                    homologado              : true
+                    homologado              : true,
+                    perid                   : usu.perpersonas.perid
                 }
             })
 

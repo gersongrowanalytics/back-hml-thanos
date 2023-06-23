@@ -27,6 +27,19 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
 
     try{
 
+        const usu = await prisma.usuusuarios.findFirst({
+            where : {
+                usutoken : usutoken
+            },
+            select : {
+                perpersonas : {
+                    select : {
+                        perid : true
+                    }
+                }
+            }
+        })
+
         let dataNoRepetida = []
         req_datos_homologados.map((item, index) => {
             let hayRepetidos = false
@@ -56,7 +69,8 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
             let data_mpso = { 
                 m_pro_grow      : dhm.req_id_producto_homologado, 
                 unidad_minima   : dhm.req_unidad_minima_homologado.toString(),
-                homologado      : true
+                homologado      : true,
+                perid           : usu.perpersonas.perid
             }
 
             if(dhm.req_combo){
@@ -112,7 +126,8 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             coeficiente             : dhm.req_coeficiente,
                             unidad_minima_unitaria  : dhm.req_unidad_minima_unitario,
                             bonificado              : dhm.req_bonificado,
-                            homologado      : true
+                            homologado      : true,
+                            perid                   : usu.perpersonas.perid
                         }
                     })
                     audpk.push("master_productos_so-"+created_product_so.id)
@@ -140,7 +155,8 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             s_mtd : 0,
                             unidad_minima : dhm.req_unidad_minima_homologado,
                             combo : dhm.req_combo,
-                            homologado      : true
+                            homologado      : true,
+                            perid                   : usu.perpersonas.perid
                         }
                     })
                     audpk.push("master_productos_so-"+created_product_so.id)

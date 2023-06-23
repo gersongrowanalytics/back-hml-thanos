@@ -2,6 +2,7 @@ const controller = {}
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 const Usuusuarios = require('../../../../../sequelize/models')
+const RegisterAudits = require('../../Audits/CreateAudits/RegisterAudits')
 
 controller.MetTokenUsuario = async (req, res) => {
 
@@ -15,6 +16,13 @@ controller.MetTokenUsuario = async (req, res) => {
 
     let message = 'El token funciona correctamente'
     let usu
+    let respuesta = true
+    let devmsg = ''
+    let jsonsalida
+    let jsonentrada = {
+        req_token
+    }
+
     try{
 
         usu = await prisma.usuusuarios.findFirst({
@@ -117,21 +125,36 @@ controller.MetTokenUsuario = async (req, res) => {
         //     })
         // }
 
+
     }catch(error){
-        console.log(error)
+        message = 'Lo sentimos hubo un error al momento de identificar al usuario'
+        devmsg  = error
+        respuesta = false
         res.status(500)
         res.json({
-            message : 'Lo sentimos hubo un error al momento de..',
-            devmsg  : error
+            message,
+            devmsg,
         })
     }finally{
-        res.status(200)
-        res.json({
-            message : message,
-            respuesta : true,
-            auth_token: usu.usutoken,
-            user : usu
-        })
+
+        if(usu){
+            console.log('registra')
+            jsonsalida = { message : message, respuesta : respuesta, auth_token : usu.usutoken, user : usu }
+            await RegisterAudits.MetRegisterAudits(2, usu.usutoken, null, jsonentrada, jsonsalida, 'LOGIN', 'REGISTRAR', '/status/'+req_token, null, null)
+            res.status(200)
+            res.json({
+                message : message,
+                respuesta : true,
+                auth_token: usu.usutoken,
+                user : usu
+            })
+        }else{
+            res.status(500)
+            res.json({
+                message : 'El usuario no existe',
+                respuesta : false
+            })
+        }
     }
 }
 

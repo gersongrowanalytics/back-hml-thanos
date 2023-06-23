@@ -16,6 +16,29 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
         let query_eps   = {}
         let ares        = []
         let arr_dts     = []
+        let areid_sac
+        let day_late_sac
+
+        const prod_no_hml_count = await prisma.master_productos_so.count({
+            where : {
+                homologado : false
+            }
+        })
+        
+        const last_prod_hml = await prisma.master_productos_so.findFirst({
+            where : {
+                homologado : true
+            },
+            select : {
+                perpersonas : true,
+                updated_at  : true,
+                id          : true
+            },
+            orderBy : {
+                updated_at : 'desc'
+            }
+        })
+
 
         if(date_final != null){
             date_final = moment(date_final).format("YYYY-MM");
@@ -40,7 +63,6 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                 },
                 distinct : ['areid']
             })
-
 
             let index_are = 0
             for await (const are of ares){
@@ -130,16 +152,57 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                     }else if(are.arenombre == 'Ventas' && esp.espdts == true){
                         arr_dts.push(esp)
                     }
+
+                    if(are.arenombre == 'SAC'){
+                        day_late_sac = day_late
+                    }
                 })
+
                 if(are.arenombre == 'Ventas'){
                     ares[index_are]['esps'] = arr_no_dts
-
-
                     ares[index_are]['esps'] = ares[index_are]['esps'].sort(function (a, b){
                         return a.espbasedato < b.espbasedato ? 1 : -1
                     })
                 }
+
+                if(are.arenombre == 'SAC'){
+                    are.areporcentaje                   = prod_no_hml_count == 0 ? '100' : '0'
+                    are.esps[0]['perpersonas']          = last_prod_hml.perpersonas
+                    are.esps[0]['espfechactualizacion'] = last_prod_hml.updated_at
+                    are.esps[0]['espdiaretraso']        = prod_no_hml_count == 0 ? '0' : day_late_sac
+                    areid_sac = are.areid
+                }
             })
+
+            await prisma.areareasestados.update({
+                where :{
+                    areid : areid_sac
+                },
+                data : {
+                    areporcentaje : prod_no_hml_count == 0 ? '100' : '0',
+                }
+            })
+
+            const espe = await prisma.espestadospendientes.findFirst({
+                where : {
+                    fecid : fec.fecid,
+                    areid : areid_sac,
+                }
+            })
+
+            if(last_prod_hml){
+                await prisma.espestadospendientes.update({
+                    where :{
+                        espid : espe.espid
+                    },
+                    data : {
+                        perid                   : last_prod_hml ? last_prod_hml.perpersonas?.perid : null,
+                        espfechactualizacion    : last_prod_hml ? new Date(last_prod_hml.updated_at) : null,
+                        espdiaretraso : prod_no_hml_count == 0 ? '0' : day_late_sac
+                    }
+                })
+
+            }
 
             arr_dts.forEach((ndts, index_ndts) => {
                 arr_dts[index_ndts]['key'] = index_ndts + 1

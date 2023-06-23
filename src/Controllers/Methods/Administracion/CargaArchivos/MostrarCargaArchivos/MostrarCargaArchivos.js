@@ -18,6 +18,7 @@ controller.MetMostrarCargaArchivos = async (req, res) => {
                 carurl              : true,
                 carnotificaciones   : true,
                 carplataforma       : true,
+                carfechaprocesado   : true,
                 carexito            : true,
                 usuusuarios : {
                     select : {

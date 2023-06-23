@@ -105,8 +105,8 @@ controller.MetMostrarHomologados = async (req, res) => {
         }
 
         if(req_filtro_input){
-            if((total.length)/10 < page){
-                page = Math.ceil((total.length)/10)
+            if((total.length)/15 < page){
+                page = Math.ceil((total.length)/15)
             }
             if(total.length == 0){
                 page = 1
@@ -189,8 +189,8 @@ controller.MetMostrarHomologados = async (req, res) => {
             },
             orderBy: query_order,
             distinct : ['pk_venta_so_hml'],
-            take: 10,
-            skip: (page - 1) * 10
+            take: 15,
+            skip: (page - 1) * 15
         })
 
         productos_hml.forEach((pro, index) => {
