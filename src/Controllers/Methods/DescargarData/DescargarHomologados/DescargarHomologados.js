@@ -26,6 +26,7 @@ controller.MetDescargarHomologados = async (req, res) => {
                     unidad_medida: true,
                     precio_unitario: true,
                     desde: true,
+                    unidad_minima: true,
                     masterclientes_grow:{
                         select: {
                             codigo_destinatario: true,
@@ -80,10 +81,11 @@ controller.MetDescargarHomologados = async (req, res) => {
                     "codigo_producto_distribuidor": pso.codigo_producto ? pso.codigo_producto : '',
                     "nombre_producto_distribuidor": pso.descripcion_producto ? pso.descripcion_producto : '',
                     // "Cantidad": pso.cantidad ? pso.cantidad : '',
-                    "UnidadDeMedida": pso.unidad_medida ? pso.unidad_medida : '',
+                    // "UnidadDeMedida": pso.unidad_medida ? pso.unidad_medida : '',
                     // "PrecioUnitario": pso.precio_unitario ? pso.precio_unitario : '',
                     // "PrecioTotalSinIGV": '',
                     "codigo_producto_maestro": cod_producto_obj,
+                    "unidad_minima": pso.unidad_minima ? pso.unidad_minima : '',
                     "fecha_inicial": pso.desde ? pso.desde : '',
                     // "ProductoHML": nomb_producto_obj,
                 })
@@ -97,6 +99,7 @@ controller.MetDescargarHomologados = async (req, res) => {
                 'nombre_producto_distribuidor', 
                 // 'Cantidad', 'UnidadDeMedida', 'PrecioUnitario', 'PrecioTotalSinIGV', 
                 'codigo_producto_maestro', 
+                'unidad_minima',
                 // 'ProductoHML'
                 'fecha_inicial'
 
