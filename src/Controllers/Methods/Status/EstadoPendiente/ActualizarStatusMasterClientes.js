@@ -89,7 +89,8 @@ controller.MetActualizarStatusMasterClientes = async (usutoken, date, perid, fil
                 data : {
                     perid                   : perid_usu,
                     espfechactualizacion    : new Date().toISOString(),
-                    espdiaretraso           : esp_day_late
+                    espdiaretraso           : esp_day_late,
+                    updated_at              : new Date()
                 }
             })
 

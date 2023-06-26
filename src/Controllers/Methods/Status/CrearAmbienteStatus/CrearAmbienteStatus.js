@@ -14,6 +14,8 @@ controller.MetCrearAmbienteStatus = async ( req, res ) => {
         req_masterprecios,
         req_socuota,
         req_archivoplano,
+        req_mclientesg,
+        req_mproductosg,
         req_sachml,
     } = req.body
 
@@ -91,7 +93,7 @@ controller.MetCrearAmbienteStatus = async ( req, res ) => {
                 }
             })
 
-            await controller.CreateDataAreEsp(fecn, req_sithanos,req_masterproductos, req_masterclientes, req_masterprecios, req_socuota, req_archivoplano, req_sachml )
+            await controller.CreateDataAreEsp(fecn, req_sithanos,req_masterproductos, req_masterclientes, req_masterprecios, req_socuota, req_archivoplano, req_sachml, req_mclientesg, req_mproductosg )
         }
 
         res.status(200).json({
@@ -108,7 +110,7 @@ controller.MetCrearAmbienteStatus = async ( req, res ) => {
     }
 }
 
-controller.CreateDataAreEsp = async ( fecn, req_sithanos,req_masterproductos, req_masterclientes, req_masterprecios, req_socuota, req_archivoplano, req_sachml ) => {
+controller.CreateDataAreEsp = async ( fecn, req_sithanos,req_masterproductos, req_masterclientes, req_masterprecios, req_socuota, req_archivoplano, req_sachml, req_mclientesg, req_mproductosg ) => {
     //Revenue
     const are_revenue = await prisma.areareasestados.create({
         data : {
@@ -174,7 +176,7 @@ controller.CreateDataAreEsp = async ( fecn, req_sithanos,req_masterproductos, re
             espresponsable          : 'Maria Yauri',
             espdiaretraso           : '0',
             esporden                : false,
-            cliid                   : null,
+            m_cl_grow               : null,
         }
     })
 
@@ -190,7 +192,7 @@ controller.CreateDataAreEsp = async ( fecn, req_sithanos,req_masterproductos, re
             espresponsable          : 'Maria Yauri',
             espdiaretraso           : '0',
             esporden                : false,
-            cliid                   : null,
+            m_cl_grow               : null,
             tprid                   : 1
         }
     })
@@ -206,7 +208,7 @@ controller.CreateDataAreEsp = async ( fecn, req_sithanos,req_masterproductos, re
             espresponsable          : 'Maria Yauri',
             espdiaretraso           : '0',
             esporden                : false,
-            cliid                   : null,
+            m_cl_grow               : null,
             tprid                   : 1
         }
     })
@@ -222,7 +224,7 @@ controller.CreateDataAreEsp = async ( fecn, req_sithanos,req_masterproductos, re
             espresponsable          : 'Maria Yauri',
             espdiaretraso           : '0',
             esporden                : false,
-            cliid                   : null,
+            m_cl_grow               : null,
             tprid                   : 1
         }
     })
@@ -240,7 +242,7 @@ controller.CreateDataAreEsp = async ( fecn, req_sithanos,req_masterproductos, re
             espresponsable          : 'Ventas',
             espdiaretraso           : '0',
             esporden                : false,
-            cliid                   : null,
+            m_cl_grow               : null,
             tprid                   : 1
         }
     })
@@ -257,7 +259,7 @@ controller.CreateDataAreEsp = async ( fecn, req_sithanos,req_masterproductos, re
             espresponsable          : 'Ventas',
             espdiaretraso           : '0',
             esporden                : false,
-            cliid                   : null,
+            m_cl_grow               : null,
             tprid                   : 1
         }
     })
@@ -275,7 +277,7 @@ controller.CreateDataAreEsp = async ( fecn, req_sithanos,req_masterproductos, re
             espresponsable          : 'SAC',
             espdiaretraso           : '0',
             esporden                : false,
-            cliid                   : null,
+            m_cl_grow               : null,
             tprid                   : 1
         }
     })

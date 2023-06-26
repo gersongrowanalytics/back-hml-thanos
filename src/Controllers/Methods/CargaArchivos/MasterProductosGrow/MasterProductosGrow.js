@@ -45,6 +45,28 @@ controller.MetMasterProductosGrow = async ( req, res, ex_data ) => {
             }
         }
 
+        const espo = await prisma.espestadospendientes.findFirst({
+            where : {
+                espbasedato : 'Master Productos'
+            },
+            select : {
+                espid : true
+            },
+            orderBy : {
+                fecid : 'desc'
+            }
+        })
+
+        const espu = await prisma.espestadospendientes.update({
+            where : {
+                espid : espo.espid
+            },
+            data : {
+                espfechactualizacion : new Date(),
+                updated_at : new Date()
+            }
+        })
+
         return res.status(200).json({
             response    : true,
             message     : 'Se cargó master productos grow correctamente',

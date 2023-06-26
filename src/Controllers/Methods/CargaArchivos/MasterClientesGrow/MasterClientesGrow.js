@@ -50,6 +50,28 @@ controller.MetMasterClientesGrow = async ( req, res, data ) => {
             }
         }
 
+        const espo = await prisma.espestadospendientes.findFirst({
+            where : {
+                espbasedato : 'Master Clientes'
+            },
+            select : {
+                espid : true
+            },
+            orderBy : {
+                fecid : 'desc'
+            }
+        })
+
+        const espu = await prisma.espestadospendientes.update({
+            where : {
+                espid : espo.espid
+            },
+            data : {
+                espfechactualizacion : new Date(),
+                updated_at : new Date()
+            }
+        })
+
         res.status(200).json({
             response    : true,
             message     : 'Se cargó master clientes grow correctamente',

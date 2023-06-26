@@ -6,19 +6,25 @@ controller.MetMostrarMasterClientesGrow = async ( req, res ) => {
 
     try{
 
-        const date_updated = await prisma.espestadospendientes.findFirst({
+        let date_updated
+
+        const espo = await prisma.espestadospendientes.findFirst({
             where : {
                 espbasedato : 'Master Clientes'
             },
             select : {
+                created_at : true,
+                updated_at : true,
                 espfechactualizacion : true
             },
             orderBy : {
                 fecid : 'desc'
             }
         })
-
+    
         const mcg   = await prisma.masterclientes_grow.findMany({})
+
+        date_updated = { espfechaactualizacion : espo.updated_at == null ? null : espo.updated_at }
 
         res.status(200).json({
             response    : true,
