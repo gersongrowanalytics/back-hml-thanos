@@ -206,13 +206,13 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
 
             arr_dts.forEach((ndts, index_ndts) => {
                 arr_dts[index_ndts]['key'] = index_ndts + 1
-                arr_dts[index_ndts]['zona'] = ndts.masterclientes_grow.zona
-                arr_dts[index_ndts]['territorio'] = ndts.masterclientes_grow.territorio
-                arr_dts[index_ndts]['cliente_hml'] = ndts.masterclientes_grow.cliente_hml
-                arr_dts[index_ndts]['sucursal_hml'] = ndts.masterclientes_grow.sucursal_hml
-                arr_dts[index_ndts]['conexion'] = ndts.masterclientes_grow.conexion
-                arr_dts[index_ndts]['pernombrecompleto'] = ndts.perpersonas.pernombrecompleto
-                arr_dts[index_ndts]['index_mcl_grow'] = ndts.masterclientes_grow.id
+                arr_dts[index_ndts]['zona'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.zona : null
+                arr_dts[index_ndts]['territorio'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.territorio : null
+                arr_dts[index_ndts]['cliente_hml'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.cliente_hml : null
+                arr_dts[index_ndts]['sucursal_hml'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.sucursal_hml : null
+                arr_dts[index_ndts]['conexion'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.conexion: null
+                arr_dts[index_ndts]['pernombrecompleto'] = ndts.perpersonas ? ndts.perpersonas.pernombrecompleto : null
+                arr_dts[index_ndts]['index_mcl_grow'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.id : null
             })
         }
 
@@ -223,6 +223,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                 conexion    : 'MANUAL',
                 estado      : 'ACTIVO'
             },
+            distinct : ['codigo_destinatario']
         })
 
 
