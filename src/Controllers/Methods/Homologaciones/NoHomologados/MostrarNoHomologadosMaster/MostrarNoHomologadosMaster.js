@@ -36,6 +36,7 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
                 },
                 master_productos_grow : {
                     select : {
+                        id : true,
                         paquetes_bulto  : true,
                         codigo_material : true,
                         material_softys : true
@@ -77,6 +78,16 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
         //         }
         //     }
         // })
+
+        // let filter_get_data_hml = []
+        // get_data_hml.map(hml => {
+        //     const filterRepeated = filter_get_data_hml.find(fgdh => fgdh.cod_unidad_medida_hml == hml.cod_unidad_medida_hml && fgdh.unidad_medida_hml == hml.unidad_medida_hml)
+        //     if(!filterRepeated){
+        //         filter_get_data_hml.push({...hml})
+        //     }
+        // })
+
+        // filter_get_data_hml.map((m, index) => filter_get_data_hml[index]['key'] = index)
 
         const get_data_hml = [
             {
