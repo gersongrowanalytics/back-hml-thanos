@@ -49,6 +49,14 @@ controller.MetObtenerHomologadosMaster = async ( req, res ) => {
                         paquetexbulto: true,
                     }
                 },
+                master_productos_grow : {
+                    select : {
+                        id : true,
+                        paquetes_bulto  : true,
+                        codigo_material : true,
+                        material_softys : true
+                    }
+                },
                 masterclientes_grow : {
                     select : {
                         cliente_hml: true,
