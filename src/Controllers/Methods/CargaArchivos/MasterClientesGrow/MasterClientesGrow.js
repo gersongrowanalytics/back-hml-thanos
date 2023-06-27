@@ -75,8 +75,6 @@ controller.MetMasterClientesGrow = async ( req, res, data ) => {
         res.status(200).json({
             response    : true,
             message     : 'Se cargó master clientes grow correctamente',
-            created     : create_rows,
-            updated     : m_cli_grow_updated
         })
 
     }catch(err){
