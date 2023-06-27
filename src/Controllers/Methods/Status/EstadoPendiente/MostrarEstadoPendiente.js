@@ -97,7 +97,8 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                                 cliente_hml : true,
                                 sucursal_hml: true,
                                 conexion    : true,
-                                id          : true
+                                id          : true,
+                                codigo_destinatario : true
                             }
                         },
                     },
@@ -225,15 +226,14 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
             },
             distinct : ['codigo_destinatario']
         })
-
-
+        
         let date_deadline = new Date()
         const date_lost_day = date_deadline.setDate(date_deadline.getDate() - 1)
         let espdiasretrasomcl = moment().diff(moment(date_lost_day), 'days')
 
         mcl_grow.forEach(element => {
 
-            let existe_cliente = arr_dts.findIndex(arr => arr.index_mcl_grow == element.id)
+            let existe_cliente = arr_dts.findIndex(arr => arr.masterclientes_grow.codigo_destinatario == element.codigo_destinatario)
 
             if(existe_cliente == -1){
                 mc_grow.push({
