@@ -167,8 +167,8 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
 
                 if(are.arenombre == 'SAC'){
                     are.areporcentaje                   = prod_no_hml_count == 0 ? '100' : '0'
-                    are.esps[0]['perpersonas']          = last_prod_hml.perpersonas
-                    are.esps[0]['espfechactualizacion'] = last_prod_hml.updated_at
+                    are.esps[0]['perpersonas']          = last_prod_hml?.perpersonas
+                    are.esps[0]['espfechactualizacion'] = last_prod_hml?.updated_at
                     are.esps[0]['espdiaretraso']        = prod_no_hml_count == 0 ? '0' : day_late_sac
                     areid_sac = are.areid
                 }
