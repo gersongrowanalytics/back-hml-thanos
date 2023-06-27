@@ -161,7 +161,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                 if(are.arenombre == 'Ventas'){
                     ares[index_are]['esps'] = arr_no_dts
                     ares[index_are]['esps'] = ares[index_are]['esps'].sort(function (a, b){
-                        return a.espbasedato < b.espbasedato ? 1 : -1
+                        return a.espbasedato > b.espbasedato ? 1 : -1
                     })
                 }
 
@@ -252,18 +252,32 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
             }
         })
 
+        const data_dts = arr_dts.concat(mc_grow)
+
+        data_dts.sort((a, b) => {
+            if(a.espfechactualizacion === null && b.espfechactualizacion === null) {
+              return 0;
+            }else if(a.espfechactualizacion === null) {
+              return -1;
+            }else if(b.espfechactualizacion === null) {
+              return 1;
+            } else {
+              return 0;
+            }
+        });
+        
         if(res){
             res.status(200).json({
                 response    : true,
                 messagge    : 'Se obtuvo el estado pendiente de status con éxito',
-                espsDistribuidoras : arr_dts.concat(mc_grow),
+                espsDistribuidoras : data_dts,
                 datos: ares,
             })
         }else{
             return {
                 response    : true,
                 messagge    : 'Se obtuvo el estado pendiente de status con éxito',
-                espsDistribuidoras : arr_dts.concat(mc_grow),
+                espsDistribuidoras : data_dts,
                 datos: ares,
             }
         }
