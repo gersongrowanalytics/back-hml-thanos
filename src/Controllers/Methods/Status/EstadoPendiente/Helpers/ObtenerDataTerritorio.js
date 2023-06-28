@@ -42,7 +42,7 @@ controller.MetObtenerDataTerritorio = async () => {
             }
         })
 
-        data_final_productos_so = filter_master_clientes_grow.map((fmcg, index) => {
+        data_final_productos_so = filter_master_clientes_grow.map((fmcg) => {
             let totalNoHml = 0
             let totalmtd = 0
             get_master_clientes_grow.map(gmcg => {
@@ -62,7 +62,6 @@ controller.MetObtenerDataTerritorio = async () => {
             totalmtd = parseFloat((totalmtd).toFixed(2))
             return {
                 ...fmcg,
-                key: index + 1,
                 nohml: Intl.NumberFormat('en-IN').format(totalNoHml),
                 mtd: Intl.NumberFormat('en-IN', {minimumFractionDigits: 2}).format(totalmtd),
             }
@@ -78,6 +77,10 @@ controller.MetObtenerDataTerritorio = async () => {
                 return 1;
             }
             return 0
+        })
+
+        data_final_productos_so.map((dfps, index) => {
+            data_final_productos_so[index]["key"] = index + 1
         })
 
         return data_final_productos_so
