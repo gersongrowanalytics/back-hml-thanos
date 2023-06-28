@@ -9,7 +9,7 @@ controller.MetObtenerDataTerritorio = async () => {
             select: {
                 id: true,
                 homologado: true,
-                s_mtd: true,
+                s_ytd: true,
                 m_cl_grow: true,
             },
             where: {
@@ -30,6 +30,7 @@ controller.MetObtenerDataTerritorio = async () => {
             },
             select: {
                 id: true,
+                zona: true,
                 territorio: true,
             },
         })
@@ -44,39 +45,46 @@ controller.MetObtenerDataTerritorio = async () => {
 
         data_final_productos_so = filter_master_clientes_grow.map((fmcg) => {
             let totalNoHml = 0
-            let totalmtd = 0
+            let totalytd = 0
             get_master_clientes_grow.map(gmcg => {
                 if(fmcg.territorio == gmcg.territorio){
                     let subtotalNoHml = 0
-                    let subtotalmtd = 0
+                    let subtotalytd = 0
                     get_master_producto_so.map(gmp => {
                         if(gmp.m_cl_grow == gmcg.id){
                             subtotalNoHml = subtotalNoHml + 1
-                            subtotalmtd = subtotalmtd + parseFloat(gmp.s_mtd)
+                            subtotalytd = subtotalytd + parseFloat(gmp.s_ytd)
                         }
                     })
                     totalNoHml = totalNoHml + subtotalNoHml
-                    totalmtd = totalmtd + subtotalmtd
+                    totalytd = totalytd + subtotalytd
                 }
             })
-            totalmtd = parseFloat((totalmtd).toFixed(2))
+            totalytd = parseFloat((totalytd).toFixed(2))
             return {
                 ...fmcg,
                 nohml: Intl.NumberFormat('en-IN').format(totalNoHml),
-                mtd: Intl.NumberFormat('en-IN', {minimumFractionDigits: 2}).format(totalmtd),
+                ytd: Intl.NumberFormat('en-US', {style: 'decimal', useGrouping: true, minimumFractionDigits: 2, maximumFractionDigits: 2,}).format(totalytd),
             }
         })
 
+        // data_final_productos_so.sort((data, data_clone) => {
+        //     const territorio = data.territorio.toLowerCase()
+        //     const territorioClone = data_clone.territorio.toLowerCase()
+        //     if(territorio < territorioClone){
+        //         return -1;
+        //     }
+        //     if(territorio > territorioClone){
+        //         return 1;
+        //     }
+        //     return 0
+        // })
+
         data_final_productos_so.sort((data, data_clone) => {
-            const territorio = data.territorio.toLowerCase()
-            const territorioClone = data_clone.territorio.toLowerCase()
-            if(territorio < territorioClone){
-                return -1;
-            }
-            if(territorio > territorioClone){
-                return 1;
-            }
-            return 0
+            const valueA = Number(data.ytd.replace(/,/g, ''))
+            const valueB = Number(data_clone.ytd.replace(/,/g, ''))
+
+            return valueB - valueA
         })
 
         data_final_productos_so.map((dfps, index) => {

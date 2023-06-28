@@ -89,16 +89,13 @@
                                                     <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
                                                         {{dt.arenombre}}
                                                     </td>
-                                                    
-
                                                     {{#isEqual are.areporcentaje "100"}}
                                                         <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 17px; line-height: 27px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
                                                             {{dt.areporcentaje}} %
                                                         </td>
-
                                                     {{else}}
-                                                        <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 11px; line-height: 10px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
-                                                        Falta homologar
+                                                        <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 11px; line-height: 10px; letter-spacing: -0.015em; color: orange; padding-left: 10px">
+                                                        Falta <br>homologar
                                                         </td>
                                                     {{/isEqual}}
                                                 </tr>
@@ -334,14 +331,18 @@
                         <table border="0" cellspacing="0" cellpadding="0" style="font-family: 'Segoe UI', sans-serif; padding-left: 30px; padding-right: 30px; width: 1000px; border-collapse: collapse;">
                             <tr style="color: #1E1E1E; height: 10px; padding: 0px; margin: 0px; ">
                                 <td align="center" style="border-top-left-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">N°</td>
-                                <td align="center" style="border-top-left-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Zona y Región</td>
+                                <td align="center" style="border-top-left-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Zona</td>
+                                <td align="center" style="border-top-left-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Región</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal; padding: 6px">Cantidad Productos no HML</td>
-                                <td align="center" style="border-top-right-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Year to Day</td>
+                                <td align="center" style="border-top-right-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">YTD</td>
                             </tr>
                             {{#each data_mail.datapso as |pso|}}
                             <tr class="Status-Row">
                                 <td align="center" class="Status-Col">
                                     {{pso.key}}
+                                </td>
+                                <td align="center" class="Status-Col">
+                                    {{pso.zona}}
                                 </td>
                                 <td align="center" class="Status-Col">
                                     {{pso.territorio}}
@@ -350,7 +351,7 @@
                                     {{pso.nohml}}
                                 </td>
                                 <td align="center" class="Status-Col">
-                                    {{pso.mtd}}
+                                    {{pso.ytd}}
                                 </td>
                             </tr>
                             {{/each}}
