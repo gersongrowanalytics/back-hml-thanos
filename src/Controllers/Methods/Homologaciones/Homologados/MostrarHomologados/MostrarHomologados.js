@@ -64,7 +64,8 @@ controller.MetMostrarHomologados = async (req, res) => {
             total = await prisma.master_productos_so.findMany({
                 where: {
                     m_pro_grow : {
-                        not: null
+                        // not: null
+                        not: 268
                     },
                     homologado : true,
                     masterclientes_grow : {
