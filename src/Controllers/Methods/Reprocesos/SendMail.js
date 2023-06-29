@@ -35,6 +35,7 @@ controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data
     await transporter.sendMail({
         from: from_mail,
         to: to_mail,
+        cc: ["gerson.vilca@tecsup.edu.pe"],
         subject: subject_mail,
         html: renderedTemplate,
     }).catch((e) => {
