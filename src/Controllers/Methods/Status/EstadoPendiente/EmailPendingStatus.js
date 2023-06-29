@@ -35,39 +35,6 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
 
             const data_productos_so = await ObtenerDataTerritorio.MetObtenerDataTerritorio()
 
-            // const data_productos_so = [
-            //     {
-            //         "id": 1,
-            //         "territorio":  "SUR 1",
-            //         "nohml": "7,682",
-            //         "mtd": 384.87,
-            //     },
-            //     {
-            //         "id": 2,
-            //         "territorio": "LIMA 4",
-            //         "nohml": "970",
-            //         "mtd": 0.00,
-            //     },
-            //     {
-            //         "id": 3,
-            //         "territorio": "NORTE 1",
-            //         "nohml": "905",
-            //         "mtd": 70.91,
-            //     },
-            //     {
-            //         "id": 4,
-            //         "territorio": "TRADICIONAL 2",
-            //         "nohml": "2,946",
-            //         "mtd": 0.00,
-            //     },
-            //     {
-            //         "id": 5,
-            //         "territorio": "TRADICIONAL 1",
-            //         "nohml": "3,074",
-            //         "mtd": 0.00,
-            //     }
-            // ]
-
             const data_mail = {
                 data: datos,
                 dataExcludeDt: datos.filter(a => a.arenombre != 'DT'),
