@@ -4,6 +4,8 @@ const controller = {}
 
 controller.MetRegistrarHomologacion = async (req, res) => {
 
+    const { usu_token } = req.header
+
     const { 
         producto_so_id,
         producto_hml_id,
@@ -12,7 +14,22 @@ controller.MetRegistrarHomologacion = async (req, res) => {
         producto_uni_medida
     } = req.body;
 
+
+
     try{
+
+        const usu = await prisma.usuusuarios.findFirst({
+            where : {
+                usutoken : usu_token
+            },
+            select : {
+                perpersonas : {
+                    select : {
+                        perid : true
+                    }
+                }
+            }
+        })
 
         let cod_unidad_medida   = producto_uni_medida
         let unidad_medida       = producto_uni_medida
@@ -35,7 +52,8 @@ controller.MetRegistrarHomologacion = async (req, res) => {
                     data: {
                         // proid : producto_hml_id
                         m_pro_grow : 268,
-                        homologado : true
+                        homologado : true,
+                        perid : usu.perpersonas.perid
                     }
                 })
             }
@@ -51,7 +69,8 @@ controller.MetRegistrarHomologacion = async (req, res) => {
                     m_pro_grow          : 268,
                     cod_unidad_medida   : cod_unidad_medida,
                     unidad_medida       : unidad_medida,
-                    homologado          : true
+                    homologado          : true,
+                    perid : usu.perpersonas.perid
                 }
             })
         }

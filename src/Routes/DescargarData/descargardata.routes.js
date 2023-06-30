@@ -14,6 +14,7 @@ const ValDescargarInventarios = require('../../Controllers/Validations/Descargar
 const ValDescargarMasterProductosGrow = require('../../Controllers/Validations/DescargarData/DescargarMasterProductosGrow/ValDescargarMasterProductosGrow')
 const ValDescargarMasterProductosSo = require('../../Controllers/Validations/DescargarData/DescargarMasterProductosSo/ValDescargarMasterProductosSo')
 const ValRemoveDescargarExcel = require('../../Controllers/Validations/DescargarData/RemoveDescargarExcel/ValRemoveDescargarExcel')
+const ValDescargarNoHomologados = require('../../Controllers/Validations/DescargarData/DescargarNoHomologados/ValDescargarNoHomologados')
 
 
 const protectedRoutes = express.Router();
@@ -21,9 +22,10 @@ const protectedRoutes = express.Router();
 
 
 // **** **** **** **** **** //
-// RUTAS DESCARGAR PRODUCTOS HOMOLOGADOS
+// RUTAS DESCARGAR PRODUCTOS HOMOLOGADOS - NO HOMOLOGADOS
 // **** **** **** **** **** //
 protectedRoutes.post('/products-approveds', ValDescargarHomologados.ValDescargarHomologados)
+protectedRoutes.post('/products-non-approveds', ValDescargarNoHomologados.ValDescargarNoHomologados)
 protectedRoutes.post('/distributors', ValDescargarMasterDistribuidoras.ValDescargarMasterDistribuidoras)
 protectedRoutes.post('/products', ValDescargarMasterProductos.ValDescargarMasterProductos)
 protectedRoutes.post('/products-so', ValDescargarMasterProductosSo.ValDescargarMasterProductosSo)
