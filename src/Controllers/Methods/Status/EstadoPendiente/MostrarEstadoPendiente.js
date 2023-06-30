@@ -226,57 +226,59 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                     arr_dts[index_ndts]['index_mcl_grow'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.id : null
                 })
     
-                const mc_grow = []
-    
-                const mcl_grow = await prisma.masterclientes_grow.findMany({
-                    where : {
-                        conexion    : 'MANUAL',
-                        estado      : 'ACTIVO'
-                    },
-                    distinct : ['codigo_destinatario']
-                })
                 
-                let date_deadline = new Date()
-                const date_lost_day = date_deadline.setDate(date_deadline.getDate() - 1)
-                let espdiasretrasomcl = moment().diff(moment(date_lost_day), 'days')
-        
-                mcl_grow.forEach(element => {
-        
-                    let existe_cliente = arr_dts.findIndex(arr => arr.masterclientes_grow.codigo_destinatario == element.codigo_destinatario)
-        
-                    if(existe_cliente == -1){
-                        mc_grow.push({
-                            espfechactualizacion: null,
-                            espfechaprogramado : date_lost_day,
-                            masterclientes_grow : element,
-                            zona : element.zona,
-                            territorio :  element.territorio,
-                            cliente_hml : element.cliente_hml,
-                            sucursal_hml : element.sucursal_hml,
-                            conexion : element.conexion,
-                            pernombrecompleto : '',
-                            espresponsable : 'SAC',
-                            espdiaretraso : espdiasretrasomcl.toString()
-                        })
-                    }
-                })
-        
-                data_dts = arr_dts.concat(mc_grow)
-        
-                data_dts.sort((a, b) => {
-                    if(a.espfechactualizacion === null && b.espfechactualizacion === null) {
-                      return 0;
-                    }else if(a.espfechactualizacion === null) {
-                      return -1;
-                    }else if(b.espfechactualizacion === null) {
-                      return 1;
-                    } else {
-                      return 0;
-                    }
-                });
             }
 
         }
+
+        const mc_grow = []
+    
+        const mcl_grow = await prisma.masterclientes_grow.findMany({
+            where : {
+                conexion    : 'MANUAL',
+                estado      : 'ACTIVO'
+            },
+            distinct : ['codigo_destinatario']
+        })
+        
+        let date_deadline = new Date()
+        const date_lost_day = date_deadline.setDate(date_deadline.getDate() - 1)
+        let espdiasretrasomcl = moment().diff(moment(date_lost_day), 'days')
+
+        mcl_grow.forEach(element => {
+
+            let existe_cliente = arr_dts.findIndex(arr => arr.masterclientes_grow.codigo_destinatario == element.codigo_destinatario)
+
+            if(existe_cliente == -1){
+                mc_grow.push({
+                    espfechactualizacion: null,
+                    espfechaprogramado : date_lost_day,
+                    masterclientes_grow : element,
+                    zona : element.zona,
+                    territorio :  element.territorio,
+                    cliente_hml : element.cliente_hml,
+                    sucursal_hml : element.sucursal_hml,
+                    conexion : element.conexion,
+                    pernombrecompleto : '',
+                    espresponsable : 'SAC',
+                    espdiaretraso : espdiasretrasomcl.toString()
+                })
+            }
+        })
+
+        data_dts = arr_dts.concat(mc_grow)
+
+        data_dts.sort((a, b) => {
+            if(a.espfechactualizacion === null && b.espfechactualizacion === null) {
+                return 0;
+            }else if(a.espfechactualizacion === null) {
+                return -1;
+            }else if(b.espfechactualizacion === null) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
 
         if(res){
             res.status(200).json({
