@@ -12,9 +12,22 @@ controller.ValDTManuales = async (req, res) => {
         req_action_file
     } = req.body
 
+    const {
+        usutoken
+    } = req.headers
+
     const file          = req.files.carga_manual
 
     try{
+        
+        const usu = await prisma.usuusuarios.findFirst({
+            where : {
+                usutoken : usutoken
+            },
+            select : {
+                usuid : true
+            }
+        })
 
         const action_file = JSON.parse(req_action_file)
 
@@ -27,8 +40,7 @@ controller.ValDTManuales = async (req, res) => {
             })
         }
 
-        const { messages_error, add_dt_manuales, borrar_data, data, codcli_esp, cods_dts } = await controller.ValCellsFile(workbook)
-
+        const { messages_error, add_dt_manuales, borrar_data, data, codcli_esp, cods_dts } = await controller.ValCellsFile(workbook, usu)
 
         const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg));
 
@@ -85,7 +97,7 @@ controller.ValExistsData = async (file) => {
     return { exists_data, message, status, workbook: workbook ? workbook : null }
 }
 
-controller.ValCellsFile = async (workbook) => {
+controller.ValCellsFile = async (workbook, usu) => {
 
     const rows      = XLSX.utils.sheet_to_json(workbook.Sheets['data'], {defval:""})
     let properties  = Object.keys(rows[0])
@@ -363,6 +375,7 @@ controller.ValCellsFile = async (workbook) => {
             dia                             : parseInt(day_date),
             mes                             : parseInt(month_date),
             anio                            : parseInt(year_date),
+            usuid                           : usu.usuid
         })
 
         num_row = num_row + 1

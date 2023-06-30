@@ -6,7 +6,7 @@ const RegisterAudits = require('../../../Audits/CreateAudits/RegisterAudits')
 
 controller.MetActualizarHomologacion = async ( req, res ) => {
 
-    const { usutoken } = req.header
+    const { usutoken } = req.headers
 
     let {
         req_datos_homologados,
@@ -32,11 +32,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                 usutoken : usutoken
             },
             select : {
-                perpersonas : {
-                    select : {
-                        perid : true
-                    }
-                }
+                usuid : true
             }
         })
 
@@ -70,7 +66,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                 m_pro_grow      : dhm.req_id_producto_homologado, 
                 unidad_minima   : dhm.req_unidad_minima_homologado.toString(),
                 homologado      : true,
-                perid           : usu.perpersonas.perid
+                usuid           : usu.usuid
             }
 
             if(dhm.req_combo){
@@ -127,7 +123,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             unidad_minima_unitaria  : dhm.req_unidad_minima_unitario,
                             bonificado              : dhm.req_bonificado,
                             homologado      : true,
-                            perid                   : usu.perpersonas.perid
+                            usuid           : usu.usuid
                         }
                     })
                     audpk.push("master_productos_so-"+created_product_so.id)
@@ -156,7 +152,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             unidad_minima : dhm.req_unidad_minima_homologado.toString(),
                             combo : dhm.req_combo,
                             homologado      : true,
-                            perid                   : usu.perpersonas.perid
+                            usuid           : usu.usuid
                         }
                     })
                     audpk.push("master_productos_so-"+created_product_so.id)

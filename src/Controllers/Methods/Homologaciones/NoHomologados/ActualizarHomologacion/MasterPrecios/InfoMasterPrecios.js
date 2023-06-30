@@ -39,7 +39,7 @@ controller.MetInfoMasterPrecios = async (req, res) => {
             let consulta_month = []
             if(req_mes.length > 0){
                 req_mes.forEach( mes => {
-                    consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month }, { cod_material : req_cod_material} ] })
+                    consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month +1 }, { cod_material : req_cod_material} ] })
                 });
             }else{
                 consulta_month.push({ AND : [ { cod_material : req_cod_material} ] })

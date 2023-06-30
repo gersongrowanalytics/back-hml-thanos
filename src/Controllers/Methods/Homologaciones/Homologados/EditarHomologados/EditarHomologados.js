@@ -5,7 +5,7 @@ const RegisterAudits = require('../../../Audits/CreateAudits/RegisterAudits')
 
 controller.MetEditarHomologados = async (req, res) => {
 
-    const { usutoken } = req.header
+    const { usutoken } = req.headers
 
     const { 
         producto_so_id,

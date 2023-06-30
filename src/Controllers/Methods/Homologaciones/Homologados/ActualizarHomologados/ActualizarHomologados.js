@@ -5,7 +5,7 @@ const RegisterAudits = require('../../../Audits/CreateAudits/RegisterAudits')
 
 controller.MetActualizarHomologados = async (req, res) => {
 
-    const { usutoken } = req.header
+    const { usutoken } = req.headers
 
     const { 
         producto_so_id,
@@ -32,11 +32,7 @@ controller.MetActualizarHomologados = async (req, res) => {
                 usutoken : usutoken
             },
             select : {
-                perpersonas : {
-                    select : {
-                        perid : true
-                    }
-                }
+                usuid : true
             }
         })
 
@@ -74,7 +70,7 @@ controller.MetActualizarHomologados = async (req, res) => {
                     cod_unidad_medida       : cod_unidad_medida,
                     unidad_medida           : unidad_medida,
                     homologado              : true,
-                    perid                   : usu.perpersonas.perid
+                    usuid                   : usu.usuid
                 }
             })
 

@@ -16,6 +16,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
         let query_eps   = {}
         let ares        = []
         let arr_dts     = []
+        let data_dts    = []
         let areid_sac
         let day_late_sac
 
@@ -30,9 +31,15 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                 homologado : true
             },
             select : {
-                perpersonas : true,
+                
+                // perpersonas : true,
                 updated_at  : true,
-                id          : true
+                id          : true,
+                usuusuarios : {
+                    select : {
+                        perpersonas : true
+                    }
+                }
             },
             orderBy : {
                 updated_at : 'desc'
@@ -64,161 +71,168 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                 distinct : ['areid']
             })
 
-            let index_are = 0
-            for await (const are of ares){
+            if(ares.length > 0){
 
-                const esps = await prisma.espestadospendientes.findMany({
-                    where : {
-                        areid : are.areid
-                    },
-                    select : {
-                        perpersonas : {
-                            select : {
-                                pernombrecompleto   : true,
-                                pernombre           : true,
-                                perapellidopaterno  : true,
-                                perapellidomaterno  : true,
-                            }
+                let index_are = 0
+    
+                for await (const are of ares){
+    
+                    const esps = await prisma.espestadospendientes.findMany({
+                        where : {
+                            areid : are.areid
                         },
-                        fecid                   : true,
-                        espid                   : true,
-                        espfechaprogramado      : true,
-                        espchacargareal         : true,
-                        espfechactualizacion    : true,
-                        espbasedato             : true,
-                        espresponsable          : true,
-                        esporden                : true,
-                        espdiaretraso           : true,
-                        espdts                  : true,
-                        masterclientes_grow : {
-                            select : {
-                                zona        : true,
-                                territorio  : true,
-                                cliente_hml : true,
-                                sucursal_hml: true,
-                                conexion    : true,
-                                id          : true,
-                                codigo_destinatario : true
-                            }
+                        select : {
+                            perpersonas : {
+                                select : {
+                                    pernombrecompleto   : true,
+                                    pernombre           : true,
+                                    perapellidopaterno  : true,
+                                    perapellidomaterno  : true,
+                                }
+                            },
+                            fecid                   : true,
+                            espid                   : true,
+                            espfechaprogramado      : true,
+                            espchacargareal         : true,
+                            espfechactualizacion    : true,
+                            espbasedato             : true,
+                            espresponsable          : true,
+                            esporden                : true,
+                            espdiaretraso           : true,
+                            espdts                  : true,
+                            masterclientes_grow : {
+                                select : {
+                                    zona        : true,
+                                    territorio  : true,
+                                    cliente_hml : true,
+                                    sucursal_hml: true,
+                                    conexion    : true,
+                                    id          : true,
+                                    codigo_destinatario : true
+                                }
+                            },
                         },
-                    },
-                })
-
-                ares[index_are]['esps'] = esps
-                index_are = index_are + 1
-            }
-
-            ares.forEach((are, index_are) => {
-                let arr_no_dts  = []
-                are.esps.forEach((esp, index_esp) => {
-                    
-                    let day_late = esp.espdiaretraso
-
-                    if(esp.espfechactualizacion == null){
-
-                        date_two    = moment(esp.espfechaprogramado)
-                        date_one    = moment()
-                        
-                        if(date_one > date_two){
-                            let diff_days_date_one_two = date_one.diff(date_two, 'days')
-                            if( diff_days_date_one_two > 0){
-                                day_late = (diff_days_date_one_two).toString()
-                            }else{
-                                day_late = '0'
-                            }
-                        }else{
-                            day_late = '0'
-                        }
-                    }else{
-                        date_two    = moment(esp.espfechaprogramado)
-                        date_one    = moment(esp.espfechactualizacion)
-
-                        if(date_one > date_two){
-                            let diff_days_date_one_two = date_one.diff(date_two, 'days')
-                            
-                            if( diff_days_date_one_two > 0){
-                                day_late = diff_days_date_one_two.toString()
-                            }else{
-                                day_late = '0'
-                            }
-                        }else{
-                            day_late = '0'
-                        }
-                    }
-                    
-                    ares[index_are]['esps'][index_esp]['espdiaretraso'] = day_late
-                    
-                    if(are.arenombre == 'Ventas' && esp.espdts == false){
-                        arr_no_dts.push(esp)
-                    }else if(are.arenombre == 'Ventas' && esp.espdts == true){
-                        arr_dts.push(esp)
-                    }
-
-                    if(are.arenombre == 'SAC'){
-                        day_late_sac = day_late
-                    }
-                })
-
-                if(are.arenombre == 'Ventas'){
-                    ares[index_are]['esps'] = arr_no_dts
-                    ares[index_are]['esps'] = ares[index_are]['esps'].sort(function (a, b){
-                        return a.espbasedato > b.espbasedato ? 1 : -1
                     })
+    
+                    ares[index_are]['esps'] = esps
+                    index_are = index_are + 1
                 }
-
-                if(are.arenombre == 'SAC'){
-                    are.areporcentaje                   = prod_no_hml_count == 0 ? '100' : '0'
-                    are.esps[0]['perpersonas']          = last_prod_hml?.perpersonas
-                    are.esps[0]['espfechactualizacion'] = last_prod_hml?.updated_at
-                    are.esps[0]['espdiaretraso']        = prod_no_hml_count == 0 ? '0' : day_late_sac
-                    areid_sac = are.areid
-                }
-            })
-
-            await prisma.areareasestados.update({
-                where :{
-                    areid : areid_sac
-                },
-                data : {
-                    areporcentaje : prod_no_hml_count == 0 ? '100' : '0',
-                }
-            })
-
-            const espe = await prisma.espestadospendientes.findFirst({
-                where : {
-                    fecid : fec.fecid,
-                    areid : areid_sac,
-                }
-            })
-
-            if(last_prod_hml){
-                await prisma.espestadospendientes.update({
+    
+                ares.forEach((are, index_are) => {
+                    let arr_no_dts  = []
+                    are.esps.forEach((esp, index_esp) => {
+                        
+                        let day_late = esp.espdiaretraso
+    
+                        if(esp.espfechactualizacion == null){
+    
+                            date_two    = moment(esp.espfechaprogramado)
+                            date_one    = moment()
+                            
+                            if(date_one > date_two){
+                                let diff_days_date_one_two = date_one.diff(date_two, 'days')
+                                if( diff_days_date_one_two > 0){
+                                    day_late = (diff_days_date_one_two).toString()
+                                }else{
+                                    day_late = '0'
+                                }
+                            }else{
+                                day_late = '0'
+                            }
+                        }else{
+                            date_two    = moment(esp.espfechaprogramado)
+                            date_one    = moment(esp.espfechactualizacion)
+    
+                            if(date_one > date_two){
+                                let diff_days_date_one_two = date_one.diff(date_two, 'days')
+                                
+                                if( diff_days_date_one_two > 0){
+                                    day_late = diff_days_date_one_two.toString()
+                                }else{
+                                    day_late = '0'
+                                }
+                            }else{
+                                day_late = '0'
+                            }
+                        }
+                        
+                        ares[index_are]['esps'][index_esp]['espdiaretraso'] = day_late
+                        
+                        if(are.arenombre == 'Ventas' && esp.espdts == false){
+                            arr_no_dts.push(esp)
+                        }else if(are.arenombre == 'Ventas' && esp.espdts == true){
+                            arr_dts.push(esp)
+                        }
+    
+                        if(are.arenombre == 'SAC'){
+                            day_late_sac = day_late
+                        }
+                    })
+    
+                    if(are.arenombre == 'Ventas'){
+                        ares[index_are]['esps'] = arr_no_dts
+                        ares[index_are]['esps'] = ares[index_are]['esps'].sort(function (a, b){
+                            return a.espbasedato > b.espbasedato ? 1 : -1
+                        })
+                    }
+    
+                    if(are.arenombre == 'SAC'){
+                        are.areporcentaje                   = prod_no_hml_count == 0 ? '100' : '0'
+                        are.esps[0]['perpersonas']          = last_prod_hml.usuusuarios ? last_prod_hml.usuusuarios.perpersonas : null
+                        are.esps[0]['espfechactualizacion'] = last_prod_hml?.updated_at
+                        are.esps[0]['espdiaretraso']        = prod_no_hml_count == 0 ? '0' : day_late_sac
+                        areid_sac = are.areid
+                    }
+                })
+    
+                await prisma.areareasestados.update({
                     where :{
-                        espid : espe.espid
+                        areid : areid_sac
                     },
                     data : {
-                        perid                   : last_prod_hml ? last_prod_hml.perpersonas?.perid : null,
-                        espfechactualizacion    : last_prod_hml ? new Date(last_prod_hml.updated_at) : null,
-                        espdiaretraso : prod_no_hml_count == 0 ? '0' : day_late_sac
+                        areporcentaje : prod_no_hml_count == 0 ? '100' : '0',
                     }
                 })
-
+    
+                const espe = await prisma.espestadospendientes.findFirst({
+                    where : {
+                        fecid : fec.fecid,
+                        areid : areid_sac,
+                    }
+                })
+    
+                if(last_prod_hml){
+                    await prisma.espestadospendientes.update({
+                        where :{
+                            espid : espe.espid
+                        },
+                        data : {
+                            perid                   : last_prod_hml ? last_prod_hml.usuusuarios?.perpersonas.perid : null,
+                            espfechactualizacion    : last_prod_hml ? new Date(last_prod_hml.updated_at) : null,
+                            espdiaretraso : prod_no_hml_count == 0 ? '0' : day_late_sac
+                        }
+                    })
+    
+                }
+    
+                arr_dts.forEach((ndts, index_ndts) => {
+                    arr_dts[index_ndts]['key'] = index_ndts + 1
+                    arr_dts[index_ndts]['zona'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.zona : null
+                    arr_dts[index_ndts]['territorio'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.territorio : null
+                    arr_dts[index_ndts]['cliente_hml'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.cliente_hml : null
+                    arr_dts[index_ndts]['sucursal_hml'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.sucursal_hml : null
+                    arr_dts[index_ndts]['conexion'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.conexion: null
+                    arr_dts[index_ndts]['pernombrecompleto'] = ndts.perpersonas ? ndts.perpersonas.pernombrecompleto : null
+                    arr_dts[index_ndts]['index_mcl_grow'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.id : null
+                })
+    
+                
             }
 
-            arr_dts.forEach((ndts, index_ndts) => {
-                arr_dts[index_ndts]['key'] = index_ndts + 1
-                arr_dts[index_ndts]['zona'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.zona : null
-                arr_dts[index_ndts]['territorio'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.territorio : null
-                arr_dts[index_ndts]['cliente_hml'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.cliente_hml : null
-                arr_dts[index_ndts]['sucursal_hml'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.sucursal_hml : null
-                arr_dts[index_ndts]['conexion'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.conexion: null
-                arr_dts[index_ndts]['pernombrecompleto'] = ndts.perpersonas ? ndts.perpersonas.pernombrecompleto : null
-                arr_dts[index_ndts]['index_mcl_grow'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.id : null
-            })
         }
 
         const mc_grow = []
-
+    
         const mcl_grow = await prisma.masterclientes_grow.findMany({
             where : {
                 conexion    : 'MANUAL',
@@ -252,20 +266,20 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
             }
         })
 
-        const data_dts = arr_dts.concat(mc_grow)
+        data_dts = arr_dts.concat(mc_grow)
 
         data_dts.sort((a, b) => {
             if(a.espfechactualizacion === null && b.espfechactualizacion === null) {
-              return 0;
+                return 0;
             }else if(a.espfechactualizacion === null) {
-              return -1;
+                return -1;
             }else if(b.espfechactualizacion === null) {
-              return 1;
+                return 1;
             } else {
-              return 0;
+                return 0;
             }
         });
-        
+
         if(res){
             res.status(200).json({
                 response    : true,
