@@ -38,6 +38,8 @@ controller.MetMostrarCargaArchivos = async (req, res) => {
             if(car.cartipo == null){
                 cars[index_car]['cartipo'] = ''
             }
+            cars[index_car]['carestadoprocesado'] = car?.carfechaprocesado ? 'Procesado' : 'No procesado'
+            cars[index_car]['cartipo'] = car?.cartipo == '' ? 'No asignado' : cars[index_car]['cartipo']
         });
 
         res.status(200).json({

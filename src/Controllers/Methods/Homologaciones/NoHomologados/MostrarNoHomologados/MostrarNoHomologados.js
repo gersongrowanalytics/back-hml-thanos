@@ -26,6 +26,13 @@ controller.MetMostrarNoHomologados = async (req, res) => {
     let total_query_sql = []
 
     try{
+        
+        let query_words_exc = ''
+        const words_exc = ['babysec', 'ladysoft', 'navidad', 'mundial', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas','patrias','verano','practica','ldsft','lady-soft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian','ladisoft']
+
+        words_exc.forEach((wex,index) => {
+            query_words_exc = query_words_exc + ` AND descripcion_producto NOT LIKE '%${wex}%'`
+        });
 
         let query_order_sql = ''
 
@@ -33,13 +40,15 @@ controller.MetMostrarNoHomologados = async (req, res) => {
             query_order_sql = 'ORDER BY master_productos_so.updated_at DESC' 
         }else if(req_column == 'cliente_hml' || req_column == 'territorio' || req_column == 'zona'){
             query_order_sql = `ORDER BY masterclientes_grow.${req_column} ${req_orden.toUpperCase()}`
+        }else if(req_column == 'index'){
+            query_order_sql = `ORDER BY master_productos_so.updated_at ${req_orden.toUpperCase()}`
         }else{
             query_order_sql = `ORDER BY master_productos_so.${req_column} ${req_orden.toUpperCase()}`
         }
 
         if(req_total){
 
-            const query_total = await prisma.$queryRawUnsafe(`SELECT DISTINCT(pk_venta_so), master_productos_so.id FROM master_productos_so LEFT JOIN master_distribuidoras ON master_distribuidoras.id = master_productos_so.m_dt_id LEFT JOIN masterclientes_grow ON masterclientes_grow.id = master_productos_so.m_cl_grow WHERE masterclientes_grow.cliente_hml LIKE '%${req_cliente_hml}%' AND masterclientes_grow.zona LIKE '%${req_zona}%' AND masterclientes_grow.territorio LIKE '%${req_territorio}%' AND master_productos_so.homologado = 0 AND master_productos_so.codigo_producto LIKE '%${req_cod_producto}%' AND master_productos_so.descripcion_producto LIKE '%${req_des_producto}%' AND master_productos_so.desde LIKE '%${req_desde}%' AND master_productos_so.s_ytd LIKE '${req_ytd}%' AND master_productos_so.s_mtd LIKE '${req_mtd}%';`)
+            const query_total = await prisma.$queryRawUnsafe(`SELECT DISTINCT(pk_venta_so), master_productos_so.id FROM master_productos_so LEFT JOIN master_distribuidoras ON master_distribuidoras.id = master_productos_so.m_dt_id LEFT JOIN masterclientes_grow ON masterclientes_grow.id = master_productos_so.m_cl_grow WHERE masterclientes_grow.cliente_hml LIKE '%${req_cliente_hml}%' AND masterclientes_grow.zona LIKE '%${req_zona}%' AND masterclientes_grow.territorio LIKE '%${req_territorio}%' AND master_productos_so.homologado = 0 AND master_productos_so.codigo_producto LIKE '%${req_cod_producto}%' AND master_productos_so.descripcion_producto LIKE '%${req_des_producto}%' AND master_productos_so.desde LIKE '%${req_desde}%' AND master_productos_so.s_ytd LIKE '${req_ytd}%' AND master_productos_so.s_mtd LIKE '${req_mtd}%' ${query_words_exc};`)
 
             total_query_sql = query_total.map(({id}) => ({
                 id : parseInt(id),
@@ -54,42 +63,60 @@ controller.MetMostrarNoHomologados = async (req, res) => {
         }
 
         const page_query = (page-1)*15
+        
+        console.log(page)
 
-        // productosSinProid = await prisma.$queryRawUnsafe(`SELECT DISTINCT(pk_venta_so), master_productos_so.id, master_productos_so.m_dt_id, master_productos_so.codigo_distribuidor, master_productos_so.codigo_producto, master_productos_so.descripcion_producto, master_productos_so.desde, master_productos_so.hasta, master_productos_so.s_ytd, master_productos_so.s_mtd, master_productos_so.pk_venta_so, master_productos_so.pk_extractor_venta_so, master_productos_so.unidad_medida, master_productos_so.cod_unidad_medida, master_productos_so.ruc, master_productos_so.posible_combo, master_distribuidoras.nomb_dt, master_distribuidoras.region,master_distribuidoras.codigo_dt, masterclientes_grow.cliente_hml, masterclientes_grow.zona, masterclientes_grow.territorio, masterclientes_grow.codigo_destinatario, masterclientes_grow.sucursal_hml FROM master_productos_so LEFT JOIN master_distribuidoras ON master_distribuidoras.id = master_productos_so.m_dt_id LEFT JOIN masterclientes_grow ON masterclientes_grow.id = master_productos_so.m_cl_grow WHERE descripcion_producto not like '%ladysoft%' AND descripcion_producto not like '%Babysec%' AND descripcion_producto not like '%Navidad%' AND descripcion_producto not like '%Mundial%' AND descripcion_producto not like '%Looney%' AND descripcion_producto not like '%diseño%' AND descripcion_producto not like '%cumple%' AND descripcion_producto not like '%torta%' AND descripcion_producto not like '%lineas%' AND descripcion_producto not like '%circulos%' AND descripcion_producto not like '%halloween%' AND descripcion_producto not like '%fiestas%' AND descripcion_producto not like '%patrias%' AND descripcion_producto not like '%verano%' AND descripcion_producto not like '%practica%' AND descripcion_producto not like '%ldsft%' AND descripcion_producto not like '%lady-soft%' AND descripcion_producto not like '%ultrasec%' AND descripcion_producto not like '%hipoal%' AND descripcion_producto not like '%dove%' AND descripcion_producto not like '%rexona%' AND descripcion_producto not like '%palos%' AND descripcion_producto not like '%dobby%' AND descripcion_producto not like '%cotidian%'  master_productos_so.homologado = 0 AND masterclientes_grow.cliente_hml LIKE '%${req_cliente_hml}%' AND masterclientes_grow.zona LIKE '%${req_zona}%' AND masterclientes_grow.territorio LIKE '%${req_territorio}%' AND master_productos_so.codigo_producto LIKE '%${req_cod_producto}%' AND master_productos_so.descripcion_producto LIKE '%${req_des_producto}%' AND master_productos_so.desde LIKE '%${req_desde}%' AND master_productos_so.s_ytd LIKE '${req_ytd}%' AND master_productos_so.s_mtd LIKE '${req_mtd}%' ${query_order_sql} LIMIT 15 OFFSET ${page_query};`)
-        productosSinProid = await prisma.$queryRawUnsafe(`SELECT DISTINCT(pk_venta_so), master_productos_so.id, master_productos_so.m_dt_id, master_productos_so.codigo_distribuidor, master_productos_so.codigo_producto, master_productos_so.descripcion_producto, master_productos_so.desde, master_productos_so.hasta, master_productos_so.s_ytd, master_productos_so.s_mtd, master_productos_so.pk_venta_so, master_productos_so.pk_extractor_venta_so, master_productos_so.unidad_medida, master_productos_so.cod_unidad_medida, master_productos_so.ruc, master_productos_so.posible_combo, master_distribuidoras.nomb_dt, master_distribuidoras.region,master_distribuidoras.codigo_dt, masterclientes_grow.cliente_hml, masterclientes_grow.zona, masterclientes_grow.territorio, masterclientes_grow.codigo_destinatario, masterclientes_grow.sucursal_hml FROM master_productos_so LEFT JOIN master_distribuidoras ON master_distribuidoras.id = master_productos_so.m_dt_id LEFT JOIN masterclientes_grow ON masterclientes_grow.id = master_productos_so.m_cl_grow WHERE master_productos_so.homologado = 0 AND masterclientes_grow.cliente_hml LIKE '%${req_cliente_hml}%' AND masterclientes_grow.zona LIKE '%${req_zona}%' AND masterclientes_grow.territorio LIKE '%${req_territorio}%' AND master_productos_so.codigo_producto LIKE '%${req_cod_producto}%' AND master_productos_so.descripcion_producto LIKE '%${req_des_producto}%' AND master_productos_so.desde LIKE '%${req_desde}%' AND master_productos_so.s_ytd LIKE '${req_ytd}%' AND master_productos_so.s_mtd LIKE '${req_mtd}%' ${query_order_sql} LIMIT 15 OFFSET ${page_query};`)
+        productosSinProid = await prisma.$queryRawUnsafe(`SELECT DISTINCT(pk_venta_so), master_productos_so.id, master_productos_so.m_dt_id, master_productos_so.codigo_distribuidor, master_productos_so.codigo_producto, master_productos_so.descripcion_producto, master_productos_so.desde, master_productos_so.hasta, master_productos_so.s_ytd, master_productos_so.s_mtd, master_productos_so.pk_venta_so, master_productos_so.pk_extractor_venta_so, master_productos_so.unidad_medida, master_productos_so.cod_unidad_medida, master_productos_so.ruc, master_productos_so.posible_combo, master_distribuidoras.nomb_dt, master_distribuidoras.region,master_distribuidoras.codigo_dt, masterclientes_grow.cliente_hml, masterclientes_grow.zona, masterclientes_grow.territorio, masterclientes_grow.codigo_destinatario, masterclientes_grow.sucursal_hml FROM master_productos_so LEFT JOIN master_distribuidoras ON master_distribuidoras.id = master_productos_so.m_dt_id LEFT JOIN masterclientes_grow ON masterclientes_grow.id = master_productos_so.m_cl_grow WHERE master_productos_so.homologado = 0 AND masterclientes_grow.cliente_hml LIKE '%${req_cliente_hml}%' AND masterclientes_grow.zona LIKE '%${req_zona}%' AND masterclientes_grow.territorio LIKE '%${req_territorio}%' AND master_productos_so.codigo_producto LIKE '%${req_cod_producto}%' AND master_productos_so.descripcion_producto LIKE '%${req_des_producto}%' AND master_productos_so.desde LIKE '%${req_desde}%' AND master_productos_so.s_ytd LIKE '${req_ytd}%' AND master_productos_so.s_mtd LIKE '${req_mtd}%' ${query_words_exc} ${query_order_sql} LIMIT 15 OFFSET ${page_query};`)
 
-        data_query = productosSinProid.map(({ id, pk_venta_so, m_dt_id, codigo_distribuidor, codigo_producto, descripcion_producto, desde, hasta, s_ytd, s_mtd, pk_extractor_venta_so, unidad_medida, cod_unidad_medida, ruc, posible_combo, nomb_dt, region, codigo_dt, cliente_hml, zona, territorio, codigo_destinatario, sucursal_hml }, index) => ({
-            key : index,
-            id : parseInt(id),
-            pk_venta_so,
-            m_dt_id,
-            codigo_distribuidor, 
-            codigo_producto, 
-            descripcion_producto, 
-            desde, 
-            hasta, 
-            s_ytd, 
-            s_mtd, 
-            pk_extractor_venta_so, 
-            unidad_medida, 
-            cod_unidad_medida, 
-            ruc, 
-            posible_combo,
-            cliente_hml,
-            territorio,
-            master_distribuidoras : {
-                nomb_dt,
-                region,
-                codigo_dt
-            },
-            masterclientes_grow : {
-                cliente_hml, 
-                territorio, 
-                codigo_destinatario, 
-                sucursal_hml,
-                zona
-            },
-        }));
+        data_query = productosSinProid.map(({ id, pk_venta_so, m_dt_id, codigo_distribuidor, codigo_producto, descripcion_producto, desde, hasta, s_ytd, s_mtd, pk_extractor_venta_so, unidad_medida, cod_unidad_medida, ruc, posible_combo, nomb_dt, region, codigo_dt, cliente_hml, zona, territorio, codigo_destinatario, sucursal_hml }, index) => {
+
+            let index_row
+            if(req_column == 'index' && req_orden == 'desc'){
+                if(productosSinProid.length < 15){
+                    index_row =  productosSinProid.length - index 
+                }else{
+                    index_row = total_query_sql.length - ( (15 * (page ) ) - ( productosSinProid.length - index ) )
+                }
+            }else{
+                index_row = (index+1) + ((page-1) * 15)
+            }
+            
+            return (
+                {   
+                    index : index_row,
+                    key : parseInt(id),
+                    id : parseInt(id),
+                    pk_venta_so,
+                    m_dt_id,
+                    codigo_distribuidor, 
+                    codigo_producto, 
+                    descripcion_producto, 
+                    desde, 
+                    hasta, 
+                    s_ytd, 
+                    s_mtd, 
+                    pk_extractor_venta_so, 
+                    unidad_medida, 
+                    cod_unidad_medida, 
+                    ruc, 
+                    posible_combo,
+                    cliente_hml,
+                    territorio,
+                    master_distribuidoras : {
+                        nomb_dt,
+                        region,
+                        codigo_dt
+                    },
+                    masterclientes_grow : {
+                        cliente_hml, 
+                        territorio, 
+                        codigo_destinatario, 
+                        sucursal_hml,
+                        zona
+                    },
+                }
+            )
+        });
 
     }catch(error){
         console.log(error)

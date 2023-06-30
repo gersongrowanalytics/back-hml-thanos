@@ -20,7 +20,9 @@ controller.MetMostrarHomologados = async (req, res) => {
         req_filtro_input,
         req_cliente_hml,
         req_updated_at,
-        req_zona
+        req_zona,
+        req_otros,
+        req_persona
     } = req.body
 
     let productos_hml
@@ -32,6 +34,20 @@ controller.MetMostrarHomologados = async (req, res) => {
         let update_filter_more
         let query_order = {}
 
+        let order_index = false
+
+        const words_exc = ['babysec', 'ladysoft', 'navidad', 'mundial', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas','patrias','verano','practica','ldsft','lady-soft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian','ladisoft']
+
+        let query_not = []
+
+        words_exc.forEach(wex => {
+            query_not.push({ descripcion_producto : { contains : wex } })
+        })
+
+        if(!req_otros){
+            query_not.push({ master_productos_grow : { material_softys : { contains : 'OTROS' }}})
+        }
+
         if(req_updated_at == ''){
             update_filter_more = moment('1999-01-01').format('YYYY-MM-DD')
             update_filter_less = moment().format('YYYY-MM-DD')
@@ -40,7 +56,6 @@ controller.MetMostrarHomologados = async (req, res) => {
             update_filter_less = moment(req_updated_at).format('YYYY-MM-DD')
         }
 
-
         const desde_modificado      = req_desde.split("/").reverse().join('-')
 
         if(req_orden){
@@ -48,6 +63,8 @@ controller.MetMostrarHomologados = async (req, res) => {
 
                 query_order = {...query_order, masterclientes_grow : { [req_column] : req_orden}}
 
+            }else if(req_column == 'pernombrecompleto'){
+                query_order = {...query_order, perpersonas : { [req_column] : req_orden}}
             }else if(req_column == 'descripcion_producto' || req_column == 'desde' || req_column == 'updated_at'){
 
                 query_order = {...query_order, [req_column] : req_orden}
@@ -55,14 +72,17 @@ controller.MetMostrarHomologados = async (req, res) => {
             }else if(req_column == 'codigo_material' || req_column == 'material_softys'){
 
                 query_order = {...query_order, master_productos_grow : { [req_column] : req_orden}}
+            }else if(req_column == 'key'){
+                query_order = {...query_order, updated_at : req_orden}
+                order_index = true
             }
         }else{
             query_order = {...query_order, updated_at: 'desc'}
         }
 
-        if(req_total == 'true' || req_filtro_input == true){
-            total = await prisma.master_productos_so.findMany({
-                where: {
+        let query_otros = {
+            OR : [
+                {
                     m_pro_grow : {
                         not: null
                         // not: 268
@@ -82,6 +102,11 @@ controller.MetMostrarHomologados = async (req, res) => {
                             contains : req_zona
                         }
                     },
+                    // perpersonas : {
+                    //     pernombrecompleto : {
+                    //         contains : req_persona
+                    //     }
+                    // },
                     descripcion_producto : {
                         contains : req_pro_not_hml
                     },
@@ -100,12 +125,68 @@ controller.MetMostrarHomologados = async (req, res) => {
                         lte :  new Date(update_filter_less+'T23:59:59Z'),
                         gte :  new Date(update_filter_more+'T00:00:00Z'),
                     }
-                },
+                }
+            ],
+            NOT : query_not
+        }
+
+        let query_no_otros = {
+            OR : [
+                {
+                    m_pro_grow : {
+                        not: null
+                    },
+                    homologado : true,
+                    masterclientes_grow : {
+                        territorio : {
+                            contains : req_region,
+                        },
+                        codigo_destinatario : {
+                            contains : req_cod_prod_not,
+                        },
+                        cliente_hml : {
+                            contains : req_cliente_hml
+                        },
+                        zona : {
+                            contains : req_zona
+                        }
+                    },
+                    // perpersonas : {
+                    //     pernombrecompleto : {
+                    //         contains : req_persona
+                    //     }
+                    // },
+                    descripcion_producto : {
+                        contains : req_pro_not_hml
+                    },
+                    master_productos_grow : {
+                        codigo_material : {
+                            contains : req_cod_pro_hml
+                        },
+                        material_softys : {
+                            contains : req_prod_hml
+                        }
+                    },
+                    desde : {
+                        contains : desde_modificado
+                    },
+                    updated_at : {
+                        lte :  new Date(update_filter_less+'T23:59:59Z'),
+                        gte :  new Date(update_filter_more+'T00:00:00Z'),
+                    }
+                }
+            ],
+            NOT : query_not,
+        }
+
+        if(req_total == 'true' || req_filtro_input == true){
+            total = await prisma.master_productos_so.findMany({
+                where: req_otros ? query_otros : query_no_otros,
                 distinct : ['pk_venta_so_hml'],
             })
         }
 
-        if(req_filtro_input){
+        if(req_filtro_input || req_total == 'true'){
             if((total.length)/15 < page){
                 page = Math.ceil((total.length)/15)
             }
@@ -115,50 +196,18 @@ controller.MetMostrarHomologados = async (req, res) => {
         }
 
         productos_hml = await prisma.master_productos_so.findMany({
-            where: {
-                m_pro_grow : {
-                    not: null
-                },
-                homologado : true,
-                masterclientes_grow : {
-                    territorio : {
-                        contains : req_region,
-                    },
-                    codigo_destinatario : {
-                        contains : req_cod_prod_not,
-                    },
-                    cliente_hml : {
-                        contains : req_cliente_hml
-                    },
-                    zona : {
-                        contains : req_zona
-                    }
-                },
-                descripcion_producto : {
-                    contains : req_pro_not_hml
-                },
-                master_productos_grow : {
-                    codigo_material : {
-                        contains : req_cod_pro_hml
-                    },
-                    material_softys : {
-                        contains : req_prod_hml
-                    }
-                },
-                desde : {
-                    contains : desde_modificado
-                },
-                updated_at : {
-                    lte :  new Date(update_filter_less+'T23:59:59Z'),
-                    gte :  new Date(update_filter_more+'T00:00:00Z'),
-                }
-            },
+            where: req_otros ? query_otros : query_no_otros,
             select: {
                 master_distribuidoras: {
                     select: {
                         codigo_dt: true,
                         nomb_dt: true,
                         region : true
+                    }
+                },
+                perpersonas :{
+                    select : {
+                        pernombrecompleto : true
                     }
                 },
                 masterclientes_grow : {
@@ -195,7 +244,15 @@ controller.MetMostrarHomologados = async (req, res) => {
         })
 
         productos_hml.forEach((pro, index) => {
-            productos_hml[index]['key'] = index
+            if(order_index && req_orden == 'desc'){
+                if(productos_hml.length < 15){
+                    productos_hml[index]['key'] =  productos_hml.length - index 
+                }else{
+                    productos_hml[index]['key'] = total.length - ( (15 * (page ) ) - ( productos_hml.length - index ) )
+                }
+            }else{
+                productos_hml[index]['key'] = (index+1) + ((page-1) * 15)
+            }
         });
 
     }catch(error){
