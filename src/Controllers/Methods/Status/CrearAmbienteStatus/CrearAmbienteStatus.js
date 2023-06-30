@@ -20,7 +20,7 @@ controller.MetCrearAmbienteStatus = async ( req, res ) => {
     } = req.body
 
 
-    const dias = ['Domingo','Lunes', 'Martes','Miercoles','Jueves','Viernes']
+    const dias = ['Domingo','Lunes', 'Martes','Miercoles','Jueves','Viernes','Sabado']
 
     const mesnombre = moment( new Date(req_fecfecha)).format('MMMM')
     const fecmesabreviacion = mesnombre.substring(0,3).toUpperCase()
