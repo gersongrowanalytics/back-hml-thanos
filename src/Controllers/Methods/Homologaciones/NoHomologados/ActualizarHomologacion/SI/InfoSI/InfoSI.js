@@ -34,7 +34,7 @@ controller.MetObtenerInfoSI = async (req, res) => {
             let consulta_month = []
             if(req_mes.length > 0){
                 req_mes.forEach( mes => {
-                    consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month } ] })
+                    consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month+1 } ] })
                 });
                 consulta = {...consulta, OR : consulta_month}
             }

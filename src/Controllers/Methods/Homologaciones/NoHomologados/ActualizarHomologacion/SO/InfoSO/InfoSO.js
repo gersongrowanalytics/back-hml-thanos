@@ -43,7 +43,7 @@ controller.MetObtenerInfoSO = async ( req, res ) => {
 
             if(req_mes.length > 0){
                 req_mes.forEach( mes => {
-                    consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month }, { pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
+                    consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month+1 }, { pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
                 });
             }else{
                 consulta_month.push({ AND : [ { pk_extractor_venta_so : req_pk_extractor_ventas_so} ] })
