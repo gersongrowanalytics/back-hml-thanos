@@ -22,7 +22,7 @@ controller.MetMostrarHomologados = async (req, res) => {
         req_updated_at,
         req_zona,
         req_otros,
-        req_persona
+        req_usuusuario
     } = req.body
 
     let productos_hml
@@ -63,8 +63,8 @@ controller.MetMostrarHomologados = async (req, res) => {
 
                 query_order = {...query_order, masterclientes_grow : { [req_column] : req_orden}}
 
-            }else if(req_column == 'pernombrecompleto'){
-                query_order = {...query_order, perpersonas : { [req_column] : req_orden}}
+            }else if(req_column == 'usuusuario'){
+                query_order = {...query_order, usuusuarios : { [req_column] : req_orden}}
             }else if(req_column == 'descripcion_producto' || req_column == 'desde' || req_column == 'updated_at'){
 
                 query_order = {...query_order, [req_column] : req_orden}
@@ -102,11 +102,6 @@ controller.MetMostrarHomologados = async (req, res) => {
                             contains : req_zona
                         }
                     },
-                    // perpersonas : {
-                    //     pernombrecompleto : {
-                    //         contains : req_persona
-                    //     }
-                    // },
                     descripcion_producto : {
                         contains : req_pro_not_hml
                     },
@@ -151,11 +146,6 @@ controller.MetMostrarHomologados = async (req, res) => {
                             contains : req_zona
                         }
                     },
-                    // perpersonas : {
-                    //     pernombrecompleto : {
-                    //         contains : req_persona
-                    //     }
-                    // },
                     descripcion_producto : {
                         contains : req_pro_not_hml
                     },
@@ -177,6 +167,11 @@ controller.MetMostrarHomologados = async (req, res) => {
                 }
             ],
             NOT : query_not,
+        }
+
+        if(req_usuusuario != ''){
+            query_no_otros  = {...query_no_otros["OR"][0], usuusuarios : { usuusuario : { contains : req_usuusuario} }}
+            query_otros     = {...query_otros["OR"][0], usuusuarios :  { usuusuario : { contains : req_usuusuario} }}
         }
 
         if(req_total == 'true' || req_filtro_input == true){
@@ -205,11 +200,6 @@ controller.MetMostrarHomologados = async (req, res) => {
                         region : true
                     }
                 },
-                perpersonas :{
-                    select : {
-                        pernombrecompleto : true
-                    }
-                },
                 masterclientes_grow : {
                     select : {
                         cliente_hml: true,
@@ -218,6 +208,11 @@ controller.MetMostrarHomologados = async (req, res) => {
                         sucursal_hml : true,
                         destinatario : true,
                         zona        : true
+                    }
+                },
+                usuusuarios : {
+                    select : {
+                        usuusuario : true
                     }
                 },
                 master_productos_grow: {
