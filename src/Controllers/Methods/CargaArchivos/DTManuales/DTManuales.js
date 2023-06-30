@@ -69,8 +69,9 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         }
 
         // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
+        let rpta_obtener_products_so = {}
         if(usu.usuid == 1){
-            const rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO(audpk, devmsg)
+            rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO(audpk, devmsg)
         }
         
         const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
@@ -89,6 +90,44 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             carnotificaciones_bd = await controller.FormatMessageError(message_errors)
         }
 
+        const cod_grow = rpta_obtener_products_so.codigo_destinatario ? rpta_obtener_products_so.codigo_destinatario : []
+        let conexion_type = ""
+        if(cod_grow.length > 0){
+            const get_master_clients_grow = await prisma.masterclientes_grow.findMany({
+                where: {
+                    codigo_destinatario: {
+                        in: cod_grow
+                    }
+                },
+                select: {
+                    conexion: true,
+                }
+            })
+
+            let aut = false
+            let man = false
+            let ambos = false
+            let nocom = false
+            get_master_clients_grow.map(gmcg => {
+                if(gmcg.conexion == "MANUAL"){
+                    man = true
+                }
+                if(gmcg.conexion == "AUTOMATICO"){
+                    aut = true
+                }
+                if(gmcg.conexion == "NO COMPARTE"){
+                    nocom = true
+                }
+                if(man && aut){
+                    ambos = true
+                }
+            })
+            conexion_type = ambos ? "AMBOS" 
+                                : aut ? "AUTOMATICO" 
+                                : man ? "MANUAL" 
+                                : nocom && "NO COMPARTE"
+        }
+
         const token_excel = crypto.randomBytes(30).toString('hex')
         const car = await prisma.carcargasarchivos.create({
             data: {
@@ -100,18 +139,19 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                 cartipo     : req_type_file,
                 carurl      : baseUrl + '/carga-archivos/generar-descarga?token=' + token_excel,
                 carexito    : carexito_bd,
+                carconexion : conexion_type,
                 carnotificaciones : carnotificaciones_bd
             }
         })
 
         const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html');
         const from_mail_data = process.env.USER_MAIL
-        // const to_mail_data = process.env.TO_MAIL
+        const to_mail_data = process.env.TO_MAIL
 
-        let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
+        // let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
         // let to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
         if(usu.usuid == 1){
-            to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
+            // to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
         }
         
         const subject_mail_success = "Carga de Archivo"
@@ -125,7 +165,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             error_message_mail: message_errors
         }
         
-        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
+        // await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
         if(!error){
 
