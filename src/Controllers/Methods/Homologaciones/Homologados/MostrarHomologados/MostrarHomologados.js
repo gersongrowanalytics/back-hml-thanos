@@ -187,8 +187,8 @@ controller.MetMostrarHomologados = async (req, res) => {
         }
 
         if(req_filtro_input || req_total == 'true'){
-            if((total.length)/15 < page){
-                page = Math.ceil((total.length)/15)
+            if((total.length)/20 < page){
+                page = Math.ceil((total.length)/20)
             }
             if(total.length == 0){
                 page = 1
@@ -239,19 +239,19 @@ controller.MetMostrarHomologados = async (req, res) => {
             },
             orderBy: query_order,
             distinct : ['pk_venta_so_hml'],
-            take: 15,
-            skip: (page - 1) * 15
+            take: 20,
+            skip: (page - 1) * 20
         })
 
         productos_hml.forEach((pro, index) => {
             if(order_index && req_orden == 'desc'){
-                if(productos_hml.length < 15){
+                if(productos_hml.length < 20){
                     productos_hml[index]['key'] =  productos_hml.length - index 
                 }else{
-                    productos_hml[index]['key'] = total.length - ( (15 * (page ) ) - ( productos_hml.length - index ) )
+                    productos_hml[index]['key'] = total.length - ( (20 * (page ) ) - ( productos_hml.length - index ) )
                 }
             }else{
-                productos_hml[index]['key'] = (index+1) + ((page-1) * 15)
+                productos_hml[index]['key'] = (index+1) + ((page-1) * 20)
             }
         });
 
