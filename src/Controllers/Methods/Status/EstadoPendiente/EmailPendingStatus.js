@@ -27,8 +27,15 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
             const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoStatus.html')
             const from_mail_data = process.env.USER_MAIL
             // const to_mail_data = process.env.TO_MAIL
-            const to_mail_data = "gerson.vilca@grow-analytics.com.pe"
-            const subject_mail_success = `Distribuidores: Status ${nombresMeses[mesTexto]} 2023`
+            const to_mail_data = [
+                "maria.yauri@softys.com",
+                "gporras@softys.com",
+                "jabarcan@softys.com",
+                "cpachecot@softys.com",
+                "lsecca@softys.com"
+            ]
+            // const subject_mail_success = `Distribuidores: Status ${nombresMeses[mesTexto]} 2023`
+            const subject_mail_success = `Prueba Piloto Distribuidores: Status 2023`
             // await espsDistribuidoras.map((dts, index) => espsDistribuidoras[index]['indice'] = index + 1)
             const filterEspsDistribuidoras = espsDistribuidoras.filter(esp => esp.espfechactualizacion == null)
             await filterEspsDistribuidoras.map((dts, index) => filterEspsDistribuidoras[index]['indice'] = index + 1)

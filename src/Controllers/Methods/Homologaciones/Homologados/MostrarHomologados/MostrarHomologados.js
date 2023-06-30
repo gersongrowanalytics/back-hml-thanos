@@ -85,6 +85,7 @@ controller.MetMostrarHomologados = async (req, res) => {
                 {
                     m_pro_grow : {
                         not: null
+                        // not: 268
                     },
                     homologado : true,
                     masterclientes_grow : {
