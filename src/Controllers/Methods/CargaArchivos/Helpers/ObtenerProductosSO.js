@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 controller.MetObtenerProductosSO = async (audpk=[], devmsg=[]) => {
 
     try{
+        let codigo_destinatario = []
         const formattedDate = new Date().toISOString().slice(0, 10);
 
         const distinct_ventas_so = await prisma.ventas_so.findMany({
@@ -53,7 +54,7 @@ controller.MetObtenerProductosSO = async (audpk=[], devmsg=[]) => {
                 posible_combo : posibleCombo,
             })
         })
-        
+
         // await prisma.master_productos_so.deleteMany({})
         for await (const data_master of new_data_master_productos_so){
             const create_master_pso = await prisma.master_productos_so.create({
@@ -62,6 +63,11 @@ controller.MetObtenerProductosSO = async (audpk=[], devmsg=[]) => {
                 }
             })
             audpk.push("master_productos_so-create-"+create_master_pso.id)
+            const val_cod_dest = codigo_destinatario.find(cd => cd == data_master.codigo_distribuidor)
+            if(!val_cod_dest){
+                console.log("ingreso if");
+                codigo_destinatario.push(data_master.codigo_distribuidor)
+            }
         }
 
         for await (const venta_so of distinct_ventas_so){
@@ -101,7 +107,8 @@ controller.MetObtenerProductosSO = async (audpk=[], devmsg=[]) => {
 
         return {
             message : 'Productos SO asignados correctamente',
-            respuesta  : true
+            respuesta  : true,
+            codigo_destinatario
         }
 
     } catch(error) {
