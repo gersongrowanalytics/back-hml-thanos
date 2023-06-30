@@ -95,7 +95,7 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
                 "unidad_medida_hml": "UNIDAD",
             },
             {
-                "cod_unidad_medida_hml": "CAJ",
+                "cod_unidad_medida_hml": "CJ",
                 "unidad_medida_hml":  "CAJAS",
             },
             {
