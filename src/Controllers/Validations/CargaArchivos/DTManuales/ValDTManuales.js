@@ -193,29 +193,29 @@ controller.ValCellsFile = async (workbook, usu) => {
                 cods_dts.push(row[properties[0]].toString().trim())
             }
 
-            // if(cod_dts.findIndex(dts => dts.codigo_destinatario == row[properties[0]]) == -1){
-            //     // add_dt_manuales = false
-            //     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[0]['name'])
-            //     controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'distributor not found', row[properties[0]])
-            // }else{
+            if(cod_dts.findIndex(dts => dts.codigo_destinatario == row[properties[0]]) == -1){
+                add_dt_manuales = false
+                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[0]['name'])
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'distributor not found', row[properties[0]])
+            }else{
 
-            //     let find_dts = cod_dts.find(dt => dt.codigo_destinatario == row[properties[0]].toString().trim())
-            //     m_dt_id = find_dts.id
+                let find_dts = cod_dts.find(dt => dt.codigo_destinatario == row[properties[0]].toString().trim())
+                m_dt_id = find_dts.id
     
-            //     let existe_cod = false
-            //     borrar_data.map((dat) => {
-            //         if(dat.cod_dt == row[properties[0]].toString().trim() && dat.fecha == date_final ){
-            //             existe_cod = true
-            //         }
-            //     })
+                let existe_cod = false
+                borrar_data.map((dat) => {
+                    if(dat.cod_dt == row[properties[0]].toString().trim() && dat.fecha == date_final ){
+                        existe_cod = true
+                    }
+                })
     
-            //     if(existe_cod == false){
-            //         borrar_data.push({
-            //             cod_dt : row[properties[0]].toString().trim(),
-            //             fecha : date_final
-            //         })
-            //     }
-            // }
+                if(existe_cod == false){
+                    borrar_data.push({
+                        cod_dt : row[properties[0]].toString().trim(),
+                        fecha : date_final
+                    })
+                }
+            }
         }
 
         if(!row[properties[1]]){
