@@ -4,7 +4,7 @@ const fs = require('fs')
 const nodemailer = require("nodemailer")
 const handlebars = require('handlebars')
 
-controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data_mail) => {
+controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data_mail, to_cc_mail) => {
     let transporter = nodemailer.createTransport({
         host: process.env.HOST_MAIL,
         port: process.env.PORT_MAIL,
@@ -35,12 +35,7 @@ controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data
     await transporter.sendMail({
         from: from_mail,
         to: to_mail,
-        cc: [
-            "jazmin.laguna@grow-analytics.com.pe",
-            "gerson.vilca@grow-analytics.com.pe",
-            "eunice.calle@grow-analytics.com.pe",
-            "miguel.caballero@grow-analytics.com.pe"
-        ],
+        cc: to_cc_mail,
         subject: subject_mail,
         html: renderedTemplate,
     }).catch((e) => {

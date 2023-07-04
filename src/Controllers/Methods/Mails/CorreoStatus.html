@@ -56,7 +56,7 @@
                                 {{#each data_mail.data as |dt|}}
                                     {{#isEqual dt.arenombre "Revenue"}}
                                         <td style="width: 250px; padding-right: 38px;">
-                                            <table style="background: #FFFFFF; width: 100%; border-radius: 9px">
+                                            <table style="background: #FFFFFF; width: 100%;">
                                                 <tr style="height: 35px;">
                                                     <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
                                                         {{dt.arenombre}}
@@ -70,7 +70,7 @@
                                     {{/isEqual}}
                                     {{#isEqual dt.arenombre "Ventas"}}
                                         <td style="width: 250px; padding-right: 38px;">
-                                            <table style="background: #FFFFFF; width: 100%; border-radius: 9px">
+                                            <table style="background: #FFFFFF; width: 100%;">
                                                 <tr style="height: 35px;">
                                                     <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
                                                         {{dt.arenombre}}
@@ -84,7 +84,7 @@
                                     {{/isEqual}}
                                     {{#isEqual dt.arenombre "SAC"}}
                                         <td style=" width: 250px; padding-right: 38px;">
-                                            <table style="background: #FFFFFF; width: 100%; border-radius: 9px;">
+                                            <table style="background: #FFFFFF; width: 100%;">
                                                 <tr style="height: 35px;">
                                                     <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
                                                         {{dt.arenombre}}
@@ -104,7 +104,7 @@
                                     {{/isEqual}}
                                     {{#isEqual dt.arenombre "DT"}}
                                         <td style=" width: 250px">
-                                            <table style="background: #FFFFFF; width: 100%; border-radius: 9px;">
+                                            <table style="background: #FFFFFF; width: 100%;">
                                                 <tr style="height: 35px;">
                                                     <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
                                                         DTS <span style="font-weight: 400">(Sell Out)</span>
@@ -127,60 +127,60 @@
                         </table>
                         <table border="0" cellspacing="0" cellpadding="0" style="font-family: 'Segoe UI', sans-serif; padding-left: 30px; padding-right: 30px; width: 1000px; border-collapse: collapse;">
                             <tr style="color: #1E1E1E; height: 10px; padding: 0px; margin: 0px; ">
-                                <td align="center" style="border-top-left-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Áreas</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Áreas</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal; padding: 6px">Base de datos</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Responsable</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Usuario</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">DeadLine</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">DeadLine Actualizado</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Días de Retraso</td>
-                                <td align="center" style="border-top-right-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Status</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Status</td>
                             </tr>
                             
                             {{#each data_mail.dataExcludeDt as |data|}}
                                 {{#each data.esps as |esp|}}
                                 <tr class="Status-Row">
                                     {{#isEqual @index 0}}
-                                    <td rowspan="{{ data.esps.length }}" align="left" style="border-top: 1px solid; border-bottom: 1px solid; color: #004FB8; background: #FFFFFF; border-color: #F1F7FF; font-weight: 700; font-size: 11px;  font-style: normal; padding-left: 18px;">
+                                    <td rowspan="{{ data.esps.length }}" align="left" style="color: #004FB8; background: #FFFFFF; font-weight: 700; font-size: 11px; font-style: normal; padding-left: 18px;">
                                         {{data.arenombre}}
                                     </td>
                                     {{/isEqual}}
-                                    <td align="center" class="Status-Col">
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64;">
                                         {{esp.espbasedato}}
                                     </td>
-                                    <td align="center" class="Status-Col"> 
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64;"> 
                                         {{esp.espresponsable}}
                                     </td>
-                                    <td align="center" class="Status-Col">
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64;">
                                         {{#if esp.perpersonas}}
                                             {{esp.perpersonas.pernombrecompleto}}
                                         {{else}}
                                             -
                                         {{/if}}
                                     </td>
-                                    <td align="center" class="Status-Col">
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64;">
                                         {{#if esp.espfechaprogramado}}
                                             {{formatDate esp.espfechaprogramado}}
                                         {{else}}
                                             -
                                         {{/if}}
                                     </td>
-                                    <td align="center" class="Status-Col">
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64;">
                                         {{#if esp.espfechactualizacion}}
                                             {{formatDate esp.espfechactualizacion}}
                                         {{else}}
                                             -
                                         {{/if}}
                                     </td>
-                                    <td align="center" class="Status-Col"> 
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF;"> 
                                         <div style="place-content: center; display: flex; justify-content: center; width: 50%;">
                                             {{#isEqual esp.espdiaretraso 0}}
-                                                <div style="background: #FFFFFF; color: #2FDA36; font-weight: 400; font-size: 9px;  font-style: normal">
+                                                <div style="color: #2FDA36; font-weight: 400; font-size: 9px;  font-style: normal">
                                                     {{esp.espdiaretraso}} días
                                                 </div>
                                                 <div style="width: 17px; height: 10px; border-radius: 8px; background: #2FDA36; margin-left: 5px; margin-top: 2px"></div>
                                             {{else}}
-                                                <div style="background: #FFFFFF; color: #FF0000; font-weight: 400; font-size: 9px;  font-style: normal">
+                                                <div style="color: #FF0000; font-weight: 400; font-size: 9px;  font-style: normal">
                                                     {{esp.espdiaretraso}} días 
                                                 </div>
                                                 <div style="width: 17px; height: 10px; border-radius: 8px; background: #FF0000; margin-left: 5px; margin-top: 2px"></div>
@@ -189,23 +189,22 @@
                                     </td>
                                     
                                     {{#isEqual esp.espbasedato "Homologaciones"}}
-
                                         {{#isEqual data.areporcentaje "100"}}
-                                            <td align="center" class="Status-Col-Days" style="color: #2FDA36;">
+                                            <td align="center" class="Status-Col-Days" style="color: #2FDA36; background: #FFFFFF; font-size: 9px; font-style: normal;">
                                                 Cargado
                                             </td>
                                         {{else}}
-                                            <td align="center" class="Status-Col-Days" style="color: #FF0000;">
+                                            <td align="center" class="Status-Col-Days" style="color: #FF0000; background: #FFFFFF; font-size: 9px; font-style: normal;">
                                                 Pendiente
                                             </td>
                                         {{/isEqual}}
                                     {{else}}
                                         {{#if esp.espfechactualizacion}}
-                                        <td align="center" class="Status-Col-Days" style="color: #2FDA36;">
+                                        <td align="center" class="Status-Col-Days" style="color: #2FDA36; background: #FFFFFF; font-size: 9px; font-style: normal;">
                                             Cargado
                                         </td>
                                         {{else}}
-                                        <td align="center" class="Status-Col-Days" style="color: #FF0000;">
+                                        <td align="center" class="Status-Col-Days" style="color: #FF0000; background: #FFFFFF; font-size: 9px; font-style: normal;">
                                             Pendiente
                                         </td>
                                         {{/if}}
@@ -222,7 +221,7 @@
                         </table>
                         <table border="0" cellspacing="0" cellpadding="0" style="font-family: 'Segoe UI', sans-serif; padding-left: 30px; padding-right: 30px; width: 1000px; border-collapse: collapse;">
                             <tr style="color: #1E1E1E; height: 10px; padding: 0px; margin: 0px; ">
-                                <td align="center" style="border-top-left-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">N°</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">N°</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal; padding: 6px">Zona</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Territorio</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Cliente</td>
@@ -232,70 +231,70 @@
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">DeadLine</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">DeadLine Actualizado</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Dias de retraso</td>
-                                <td align="center" style="border-top-right-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Status</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Status</td>
                             </tr>
                             {{#each data_mail.datadts as |dt|}}
                             <tr class="Status-Row">
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{dt.indice}}
                                 </td>
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{#if dt.masterclientes_grow}}
                                         {{dt.masterclientes_grow.zona}}
                                     {{else}}
                                         -
                                     {{/if}}
                                 </td>
-                                <td align="center" class="Status-Col"> 
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;"> 
                                     {{#if dt.masterclientes_grow}}
                                         {{dt.masterclientes_grow.territorio}}
                                     {{else}}
                                         -
                                     {{/if}}
                                 </td>
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{#if dt.masterclientes_grow}}
                                         {{dt.masterclientes_grow.cliente_hml}}
                                     {{else}}
                                         -
                                     {{/if}}
                                 </td>
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{#if dt.espresponsable}}
                                         {{dt.espresponsable}}
                                     {{else}}
                                         -
                                     {{/if}}
                                 </td>
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{#if dt.perpersonas}}
                                         {{dt.perpersonas.pernombrecompleto}}
                                     {{else}}
                                         -
                                     {{/if}}
                                 </td>
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{#if dt.masterclientes_grow}}
                                         {{dt.masterclientes_grow.conexion}}
                                     {{else}}
                                         -
                                     {{/if}}
                                 </td>
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{#if dt.espfechaprogramado}}
                                         {{formatDate dt.espfechaprogramado}}
                                     {{else}}
                                         -
                                     {{/if}}
                                 </td>
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{#if dt.espfechactualizacion}}
                                         {{formatDate dt.espfechactualizacion}}
                                     {{else}}
                                         -
                                     {{/if}}
                                 </td>
-                                <td align="center" class="Status-Col"> 
+                                <td align="center" class="Status-Col" style="background: #FFFFFF;"> 
                                     <div style="place-content: center; display: flex; justify-content: center; width: 50%;">
                                         {{#isEqual dt.espdiaretraso 0}}
                                             <div style="background: #FFFFFF; color: #2FDA36; font-weight: 400; font-size: 9px;  font-style: normal">
@@ -311,11 +310,11 @@
                                     </div>
                                 </td>
                                 {{#if dt.espfechactualizacion}}
-                                <td align="center" class="Status-Col-Days" style="color: #2FDA36;">
+                                <td align="center" class="Status-Col-Days" style="color: #2FDA36; background: #FFFFFF; font-size: 9px;  font-style: normal;">
                                     Cargado
                                 </td>
                                 {{else}}
-                                <td align="center" class="Status-Col-Days" style="color: #FF0000;">
+                                <td align="center" class="Status-Col-Days" style="color: #FF0000; background: #FFFFFF; font-size: 9px;  font-style: normal;">
                                     Pendiente
                                 </td>
                                 {{/if}}
@@ -330,27 +329,27 @@
                         </table>
                         <table border="0" cellspacing="0" cellpadding="0" style="font-family: 'Segoe UI', sans-serif; padding-left: 30px; padding-right: 30px; width: 1000px; border-collapse: collapse;">
                             <tr style="color: #1E1E1E; height: 10px; padding: 0px; margin: 0px; ">
-                                <td align="center" style="border-top-left-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">N°</td>
-                                <td align="center" style="border-top-left-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Zona</td>
-                                <td align="center" style="border-top-left-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Región</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">N°</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Zona</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Región</td>
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal; padding: 6px">Cantidad Productos no HML</td>
-                                <td align="center" style="border-top-right-radius: 15px; color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">YTD</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">YTD</td>
                             </tr>
                             {{#each data_mail.datapso as |pso|}}
                             <tr class="Status-Row">
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{pso.key}}
                                 </td>
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{pso.zona}}
                                 </td>
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{pso.territorio}}
                                 </td>
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{pso.nohml}}
                                 </td>
-                                <td align="center" class="Status-Col">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{pso.ytd}}
                                 </td>
                             </tr>
