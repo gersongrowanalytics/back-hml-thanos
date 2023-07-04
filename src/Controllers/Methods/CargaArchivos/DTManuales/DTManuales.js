@@ -147,6 +147,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html');
         const from_mail_data = process.env.USER_MAIL
         // const to_mail_data = process.env.TO_MAIL
+        const to_mail_cc_data = ""
 
         let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
         // let to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
@@ -165,7 +166,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             error_message_mail: message_errors
         }
         
-        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
+        await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail, to_mail_cc_data)
 
         if(!error){
 

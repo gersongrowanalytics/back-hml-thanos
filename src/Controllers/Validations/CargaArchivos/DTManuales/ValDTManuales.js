@@ -375,7 +375,7 @@ controller.ValCellsFile = async (workbook, usu) => {
             dia                             : parseInt(day_date),
             mes                             : parseInt(month_date),
             anio                            : parseInt(year_date),
-            usuid                           : usu.usuid
+            // usuid                           : usu.usuid
         })
 
         num_row = num_row + 1
