@@ -55,20 +55,36 @@ controller.MetObtenerProductosSO = async (audpk=[], devmsg=[]) => {
             })
         })
 
+
+        let ids_productos_so = []
         // await prisma.master_productos_so.deleteMany({})
         for await (const data_master of new_data_master_productos_so){
-            const create_master_pso = await prisma.master_productos_so.create({
-                data: {
-                    ...data_master
+            // VALIDAR SI YA EXISTE ESTE CODIGO NO UTILIZARLO
+            const prodctso = await prisma.master_productos_so.findFirst({
+                where: {
+                    pk_extractor_venta_so : data_master.pk_extractor_venta_so
                 }
             })
-            audpk.push("master_productos_so-create-"+create_master_pso.id)
-            const val_cod_dest = codigo_destinatario.find(cd => cd == data_master.codigo_distribuidor)
-            if(!val_cod_dest){
-                console.log("ingreso if");
-                codigo_destinatario.push(data_master.codigo_distribuidor)
+
+            if(!prodctso){
+                const create_master_pso = await prisma.master_productos_so.create({
+                    data: {
+                        ...data_master
+                    }
+                })
+                audpk.push("master_productos_so-create-"+create_master_pso.id)
+                const val_cod_dest = codigo_destinatario.find(cd => cd == data_master.codigo_distribuidor)
+                if(!val_cod_dest){
+                    console.log("ingreso if");
+                    codigo_destinatario.push(data_master.codigo_distribuidor)
+                }
+            }else{
+                ids_productos_so.push(prodctso.id)
             }
         }
+
+        console.log("ids existente:");
+        console.log(ids_productos_so);
 
         for await (const venta_so of distinct_ventas_so){
 
