@@ -15,6 +15,7 @@ controller.MetActualizarStatusBaseDatos = async ( req, res ) => {
         req_date,
         req_usucorreo,
         req_espbasedato,
+        req_controller
     } = req.body
 
     try{
@@ -101,18 +102,25 @@ controller.MetActualizarStatusBaseDatos = async ( req, res ) => {
             msg_dev = 'No existe un histórico para la fecha seleccionada'
         }
 
-
         if(response_status){
-            res.status(200).json({
-                response    : true,
-                message     : 'Status actualizado con éxito',
-            })
+            if(req_controller){
+                return true
+            }else{
+                res.status(200).json({
+                    response    : true,
+                    message     : 'Status actualizado con éxito',
+                })
+            }
         }else{
-            res.status(500).json({
-                response    : false,
-                message     : 'Ha ocurrido un error al actualizar el status',
-                msg_dev
-            })
+            if(req_controller){
+                return false
+            }else{
+                res.status(500).json({
+                    response    : false,
+                    message     : 'Ha ocurrido un error al actualizar el status',
+                    msg_dev
+                })
+            }
         }
 
     }catch(err){

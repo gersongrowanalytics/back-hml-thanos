@@ -13,17 +13,36 @@ const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadena
 const path = require('path')
 const DTActualizarEstadoSelloutController = require('./DTActualizarEstadoSellOut')
 const RegisterAudits = require('../../Audits/CreateAudits/RegisterAudits')
+const ActualizarStatusBaseDatos = require('../../Status/EstadoPendiente/ActualizarStatusBaseDatos')
 
 controller.MetDTManuales = async (req, res, data, delete_data, error, message_errors) => {
 
     const {
         req_action_file,
-        req_type_file
+        req_type_file,
+        req_date_updated
     } = req.body
 
     const {
         usutoken
     } = req.headers
+
+    const usu = await prisma.usuusuarios.findFirst({
+        where: {
+            usutoken : usutoken
+        },
+        select: {
+            usuid: true,
+            usuusuario: true,
+            perid : true,
+            usucorreo : true
+        }
+    })
+
+    req.body.req_date           = req_date_updated
+    req.body.req_espbasedato    = 'Archivo Plano SO'
+    req.body.req_usucorreo      = usu.usucorreo
+    req.body.req_controller     = true
 
     let message = 'Las ventas manuales fueron cargadas correctamente'
     let respuesta = true
@@ -43,16 +62,6 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         let error_actualizar_so         = false
         const baseUrl = req.protocol + '://' + req.get('host');
 
-        const usu = await prisma.usuusuarios.findFirst({
-            where: {
-                usutoken : usutoken
-            },
-            select: {
-                usuid: true,
-                usuusuario: true,
-                perid : true
-            }
-        })
 
         if(!error){
             
@@ -184,6 +193,8 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                 log = JSON.stringify(devmsg)
             }
             await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'DT MANUALES', 'CREAR', '/carga-archivos/dt-manuales', log, audpk)
+
+            await ActualizarStatusBaseDatos.MetActualizarStatusBaseDatos(req, res)
 
             return res.status(status).json({
                 message,

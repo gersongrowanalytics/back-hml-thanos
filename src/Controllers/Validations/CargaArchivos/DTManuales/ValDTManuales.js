@@ -9,7 +9,8 @@ const moment = require('moment');
 controller.ValDTManuales = async (req, res) => {
 
     const {
-        req_action_file
+        req_action_file,
+        req_date_updated
     } = req.body
 
     const {
@@ -19,6 +20,8 @@ controller.ValDTManuales = async (req, res) => {
     const file          = req.files.carga_manual
 
     try{
+
+        const date = req_date_updated
         
         const usu = await prisma.usuusuarios.findFirst({
             where : {
@@ -40,7 +43,7 @@ controller.ValDTManuales = async (req, res) => {
             })
         }
 
-        const { messages_error, add_dt_manuales, borrar_data, data, codcli_esp, cods_dts } = await controller.ValCellsFile(workbook, usu)
+        const { messages_error, add_dt_manuales, borrar_data, data, codcli_esp, cods_dts } = await controller.ValCellsFile(workbook, usu, date)
 
         const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg));
 
@@ -97,11 +100,12 @@ controller.ValExistsData = async (file) => {
     return { exists_data, message, status, workbook: workbook ? workbook : null }
 }
 
-controller.ValCellsFile = async (workbook, usu) => {
+controller.ValCellsFile = async (workbook, usu, date) => {
 
     const rows      = XLSX.utils.sheet_to_json(workbook.Sheets['data'], {defval:""})
     let properties  = Object.keys(rows[0])
 
+    const [ req_year, req_month ] = date.split("-")
     // const cod_dts = await prisma.master_distribuidoras.findMany({
     //     select : {
     //         codigo_dt   : true,
@@ -185,7 +189,7 @@ controller.ValCellsFile = async (workbook, usu) => {
             //Si no existe el código distribuidor
             add_dt_manuales = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[0]['name'])
-            controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'empty')
+            controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'empty', null)
 
         }else{
 
@@ -221,7 +225,7 @@ controller.ValCellsFile = async (workbook, usu) => {
         if(!row[properties[1]]){
             add_dt_manuales = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[1]['name'])
-            controller.ValAddMessageLog(rows_error, messages_error, columns_name[1]['name'], num_row, 'empty')
+            controller.ValAddMessageLog(rows_error, messages_error, columns_name[1]['name'], num_row, 'empty', null)
         }else{
 
             let existe_fec = false
@@ -244,13 +248,13 @@ controller.ValCellsFile = async (workbook, usu) => {
             // if(row[properties[4]].toString().length != 11){
             //     add_dt_manuales = false
             //     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
-            //     controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'number of digits')
+            //     controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'number of digits', null)
             // }
     
             if(isNaN(row[properties[4]])){
                 add_dt_manuales = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'not number')
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'not number', null)
             }
         }
 
@@ -259,13 +263,13 @@ controller.ValCellsFile = async (workbook, usu) => {
             // if(row[properties[8]].toString().length != 8){
             //     add_dt_manuales = false
             //     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
-            //     controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'number of digits')
+            //     controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'number of digits', null)
             // }
     
             if(isNaN(row[properties[8]])){
                 add_dt_manuales = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'not number')
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'not number', null)
             }
         }
         
@@ -273,7 +277,7 @@ controller.ValCellsFile = async (workbook, usu) => {
             if(!row[properties[cell]]){
                 add_dt_manuales = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[cell]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[cell]['name'], num_row, 'empty')
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[cell]['name'], num_row, 'empty', null)
 
                 let index_empty = columns_empty.findIndex(col => col.name == columns_name[cell]['name']) 
                 if(index_empty == -1){
@@ -290,25 +294,25 @@ controller.ValCellsFile = async (workbook, usu) => {
         if(isNaN(row[properties[12]])){
             add_dt_manuales = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[12]['name'])
-            controller.ValAddMessageLog(rows_error, messages_error, columns_name[12]['name'], num_row, 'not number')
+            controller.ValAddMessageLog(rows_error, messages_error, columns_name[12]['name'], num_row, 'not number', null)
         }
 
         if(isNaN(row[properties[14]])){
             add_dt_manuales = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[14]['name'])
-            controller.ValAddMessageLog(rows_error, messages_error, columns_name[14]['name'], num_row, 'not number')
+            controller.ValAddMessageLog(rows_error, messages_error, columns_name[14]['name'], num_row, 'not number', null)
         }
 
         if(row[properties[14]] === ''){
             add_dt_manuales = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[14]['name'])
-            controller.ValAddMessageLog(rows_error, messages_error, columns_name[14]['name'], num_row, 'empty')
+            controller.ValAddMessageLog(rows_error, messages_error, columns_name[14]['name'], num_row, 'empty', null)
         }
 
         if(row[properties[15]] === ''){
             add_dt_manuales = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[15]['name'])
-            controller.ValAddMessageLog(rows_error, messages_error, columns_name[15]['name'], num_row, 'empty')
+            controller.ValAddMessageLog(rows_error, messages_error, columns_name[15]['name'], num_row, 'empty', null)
         }else{
 
             const row_precio_total = row[properties[15]]
@@ -316,7 +320,7 @@ controller.ValCellsFile = async (workbook, usu) => {
             if(isNaN(row_precio_total)){
                 add_dt_manuales = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[15]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[15]['name'], num_row, 'not number')
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[15]['name'], num_row, 'not number', null)
             }else{
                 const row_cantidad = row[properties[12]]
                 const row_precio = row[properties[14]]
@@ -325,7 +329,7 @@ controller.ValCellsFile = async (workbook, usu) => {
                 if(dif_totales >= 1 || dif_totales <= -1){
                     add_dt_manuales = false
                     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[15]['name'])
-                    controller.ValAddMessageLog(rows_error, messages_error, columns_name[15]['name'], num_row, 'inconsistent data')
+                    controller.ValAddMessageLog(rows_error, messages_error, columns_name[15]['name'], num_row, 'inconsistent data', null)
                 }
             }
         }
@@ -348,6 +352,12 @@ controller.ValCellsFile = async (workbook, usu) => {
 
         const pk_venta_so           = row[properties[0]].toString().trim() + row[properties[10]].toString().trim()
         const pk_extractor_venta_so = row[properties[0]].toString().trim() + row[properties[10]].toString().trim() + cod_unidad_medida + unidad_medida
+
+        if(parseInt(month_date) != parseInt(req_month) || parseInt(year_date) != parseInt(req_year)){
+            add_dt_manuales = false
+            let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[1]['name'])
+            controller.ValAddMessageLog(rows_error, messages_error, columns_name[1]['name'], num_row, 'date range', null, date)
+        }
 
         data.push({
             pro_so_id                       : null,
@@ -387,7 +397,7 @@ controller.ValCellsFile = async (workbook, usu) => {
     if(messages_emptys.length > 0){
         messages_emptys.forEach(mes => {
             let rows_error  = messages_error.findIndex(meserror => meserror.columna == mes.name)
-            controller.ValAddMessageLog(rows_error, messages_error, mes.name, -1, 'empty rows')
+            controller.ValAddMessageLog(rows_error, messages_error, mes.name, -1, 'empty rows', null)
         });
     }
 
@@ -408,7 +418,7 @@ controller.ValCellsFile = async (workbook, usu) => {
     return { messages_error, add_dt_manuales, borrar_data, data, codcli_esp, cods_dts }
 }
 
-controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row, type, name_dts = null) => {
+controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row, type, name_dts = null, extra) => {
 
     let msg_log = ''
 
@@ -418,6 +428,9 @@ controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row,
             break;
         case 'not number':
             msg_log = `Lo sentimos, algunos de los ${name_column} no son númericos`
+            break;
+        case 'date range':
+            msg_log = `Lo sentimos, algunos registros tienen una fecha diferente a la seleccionada "${extra}"`
             break;
         case 'format invalid':
             msg_log = `Lo sentimos, algunos de los ${name_column} no tienen el formato válido`

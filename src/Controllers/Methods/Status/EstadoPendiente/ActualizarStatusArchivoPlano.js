@@ -85,7 +85,8 @@ controller.MetActualizarStatusArchivoPlano = async (usutoken, date, perid) => {
                 data : {
                     perid                   : perid_usu,
                     espfechactualizacion    : new Date().toISOString(),
-                    espdiaretraso           : esp_day_late
+                    espdiaretraso           : esp_day_late,
+                    updated_at              : new Date()
                 }
             })
     
@@ -117,7 +118,8 @@ controller.MetActualizarStatusArchivoPlano = async (usutoken, date, perid) => {
                         areid : aree.areid
                     },
                     data : {
-                        areporcentaje : are_percentage
+                        areporcentaje   : are_percentage,
+                        updated_at      : new Date()
                     }
                 })
             }
