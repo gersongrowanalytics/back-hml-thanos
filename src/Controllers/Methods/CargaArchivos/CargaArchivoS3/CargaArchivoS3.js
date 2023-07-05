@@ -95,7 +95,7 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
             url_host    : baseUrl
         }
 
-        await controller.ActualizarStatus(usutoken, req_type_file)
+        await controller.ActualizarStatus(usutoken, req_type_file, req)
 
         await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
 
@@ -113,26 +113,26 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
     }
 }
 
-controller.ActualizarStatus = async ( usutoken, req_type_file ) => {
+controller.ActualizarStatus = async ( usutoken, req_type_file, req) => {
 
     let date    = null
     let perid   = null
 
     switch (req_type_file) {
         case 'Archivo Plano SO':
-            await StatusArchivoPlano.MetActualizarStatusArchivoPlano(usutoken, date, perid)
+            await StatusArchivoPlano.MetActualizarStatusArchivoPlano(usutoken, date, perid, null, req)
             break;
         case 'Master de Clientes':
-            await StatusMasterClientes.MetActualizarStatusMasterClientes(usutoken, date, perid)
+            await StatusMasterClientes.MetActualizarStatusMasterClientes(usutoken, date, perid, null, req)
             break;
         case 'Master de Precios':
-            await StatusMasterPrecios.MetActualizarStatusMasterPrecios(usutoken, date, perid)
+            await StatusMasterPrecios.MetActualizarStatusMasterPrecios(usutoken, date, perid, null, req)
             break;
         case 'Master de Producto':
-            await StatusMasterProductos.MetActualizarStatusMasterProductos(usutoken, date, perid)
+            await StatusMasterProductos.MetActualizarStatusMasterProductos(usutoken, date, perid, null, req)
             break;
         case 'Sell In Thanos':
-            await StatusSellinThanos.MetActualizarStatusSellinThanos(usutoken, date, perid)
+            await StatusSellinThanos.MetActualizarStatusSellinThanos(usutoken, date, perid, null, req)
             break;
         default:
             console.log('No se encontró algun tipo de archivo');

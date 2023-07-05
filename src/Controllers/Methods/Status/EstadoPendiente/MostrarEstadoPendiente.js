@@ -2,6 +2,7 @@ const controller = {}
 const moment = require('moment');
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+const ActualizarSacStatusController = require('./ActualizarSacStatus')
 
 controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
 
@@ -31,7 +32,6 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                 homologado : true
             },
             select : {
-                
                 // perpersonas : true,
                 updated_at  : true,
                 id          : true,
@@ -45,7 +45,6 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                 updated_at : 'desc'
             }
         })
-
 
         if(date_final != null){
             date_final = moment(date_final).format("YYYY-MM");
@@ -74,7 +73,6 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
             if(ares.length > 0){
 
                 let index_are = 0
-    
                 for await (const are of ares){
     
                     const esps = await prisma.espestadospendientes.findMany({
@@ -123,6 +121,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                     are.esps.forEach((esp, index_esp) => {
                         
                         let day_late = esp.espdiaretraso
+                        let month_late = false
     
                         if(esp.espfechactualizacion == null){
     
@@ -142,6 +141,13 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                         }else{
                             date_two    = moment(esp.espfechaprogramado)
                             date_one    = moment(esp.espfechactualizacion)
+
+                            let month_deadline  = date_two.month()
+                            let month_updated   = date_one.month()
+
+                            if(month_updated > month_deadline){
+                                month_late = true
+                            }
     
                             if(date_one > date_two){
                                 let diff_days_date_one_two = date_one.diff(date_two, 'days')
@@ -157,6 +163,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                         }
                         
                         ares[index_are]['esps'][index_esp]['espdiaretraso'] = day_late
+                        ares[index_are]['esps'][index_esp]['espmesretraso'] = month_late
                         
                         if(are.arenombre == 'Ventas' && esp.espdts == false){
                             arr_no_dts.push(esp)
@@ -184,15 +191,8 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                         areid_sac = are.areid
                     }
                 })
-    
-                await prisma.areareasestados.update({
-                    where :{
-                        areid : areid_sac
-                    },
-                    data : {
-                        areporcentaje : prod_no_hml_count == 0 ? '100' : '0',
-                    }
-                })
+
+                await ActualizarSacStatusController.MetActualizarSacAreasEstados(areid_sac, prod_no_hml_count)                                
     
                 const espe = await prisma.espestadospendientes.findFirst({
                     where : {
@@ -200,21 +200,11 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                         areid : areid_sac,
                     }
                 })
-    
+                                
                 if(last_prod_hml){
-                    await prisma.espestadospendientes.update({
-                        where :{
-                            espid : espe.espid
-                        },
-                        data : {
-                            perid                   : last_prod_hml ? last_prod_hml.usuusuarios?.perpersonas.perid : null,
-                            espfechactualizacion    : last_prod_hml ? new Date(last_prod_hml.updated_at) : null,
-                            espdiaretraso : prod_no_hml_count == 0 ? '0' : day_late_sac
-                        }
-                    })
-    
+                    await ActualizarSacStatusController.MetActualizarSacEstadoPendiente(espe.espid, prod_no_hml_count, last_prod_hml, day_late_sac)                    
                 }
-    
+                
                 arr_dts.forEach((ndts, index_ndts) => {
                     arr_dts[index_ndts]['key'] = index_ndts + 1
                     arr_dts[index_ndts]['zona'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.zona : null
@@ -225,10 +215,13 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                     arr_dts[index_ndts]['pernombrecompleto'] = ndts.perpersonas ? ndts.perpersonas.pernombrecompleto : null
                     arr_dts[index_ndts]['index_mcl_grow'] = ndts.masterclientes_grow ? ndts.masterclientes_grow.id : null
                 })
-    
-                
-            }
 
+                arr_dts.sort((a, b) => {
+                    const fecha_a = new Date(a.espfechactualizacion)
+                    const fecha_b = new Date(b.espfechactualizacion)
+                    return fecha_b - fecha_a
+                });
+            }
         }
 
         const mc_grow = []
