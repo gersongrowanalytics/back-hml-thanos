@@ -430,7 +430,7 @@ controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row,
             msg_log = `Lo sentimos, algunos de los ${name_column} no son númericos`
             break;
         case 'date range':
-            msg_log = `Lo sentimos, algunos registros tienen una fecha diferente a la seleccionada "${extra}"`
+            msg_log = `Lo sentimos, algunos registros tienen una fecha diferente a la seleccionada "${extra}. Para poder subir esta información, se necesita la aprobación por correo del area de BI"`
             break;
         case 'format invalid':
             msg_log = `Lo sentimos, algunos de los ${name_column} no tienen el formato válido`
