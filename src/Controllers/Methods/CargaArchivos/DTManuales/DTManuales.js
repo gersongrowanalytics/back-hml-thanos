@@ -62,26 +62,21 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         let error_actualizar_so         = false
         const baseUrl = req.protocol + '://' + req.get('host');
 
-
+        let rpta_obtener_products_so = {}
         if(!error){
             
             const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
 
             messages_delete_data_acc = messages_delete_data
-
             // REVISAR ESTAS LINEAS !!
-            
-            // error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data, audpk, devmsg)
             if(usu.usuid == 1){
+                error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data, audpk, devmsg)
                 error_actualizar_so   = await controller.DTActualizarVentasSO(action_file.delete_data, delete_data, data, audpk, devmsg)
+                rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO(audpk, devmsg)
             }
         }
 
         // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
-        let rpta_obtener_products_so = {}
-        if(usu.usuid == 1){
-            rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO(audpk, devmsg)
-        }
         
         const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
         const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/planoso/'+ token_name + '-' + req.files.carga_manual.name
@@ -141,7 +136,6 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         const car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usu.usuid,
-                // carnombre   : nombre_archivo+'.xlsx',
                 carnombre   : req.files.carga_manual.name,
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
