@@ -83,9 +83,6 @@ controller.MetObtenerProductosSO = async (audpk=[], devmsg=[]) => {
             }
         }
 
-        console.log("ids existente:");
-        console.log(ids_productos_so);
-
         for await (const venta_so of distinct_ventas_so){
 
             const product_so_unique = await prisma.master_productos_so.findFirst({

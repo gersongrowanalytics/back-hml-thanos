@@ -6,10 +6,17 @@ const moment = require('moment')
 controller.ActualizarEstadoSellOut = async ( req, res, data, audpk=[], devmsg=[] ) => {
 
     const {
-        usutoken
+        usutoken,
     } = req.headers
 
+    const {
+        req_date
+    } = req.body
+
     try{
+        
+        const date = moment(req_date)
+        const espn = []
 
         const usu = await prisma.usuusuarios.findFirst({
             where: {
@@ -22,14 +29,10 @@ controller.ActualizarEstadoSellOut = async ( req, res, data, audpk=[], devmsg=[]
             }
         })
 
-        const espn = []
-
         const fec = await prisma.fecfechas.findFirst({
             where : {
-                fecmesabierto : true,
-            },
-            select : {
-                fecid : true
+                fecanionumero   : date.year(),
+                fecmesnumero    : date.month() + 1
             }
         })
 
@@ -93,87 +96,6 @@ controller.ActualizarEstadoSellOut = async ( req, res, data, audpk=[], devmsg=[]
             })
             audpk.push("espestadospendientes-create-"+create_esp.espid)
         }
-
-        const espe = await prisma.espestadospendientes.findFirst({
-            where : {
-                AND : [
-                    {
-                        fecid : fecid
-                    },
-                    {
-                        espbasedato : 'Archivo plano SO (plantilla)'
-                    }
-                ]
-            }
-        })
-
-        if(espe){
-
-            let date_one = moment()
-            let date_two = moment(espe.espfechaprogramado)
-    
-            let esp_day_late
-            if(date_one > date_two){
-    
-                let diff_days_date_one_two = date_one.diff(date_two, 'days')
-    
-                if( diff_days_date_one_two > 0){
-                    esp_day_late = diff_days_date_one_two.toString()
-                }else{
-                    esp_day_late = '0'
-                }
-            }else{
-                esp_day_late = '0'
-            }
-    
-            const espu = await prisma.espestadospendientes.update({
-                where : {
-                    espid : espe.espid
-                },
-                data : {
-                    perid                   : usu.perid,
-                    espfechactualizacion    : new Date().toISOString(),
-                    espdiaretraso           : esp_day_late
-                }
-            })
-            audpk.push("espestadospendientes-update"+espu.espid)
-    
-            const aree = await prisma.areareasestados.findFirst({
-                where : {
-                    areid : espe.areid
-                }
-            })
-    
-            if(aree){
-                let are_percentage
-                const espcount = await prisma.espestadospendientes.findMany({
-                    where : {
-                        fecid       : fecid,
-                        areid       : espe.areid,
-                        espdts      : false,
-                        espfechactualizacion : null
-                    }
-                })
-    
-                if(espcount.length == 0){
-                    are_percentage = '100'
-                }else{
-                    are_percentage = (100-(espcount.length*50)).toString()
-                }
-                
-                const areu = await prisma.areareasestados.update({
-                    where : {
-                        areid : aree.areid
-                    },
-                    data : {
-                        areporcentaje : are_percentage
-                    }
-                })
-                audpk.push("areareasestados-update"+areu.areid)
-            }
-        }
-
-        console.log('Actualizar estado sell out')
 
         return false
 
