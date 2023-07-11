@@ -70,9 +70,10 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             messages_delete_data_acc = messages_delete_data
             // REVISAR ESTAS LINEAS !!
             if(usu.usuid == 1){
-                error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data, audpk, devmsg)
                 error_actualizar_so   = await controller.DTActualizarVentasSO(action_file.delete_data, delete_data, data, audpk, devmsg)
                 rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO(audpk, devmsg)
+            }else{
+                error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data, audpk, devmsg)
             }
         }
 
@@ -188,7 +189,9 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             }
             await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'DT MANUALES', 'CREAR', '/carga-archivos/dt-manuales', log, audpk)
 
-            await ActualizarStatusBaseDatos.MetActualizarStatusBaseDatos(req, res)
+            if(usu.usuid != 1){
+                await ActualizarStatusBaseDatos.MetActualizarStatusBaseDatos(req, res)
+            }
 
             return res.status(status).json({
                 message,
