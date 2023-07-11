@@ -245,11 +245,11 @@ controller.ValCellsFile = async (workbook, usu, date) => {
 
         if(row[properties[4]]){
             
-            // if(row[properties[4]].toString().length != 11){
-            //     add_dt_manuales = false
-            //     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
-            //     controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'number of digits', null)
-            // }
+            if(row[properties[4]].toString().length != 11){
+                add_dt_manuales = false
+                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'number of digits', null)
+            }
     
             if(isNaN(row[properties[4]])){
                 add_dt_manuales = false
@@ -260,11 +260,11 @@ controller.ValCellsFile = async (workbook, usu, date) => {
 
         if(row[properties[8]]){
             
-            // if(row[properties[8]].toString().length != 8){
-            //     add_dt_manuales = false
-            //     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
-            //     controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'number of digits', null)
-            // }
+            if(row[properties[8]].toString().length != 8){
+                add_dt_manuales = false
+                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'number of digits', null)
+            }
     
             if(isNaN(row[properties[8]])){
                 add_dt_manuales = false
