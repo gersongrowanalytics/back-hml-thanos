@@ -243,36 +243,38 @@ controller.ValCellsFile = async (workbook, usu, date) => {
             }
         }
 
-        if(row[properties[4]]){
-            
-            if(row[properties[4]].toString().length != 11){
-                add_dt_manuales = false
-                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'number of digits', null)
+        if(usu.usuid != 1){
+            if(row[properties[4]]){
+                
+                if(row[properties[4]].toString().length != 11){
+                    add_dt_manuales = false
+                    let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
+                    controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'number of digits', null)
+                }
+        
+                if(isNaN(row[properties[4]])){
+                    add_dt_manuales = false
+                    let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
+                    controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'not number', null)
+                }
             }
     
-            if(isNaN(row[properties[4]])){
-                add_dt_manuales = false
-                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'not number', null)
+            if(row[properties[8]]){
+                
+                if(row[properties[8]].toString().length != 8){
+                    add_dt_manuales = false
+                    let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
+                    controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'number of digits', null)
+                }
+        
+                if(isNaN(row[properties[8]])){
+                    add_dt_manuales = false
+                    let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
+                    controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'not number', null)
+                }
             }
         }
 
-        if(row[properties[8]]){
-            
-            if(row[properties[8]].toString().length != 8){
-                add_dt_manuales = false
-                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'number of digits', null)
-            }
-    
-            if(isNaN(row[properties[8]])){
-                add_dt_manuales = false
-                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'not number', null)
-            }
-        }
-        
         verify_cells.forEach(function(cell){
             if(!row[properties[cell]]){
                 add_dt_manuales = false
@@ -353,10 +355,12 @@ controller.ValCellsFile = async (workbook, usu, date) => {
         const pk_venta_so           = row[properties[0]].toString().trim() + row[properties[10]].toString().trim()
         const pk_extractor_venta_so = row[properties[0]].toString().trim() + row[properties[10]].toString().trim() + cod_unidad_medida + unidad_medida
 
-        if(parseInt(month_date) != parseInt(req_month) || parseInt(year_date) != parseInt(req_year)){
-            add_dt_manuales = false
-            let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[1]['name'])
-            controller.ValAddMessageLog(rows_error, messages_error, columns_name[1]['name'], num_row, 'date range', null, date)
+        if(usu.usuid != 1){
+            if(parseInt(month_date) != parseInt(req_month) || parseInt(year_date) != parseInt(req_year)){
+                add_dt_manuales = false
+                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[1]['name'])
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[1]['name'], num_row, 'date range', null, date)
+            }
         }
 
         data.push({
