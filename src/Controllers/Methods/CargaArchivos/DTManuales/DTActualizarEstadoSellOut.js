@@ -45,6 +45,13 @@ controller.ActualizarEstadoSellOut = async ( req, res, data, audpk=[], devmsg=[]
             }
         })
 
+        const espa = await prisma.espestadospendientes.findFirst({
+            where : {
+                fecid       : fecid,
+                espbasedato : 'Archivo plano SO (plantilla)'                
+            }
+        })
+
         const data_espn = data.filter(dat => dat.m_cl_grow != null)
             
         for await (const esp of data_espn){
@@ -76,9 +83,9 @@ controller.ActualizarEstadoSellOut = async ( req, res, data, audpk=[], devmsg=[]
                         espdts              : true,
                         areid               : are.areid,
                         m_cl_grow           : esp.m_cl_grow,
-                        espfechaprogramado  : new Date(),
+                        espfechaprogramado  : espa.espfechaprogramado,
                         espchacargareal     : null,
-                        espfechactualizacion: null,
+                        espfechactualizacion: new Date(),
                         espbasedato         : 'DTS (Sell Out)',
                         espresponsable      : 'Ventas',
                         espdiaretraso       : '0',
