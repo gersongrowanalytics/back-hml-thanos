@@ -28,7 +28,7 @@ controller.MetMostrarNoHomologados = async (req, res) => {
     try{
         
         let query_words_exc = ''
-        const words_exc = []
+        const words_exc = ['babysec', 'ladysoft', 'navidad', 'mundial', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas','patrias','verano','practica','ldsft','lady-soft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian','ladisoft']
 
         words_exc.forEach((wex,index) => {
             query_words_exc = query_words_exc + ` AND descripcion_producto NOT LIKE '%${wex}%'`
