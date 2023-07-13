@@ -46,7 +46,7 @@ controller.MetDescargarHomologados = async (req, res) => {
                     },
                     homologado : true,
                 },
-                distinct : ['pk_venta_so_hml']
+                // distinct : ['pk_venta_so_hml']
             })
 
             let data_excel = []
