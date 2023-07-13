@@ -75,8 +75,15 @@ controller.MetObtenerInfoSO = async ( req, res ) => {
             _min: {
                 precio_unitario: true,
             },
+            _sum : {
+                precio_total_sin_igv : true,
+                cantidad : true
+            },
             where : consulta
         })
+
+        const precio_total = data_filtro._sum.precio_total_sin_igv ? data_filtro._sum.precio_total_sin_igv : 0
+        const cantidad_total = data_filtro._sum.cantidad ? data_filtro._sum.cantidad : 0
 
         res.status(200)
             .json({
@@ -85,7 +92,8 @@ controller.MetObtenerInfoSO = async ( req, res ) => {
                 data : {
                     maximo      : data_filtro._max.precio_unitario ? data_filtro._max.precio_unitario : 0,
                     minimo      : data_filtro._min.precio_unitario ? data_filtro._min.precio_unitario : 0,
-                    promedio    : data_filtro._avg.precio_unitario ? data_filtro._avg.precio_unitario : 0,
+                    // promedio    : data_filtro._avg.precio_unitario ? data_filtro._avg.precio_unitario : 0,
+                    promedio    : precio_total/cantidad_total ? precio_total/cantidad_total : 0
                 },
             })
 
