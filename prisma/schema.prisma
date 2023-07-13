@@ -300,7 +300,7 @@ model ventas_so {
   nombre_vendedor_distribuidor  String?     @db.VarChar(255)
   codigo_producto               String?     @db.VarChar(255)
   descripcion_producto          String?     @db.VarChar(255)
-  cantidad                      String?     @db.VarChar(255)
+  cantidad                      Decimal?    @db.Decimal(17,10)
   cod_unidad_medida             String?     @db.VarChar(255)
   unidad_medida                 String?     @db.VarChar(255)
   precio_unitario               Decimal     @db.Decimal(17,10)
