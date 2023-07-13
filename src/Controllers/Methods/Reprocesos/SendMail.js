@@ -3,6 +3,7 @@ require('dotenv').config()
 const fs = require('fs')
 const nodemailer = require("nodemailer")
 const handlebars = require('handlebars')
+const moment = require('moment')
 
 controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data_mail, to_cc_mail) => {
     let transporter = nodemailer.createTransport({
@@ -20,12 +21,9 @@ controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data
     })
 
     handlebars.registerHelper('formatDate', function(dateString) {
-        const date = new Date(dateString)
-        const day = String(date.getDate()).padStart(2, '0')
-        const month = String(date.getMonth() + 1).padStart(2, '0')
-        const year = date.getFullYear()
+        const date = moment(dateString).utc().format('DD/MM/YYYY')
       
-        return `${day}/${month}/${year}`
+        return date
     })
 
     const html = fs.readFileSync(url_mail, 'utf8')
