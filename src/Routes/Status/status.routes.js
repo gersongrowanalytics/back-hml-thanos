@@ -25,7 +25,7 @@ protectedRoutes.post('/show/pending-states', ValMostrarEstadoPendiente.ValMostra
 protectedRoutes.post('/edit/status-approval', ValActualizarStatusHomologacion.ValActualizarStatusHomologacion)
 protectedRoutes.post('/config/create-environment', ValCrearAmbienteStatus.ValCrearAmbienteStatus)
 protectedRoutes.post('/update/esp', ValActualizarStatusBaseDatos.ValActualizarStatusBaseDatos)
-protectedRoutes.post('/mail-pending-status', ValEmailPedingStatus.ValEmailPedingStatus)
+protectedRoutes.get('/mail-pending-status', ValEmailPedingStatus.ValEmailPedingStatus)
 protectedRoutes.post('/mail-pending-status-dts', ValEmailPedingStatusDts.ValEmailPedingStatusDts)
 
 router.use('/status', protectedRoutes);
