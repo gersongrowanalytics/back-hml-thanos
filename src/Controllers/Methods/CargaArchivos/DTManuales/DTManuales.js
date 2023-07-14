@@ -265,14 +265,14 @@ controller.DTActualizarVentasSO = async (action_delete, delete_data, data, audpk
                 if(find_ventas_so){
                     audpk.push("ventas_so-delete-"+find_ventas_so.id)
 
-                    await prisma.ventas_so.deleteMany({
-                        where: {
-                            fecha: {
-                                startsWith: dat.fecha
-                            },
-                            codigo_distribuidor: dat_cod
-                        }
-                    })   
+                    // await prisma.ventas_so.deleteMany({
+                    //     where: {
+                    //         fecha: {
+                    //             startsWith: dat.fecha
+                    //         },
+                    //         codigo_distribuidor: dat_cod
+                    //     }
+                    // })
                 }
             }
         }
