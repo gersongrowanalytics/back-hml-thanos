@@ -17,21 +17,9 @@ controller.ValMasterClientesGrow = async ( req, res ) => {
         if(!workbook.Sheets['Hoja1']){
 
             res.status(500).json({
-                message : 'Lo sentimos se encontraron algunas observaciones',
+                message : 'Lo sentimos no se encontró la hoja con nombre "Hoja1"',
                 messages_error : '',
-                notificaciones : [
-                    {
-                        "columna"           : null,
-                        "notificaciones"    : [
-                            {
-                                "msg"   : 'No se ha encontrado alguna hoja llamada "Hoja1"',
-                                "rows" : null,
-                                "type" : 'empty'
-                            }
-                        ]
-    
-                    }
-                ],
+                notificaciones : [],
                 respuesta : false
             })
         }else{
