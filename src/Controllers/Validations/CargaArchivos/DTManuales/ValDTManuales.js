@@ -40,6 +40,7 @@ controller.ValDTManuales = async (req, res) => {
             res.status(status)
             return res.json({
                 message,
+                notificaciones : []
             })
         }
 

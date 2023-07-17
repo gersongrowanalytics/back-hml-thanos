@@ -48,14 +48,19 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
             // const from_mail_data = process.env.USER_MAIL
             const from_mail_data = "Grow TeamSupport:"
             // const to_mail_data = process.env.TO_MAIL
-            const to_mail_data = ["frank.martinez@grow-analytics.com.pe"]
+            // const to_mail_data = ["frank.martinez@grow-analytics.com.pe"]
+            // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe"]
             // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe", "frank.martinez@grow-analytics.com.pe"]
-            // const to_mail_data = ["gporras@softys.com", "jabarcan@softys.com", "cpachecot@softys.com", "maria.yauri@softys.com"]
+            const to_mail_data = [
+                "gporras@softys.com", "jabarcan@softys.com", "cpachecot@softys.com", "maria.yauri@softys.com",
+                "supdistribuidorlima@softys.com", "supventasprov@softys.com", "dmorales@softys.com", "rsalinas@softys.com"
+            ]
+            
             // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", "jabarcan@softys.com"]
-            const to_mail_cc_data = ""
-            // const to_mail_cc_data = ["miguel.caballero@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", "Gerson.Vilca@grow-analytics.com.pe", "frank.martinez@grow-analytics.com.pe"]
+            // const to_mail_cc_data = ""
+            const to_mail_cc_data = ["miguel.caballero@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", "Gerson.Vilca@grow-analytics.com.pe", "frank.martinez@grow-analytics.com.pe"]
             // const subject_mail_success = `Distribuidores: Status ${nombresMeses[mesTexto]} 2023`
-            const subject_mail_success = `Distribuidores: Status 2023`
+            const subject_mail_success = `Distribuidores Thanos: Status-Cierre Junio 2023`
             const filterEspsDistribuidoras = espsDistribuidoras.filter(esp => esp.espfechactualizacion == null)
             await filterEspsDistribuidoras.map((dts, index) => filterEspsDistribuidoras[index]['indice'] = index + 1)
 

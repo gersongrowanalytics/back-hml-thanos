@@ -32,6 +32,9 @@ controller.MetShowAudits = async (req, res) => {
                         }
                     }
                 }
+            },
+            orderBy: {
+                created_at: 'desc'
             }
         })
 

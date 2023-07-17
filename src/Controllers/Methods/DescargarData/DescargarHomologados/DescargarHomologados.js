@@ -27,6 +27,8 @@ controller.MetDescargarHomologados = async (req, res) => {
                     precio_unitario: true,
                     desde: true,
                     unidad_minima: true,
+                    pk_extractor_venta_so : true,
+                    updated_at : true,
                     masterclientes_grow:{
                         select: {
                             codigo_destinatario: true,
@@ -46,26 +48,28 @@ controller.MetDescargarHomologados = async (req, res) => {
                     },
                     homologado : true,
                 },
-                distinct : ['pk_venta_so_hml']
+                // distinct : ['pk_venta_so_hml']
             })
 
             let data_excel = []
-            await productos_so.map(pso => {
+
+            productos_so.map(pso => {
                 const masterclientes_obj = pso.masterclientes_grow 
-                                        ? pso.masterclientes_grow.codigo_destinatario 
-                                            ? pso.masterclientes_grow.codigo_destinatario
-                                            : ''
-                                        : ''
+                ? pso.masterclientes_grow.codigo_destinatario 
+                    ? pso.masterclientes_grow.codigo_destinatario
+                    : ''
+                : ''
                 const cod_producto_obj = pso.master_productos_grow 
-                                        ? pso.master_productos_grow.codigo_material 
-                                            ? pso.master_productos_grow.codigo_material
-                                            : ''
-                                        : ''
+                                ? pso.master_productos_grow.codigo_material 
+                                    ? pso.master_productos_grow.codigo_material
+                                    : ''
+                                : ''
                 const nomb_producto_obj = pso.master_productos_grow 
-                                        ? pso.master_productos_grow.material_softys 
-                                            ? pso.master_productos_grow.material_softys 
-                                            : ''
-                                        : ''
+                                ? pso.master_productos_grow.material_softys 
+                                    ? pso.master_productos_grow.material_softys 
+                                    : ''
+                                : ''
+
                 data_excel.push({
                     "codigo_distribuidor": masterclientes_obj,
                     "nombre_distribuidor": pso?.masterclientes_grow?.destinatario,
@@ -88,8 +92,81 @@ controller.MetDescargarHomologados = async (req, res) => {
                     "unidad_minima": pso.unidad_minima ? pso.unidad_minima : '',
                     "fecha_inicial": pso.desde ? pso.desde : '',
                     // "ProductoHML": nomb_producto_obj,
+
+                    //Agrega los valores de las columnas al excel(fecha, promedio_precio_total, promedio_precio)
+                    // "Promedio_precio_total" :  prom_precio_total,
+                    // "Promedio_precio"   : prom_precio,
+                    // // "Promedio_precio"   : data_filtro._avg.precio_unitario ? data_filtro._avg.precio_unitario : 0,
+                    // "fecha_homologada" : formattedDate.toString()
                 })
             })
+
+            // for await (const pso of productos_so){
+
+            //     const data_filtro = await prisma.ventas_so.aggregate({
+            //         _avg :{
+            //             precio_unitario : true
+            //         },
+            //         _max: {
+            //             precio_unitario: true,
+            //           },
+            //         _min: {
+            //             precio_unitario: true,
+            //         },
+            //         _sum : {
+            //             precio_total_sin_igv : true,
+            //             cantidad : true
+            //         },
+            //         where : {
+            //             pk_extractor_venta_so : pso.pk_extractor_venta_so
+            //         }
+            //     })
+
+            //     const precio_total = data_filtro._sum.precio_total_sin_igv ? data_filtro._sum.precio_total_sin_igv : 0
+            //     const cantidad_total = data_filtro._sum.cantidad ? data_filtro._sum.cantidad : 0
+        
+            //     const masterclientes_obj = pso.masterclientes_grow 
+            //                             ? pso.masterclientes_grow.codigo_destinatario 
+            //                                 ? pso.masterclientes_grow.codigo_destinatario
+            //                                 : ''
+            //                             : ''
+            //     const cod_producto_obj = pso.master_productos_grow 
+            //                             ? pso.master_productos_grow.codigo_material 
+            //                                 ? pso.master_productos_grow.codigo_material
+            //                                 : ''
+            //                             : ''
+            //     const nomb_producto_obj = pso.master_productos_grow 
+            //                             ? pso.master_productos_grow.material_softys 
+            //                                 ? pso.master_productos_grow.material_softys 
+            //                                 : ''
+            //                             : ''
+            //     //Crea el campo fecha de homologacion para agregarla al excel
+            //     const date = new Date(pso.updated_at);
+            //     const formattedDate = date.toLocaleString("en-US", {
+            //     format: "dd-MM-YYYY HH:mm"
+            //     });
+
+            //     //Crea las columnas promedio precio total y promedio precio para agregarlos al excel
+            //     let prom_precio = data_filtro._avg.precio_unitario ? data_filtro._avg.precio_unitario : 0
+            //     prom_precio = parseFloat(prom_precio).toFixed(2)
+            //     let prom_precio_total = precio_total/cantidad_total
+            //     prom_precio_total = parseFloat(prom_precio_total).toFixed(2)
+            //     data_excel.push({
+            //         "codigo_distribuidor": masterclientes_obj,
+            //         "nombre_distribuidor": pso?.masterclientes_grow?.destinatario,
+            //         "UnidadDeMedida": pso.unidad_medida ? pso.unidad_medida : '',
+            //         "codigo_producto_distribuidor": pso.codigo_producto ? pso.codigo_producto : '',
+            //         "nombre_producto_distribuidor": pso.descripcion_producto ? pso.descripcion_producto : '',
+            //         "codigo_producto_maestro": cod_producto_obj,
+            //         "unidad_minima": pso.unidad_minima ? pso.unidad_minima : '',
+            //         "fecha_inicial": pso.desde ? pso.desde : '',
+            //         //Agrega los valores de las columnas al excel(fecha, promedio_precio_total, promedio_precio)
+            //         "Promedio_precio_total" :  prom_precio_total,
+            //         "Promedio_precio"   : prom_precio,
+            //         // "Promedio_precio"   : data_filtro._avg.precio_unitario ? data_filtro._avg.precio_unitario : 0,
+            //         "fecha_homologada" : formattedDate.toString()
+            //     })
+            // }
 
             const encabezado = [
                 'codigo_distribuidor', 
@@ -103,8 +180,11 @@ controller.MetDescargarHomologados = async (req, res) => {
                 'codigo_producto_maestro', 
                 'unidad_minima',
                 // 'ProductoHML'
-                'fecha_inicial'
-
+                'fecha_inicial',
+                //Agrega las cabeceras promedio_precio_total, promedio_precio y fecha_homologada
+                // 'Promedio_precio_total',
+                // 'Promedio_precio',
+                // 'Fecha_homologada'
             ]
 
             const workbook = new ExcelJS.Workbook();
@@ -137,13 +217,13 @@ controller.MetDescargarHomologados = async (req, res) => {
             const column1 = worksheet.getColumn(1)
             column1.width = 20
             const column2 = worksheet.getColumn(2)
-            column2.width = 20
+            column2.width = 30
             const column3 = worksheet.getColumn(3)
             column3.width = 20
             const column4 = worksheet.getColumn(4)
             column4.width = 20
             const column5 = worksheet.getColumn(5)
-            column5.width = 20
+            column5.width = 30
             const column6 = worksheet.getColumn(6)
             column6.width = 20
             const column7 = worksheet.getColumn(7)
@@ -155,7 +235,7 @@ controller.MetDescargarHomologados = async (req, res) => {
             const column10 = worksheet.getColumn(10)
             column10.width = 30
             const column11 = worksheet.getColumn(11)
-            column11.width = 20
+            column11.width = 30
             const column12 = worksheet.getColumn(12)
             column12.width = 30
             const column13 = worksheet.getColumn(13)

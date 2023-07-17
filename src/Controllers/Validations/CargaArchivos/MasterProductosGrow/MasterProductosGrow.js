@@ -10,14 +10,15 @@ controller.ValMasterProductosGrow = async ( req, res ) => {
     
     try{
 
-        const file = req.files.req_type_file
+        const file = req.files.maestra_producto
         const data  = []
 
         const workbook = XLSX.read(file.data)
         if(!workbook.Sheets['Hoja1']){
             res.status(500).json({
                 response    : false,
-                message     : 'Ha ocurrido un error al cargar master productos grow'
+                message     : 'Lo sentimos no se encontró la hoja con nombre "Hoja1"',
+                notificaciones : []
             })
         }
 
@@ -73,7 +74,8 @@ controller.ValMasterProductosGrow = async ( req, res ) => {
         console.log(err)
         res.status(500).json({
             response    : false,
-            message     : 'Ha ocurrido un error al cargar master productos grow'
+            message     : 'Ha ocurrido un error al cargar master productos grow',
+            notificaciones : []
         })
     }
 }
