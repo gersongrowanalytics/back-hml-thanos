@@ -10,7 +10,7 @@ controller.MetDescargarNoHomologados = async (req, res) => {
 
     try{
         const nombre_archivo = 'No Homologados'
-        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/homologaciones/'+nombre_archivo+'.xlsx'
+        const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/nohomologaciones/'+nombre_archivo+'.xlsx'
         const respuestaFile = await CheckFile.CheckFileS3(ubicacion_s3)
 
         if(!respuestaFile){
