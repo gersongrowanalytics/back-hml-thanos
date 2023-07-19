@@ -266,7 +266,7 @@ model master_productos_so {
   extractor                     Boolean     @default(false)
   homologado                    Boolean     @default(false)
   created_at                    DateTime?   @default(now())
-  updated_at                    DateTime?   @updatedAt
+  updated_at                    DateTime?   @default(now())
   master_productos              master_productos?        @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "master_productos_so_id_foreign")
   usuusuarios                   usuusuarios?             @relation(fields: [usuid], references: [usuid], onUpdate: Restrict, map: "usuusuarios_master_productos_so_id_foreign")
   master_productos_grow         master_productos_grow?        @relation(fields: [m_pro_grow], references: [id], onUpdate: Restrict, map: "master_productos_grow_id_master_productos_so_m_pro_grow_foreign")
