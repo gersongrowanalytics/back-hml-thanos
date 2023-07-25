@@ -172,18 +172,18 @@ controller.MetSellin = async (req, res, data, delete_data, error, message_errors
             messages_delete_data_acc = messages_delete_data
 
             if(usu.usuid == 1){
-                if(action_file?.delete_data){
-                    for await (const dat of delete_data ){
-            
-                        await prisma.sellin.deleteMany({
-                            where: {
-                                fecha: {
-                                    startsWith: dat
-                                },
-                            }
-                        })
-                    }
+                // if(action_file?.delete_data){
+                for await (const dat of delete_data ){
+        
+                    await prisma.sellin.deleteMany({
+                        where: {
+                            fecha: {
+                                startsWith: dat
+                            },
+                        }
+                    })
                 }
+                // }
     
                 await prisma.sellin.createMany({
                     data
