@@ -22,11 +22,13 @@ controller.MetMostrarHomologados = async (req, res) => {
         req_updated_at,
         req_zona,
         req_otros,
-        req_usuusuario
+        req_usuusuario,
+        req_conexion
     } = req.body
 
     let productos_hml
     let total = []
+    let connection_types
 
     try{
 
@@ -58,8 +60,15 @@ controller.MetMostrarHomologados = async (req, res) => {
 
         const desde_modificado      = req_desde.split("/").reverse().join('-')
 
+        connection_types = await prisma.masterclientes_grow.findMany({
+            select : {
+                conexion : true
+            },
+            distinct : ['conexion']
+        })
+
         if(req_orden){
-            if(req_column == 'territorio' || req_column == 'codigo_destinatario' || req_column == 'cliente_hml' || req_column == 'zona'){
+            if(req_column == 'territorio' || req_column == 'codigo_destinatario' || req_column == 'cliente_hml' || req_column == 'zona' || req_column == 'conexion'){
 
                 query_order = {...query_order, masterclientes_grow : { [req_column] : req_orden}}
 
@@ -100,6 +109,9 @@ controller.MetMostrarHomologados = async (req, res) => {
                         },
                         zona : {
                             contains : req_zona
+                        },
+                        conexion : {
+                            contains : req_conexion
                         }
                     },
                     descripcion_producto : {
@@ -144,6 +156,9 @@ controller.MetMostrarHomologados = async (req, res) => {
                         },
                         zona : {
                             contains : req_zona
+                        },
+                        conexion : {
+                            contains : req_conexion
                         }
                     },
                     descripcion_producto : {
@@ -207,7 +222,8 @@ controller.MetMostrarHomologados = async (req, res) => {
                         codigo_destinatario : true,
                         sucursal_hml : true,
                         destinatario : true,
-                        zona        : true
+                        zona        : true,
+                        conexion    : true
                     }
                 },
                 usuusuarios : {
@@ -266,7 +282,8 @@ controller.MetMostrarHomologados = async (req, res) => {
             message : 'Productos homologados obtenidos correctamente',
             data    : productos_hml,
             respuesta : true,
-            total : total.length
+            total : total.length,
+            filter_connection : connection_types
         })
     }
 }

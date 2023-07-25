@@ -1,10 +1,12 @@
 const controller = {}
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const HomologadoAutomaticoController = require('../../Homologaciones/NoHomologados/HomologadoAutomatico/HomologadoAutomatico')
 
-controller.MetObtenerProductosSO = async (audpk=[], devmsg=[]) => {
+controller.MetObtenerProductosSO = async (audpk=[], devmsg=[], req, res) => {
 
     try{
+        let mpgs = []
         let codigo_destinatario = []
         const formattedDate = new Date().toISOString().slice(0, 10);
 
@@ -72,6 +74,7 @@ controller.MetObtenerProductosSO = async (audpk=[], devmsg=[]) => {
                         ...data_master
                     }
                 })
+                mpgs.push(create_master_pso)
                 audpk.push("master_productos_so-create-"+create_master_pso.id)
                 const val_cod_dest = codigo_destinatario.find(cd => cd == data_master.codigo_distribuidor)
                 if(!val_cod_dest){
@@ -118,10 +121,18 @@ controller.MetObtenerProductosSO = async (audpk=[], devmsg=[]) => {
             }
         }
 
+        req.body.data = mpgs
+        req.body.controller = true
+
+
+        await HomologadoAutomaticoController.MetHomologadoAutomatico(req, res)
+
         return {
             message : 'Productos SO asignados correctamente',
             respuesta  : true,
-            codigo_destinatario
+            codigo_destinatario,
+            ids_productos_so,
+            rpta_obtener_products_so: false,
         }
 
     } catch(error) {
@@ -130,10 +141,12 @@ controller.MetObtenerProductosSO = async (audpk=[], devmsg=[]) => {
         return {
             message : 'Lo sentimos hubo un error al momento de obtener los productos SO',
             devmsg  : error,
-            respuesta  : false
+            respuesta  : false,
+            rpta_obtener_products_so: true,
+            ids_productos_so : []
+
         }
     }
-
 }
 
 module.exports = controller

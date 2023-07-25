@@ -116,8 +116,9 @@ controller.ValCellsFile = async (workbook, usu, date) => {
 
     const cod_dts = await prisma.masterclientes_grow.findMany({
         select : {
-            codigo_destinatario   : true,
-            id          : true
+            codigo_destinatario : true,
+            id                  : true,
+            conexion            : true
         }
     })
 
@@ -204,8 +205,13 @@ controller.ValCellsFile = async (workbook, usu, date) => {
                 controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'distributor not found', row[properties[0]])
             }else{
 
+                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[0]['name'])
                 let find_dts = cod_dts.find(dt => dt.codigo_destinatario == row[properties[0]].toString().trim())
                 m_dt_id = find_dts.id
+                if(find_dts.conexion.toLocaleLowerCase() == "NO COMPARTE".toLocaleLowerCase()){                    
+                    add_dt_manuales = false
+                    controller.ValAddMessageLog(rows_error, messages_error, columns_name[0]['name'], num_row, 'distribuitor not share information', row[properties[0]])
+                }
     
                 let existe_cod = false
                 borrar_data.map((dat) => {
@@ -247,7 +253,7 @@ controller.ValCellsFile = async (workbook, usu, date) => {
         if(usu.usuid != 1){
             if(row[properties[4]]){
                 
-                if(row[properties[4]].toString().length != 11){
+                if(row[properties[4]].toString().length != 11 || row[properties[4]].toString().length != 8){
                     add_dt_manuales = false
                     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
                     controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'number of digits', null)
@@ -262,7 +268,7 @@ controller.ValCellsFile = async (workbook, usu, date) => {
     
             if(row[properties[8]]){
                 
-                if(row[properties[8]].toString().length != 8){
+                if(row[properties[8]].toString().length != 8 || row[properties[8]].toString().length != 9){
                     add_dt_manuales = false
                     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
                     controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'number of digits', null)
@@ -443,6 +449,9 @@ controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row,
         case 'number of digits':
             msg_log = `Lo sentimos, algunos de los ${name_column} no tienen la cantidad de digitos correctos`
             break;
+        case 'distribuitor not share information':
+            msg_log = `Lo sentimos, la distribuidora con código ${name_dts} tiene el tipo de conexión "NO COMPARTE"`
+            break;
         case 'inconsistent data':
             msg_log = `Lo sentimos, algunos precios totales no cuadran con las cantidades y precios unitarios`
             break;
@@ -469,7 +478,7 @@ controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row,
         })
     }else{
         let index_type_error
-        if(type != 'distributor not found'){
+        if(type != 'distributor not found' && type != 'distribuitor not share information'){
             index_type_error = messages_error[rows_error]['notificaciones'].findIndex(typ => typ.type == type)   
         }else{
             index_type_error = messages_error[rows_error]['notificaciones'].findIndex( not => not.msg == msg_log)
