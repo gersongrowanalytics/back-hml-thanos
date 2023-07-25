@@ -1,9 +1,88 @@
 const controller = {}
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const crypto = require('crypto')
+const ActualizarStatusMasterClientesController = require('../../Status/EstadoPendiente/ActualizarStatusMasterClientes')
 
 controller.MetMasterClientesGrow = async ( req, res, data ) => {
+
+    const {
+        usutoken
+    } = req.headers
+
+    const {
+        req_plataforma,
+        req_usucorreo
+    } = req.body
     
+    try{
+
+        let usu
+
+        if(usutoken){
+            usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    usutoken : usutoken
+                }
+            })
+        }else{
+            usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    usucorreo : req_usucorreo
+                }
+            })
+            if(!usu){
+
+                let per = await prisma.perpersonas.findFirst({
+                    where : {
+                        pernombre : 'Usuario'
+                    }
+                })
+
+                usu = await prisma.usuusuarios.create({
+                    data : {
+                        tpuid                   : 1,
+                        perid                   : per.perid,
+                        usuusuario              : 'usuario@gmail.com',
+                        usucorreo               : 'usuario@gmail.com',
+                        estid                   : 1,
+                        usutoken                : crypto.randomBytes(30).toString('hex'),
+                        usupaistodos            : false,
+                        usupermisosespeciales   : false,
+                        usucerrosesion          : false,
+                        usucierreautomatico     : false
+                    }
+                })
+            }
+        }
+
+        if(usu.usuid == 1){
+            await controller.MetInsertMasterClientesGrow(data)
+        }
+
+        if(req_plataforma != "Subsidios"){
+            req.body.req_usucorreo = usu.usucorreo
+            req.body.req_plataforma = null
+        }
+        await ActualizarStatusMasterClientesController.MetActualizarStatusMasterClientes(usutoken, null, usu.perid, req.files.maestra_cliente, req)
+
+        res.status(200).json({
+            respuesta    : true,
+            message     : 'Se cargó master clientes grow correctamente',
+        })
+
+    }catch(err){
+        console.log(err)
+        res.status(500).json({
+            respuesta    : false,
+            message     : 'Ha ocurrido un error al cargar master clientes grow'
+        })
+
+    }
+}
+
+controller.MetInsertMasterClientesGrow = async (data) => {
+
     try{
 
         const mcgs = await prisma.masterclientes_grow.findMany({
@@ -50,39 +129,11 @@ controller.MetMasterClientesGrow = async ( req, res, data ) => {
             }
         }
 
-        const espo = await prisma.espestadospendientes.findFirst({
-            where : {
-                espbasedato : 'Master Clientes'
-            },
-            select : {
-                espid : true
-            },
-            orderBy : {
-                fecid : 'desc'
-            }
-        })
-
-        const espu = await prisma.espestadospendientes.update({
-            where : {
-                espid : espo.espid
-            },
-            data : {
-                espfechactualizacion : new Date(),
-                updated_at : new Date()
-            }
-        })
-
-        res.status(200).json({
-            respuesta    : true,
-            message     : 'Se cargó master clientes grow correctamente',
-        })
+        return true
 
     }catch(err){
         console.log(err)
-        res.status(500).json({
-            respuesta    : false,
-            message     : 'Ha ocurrido un error al cargar master clientes grow'
-        })
+        return false
     }
 }
 

@@ -14,7 +14,9 @@ controller.MetSellin = async (req, res, data, delete_data, error, message_errors
 
     const {
         req_action_file,
-        req_type_file
+        req_type_file,
+        req_plataforma,
+        req_usucorreo
     } = req.body
 
     const {
@@ -23,20 +25,60 @@ controller.MetSellin = async (req, res, data, delete_data, error, message_errors
 
     try{
 
+        let action_file
+        if(req_action_file){
+            action_file = JSON.parse(req_action_file)
+        }
+
         const baseUrl = req.protocol + '://' + req.get('host');
         let messages_delete_data_acc
+        let usu
 
         if(!error){
-            const usu = await prisma.usuusuarios.findFirst({
-                where : {
-                    usutoken : usutoken
-                },
-                select : {
-                    usuid       : true,
-                    perid       : true,
-                    usuusuario  : true
+
+            if(req_plataforma == 'Subsidios'){
+                usu = await prisma.usuusuarios.findFirst({
+                    where : {
+                        usucorreo : req_usucorreo
+                    }
+                })
+
+                if(!usu){
+
+                    let per = await prisma.perpersonas.findFirst({
+                        where : {
+                            pernombre : 'Usuario'
+                        }
+                    })
+
+                    usu = await prisma.usuusuarios.create({
+                        data : {
+                            tpuid                   : 1,
+                            perid                   : per.perid,
+                            usuusuario              : 'usuario@gmail.com',
+                            usucorreo               : 'usuario@gmail.com',
+                            estid                   : 1,
+                            usutoken                : crypto.randomBytes(30).toString('hex'),
+                            usupaistodos            : false,
+                            usupermisosespeciales   : false,
+                            usucerrosesion          : false,
+                            usucierreautomatico     : false
+                        }
+                    })
                 }
-            })
+
+            }else{
+                usu = await prisma.usuusuarios.findFirst({
+                    where : {
+                        usutoken : usutoken
+                    },
+                    select : {
+                        usuid       : true,
+                        perid       : true,
+                        usuusuario  : true
+                    }
+                })
+            }
 
             const fec = await prisma.fecfechas.findFirst({
                 where : {
@@ -62,7 +104,7 @@ controller.MetSellin = async (req, res, data, delete_data, error, message_errors
                 }
             })
 
-            if(espe){
+            if(espe && usu.usuid != 1){
 
                 let date_one = moment()
                 let date_two = moment(espe.espfechaprogramado)
@@ -124,41 +166,32 @@ controller.MetSellin = async (req, res, data, delete_data, error, message_errors
                     })
                 }
 
-                await prisma.sellin.createMany({
-                    data
-                })
             }
 
             const { messages_delete_data } = controller.SellinOverWrittern(delete_data)
             messages_delete_data_acc = messages_delete_data
 
-            if(req_action_file.delete_data){
-                for await (const dat of delete_data ){
-        
-                    await prisma.sellin.deleteMany({
-                        where: {
-                            fecha: {
-                                startsWith: dat
-                            },
-                        }
-                    })
+            if(usu.usuid == 1){
+                if(action_file?.delete_data){
+                    for await (const dat of delete_data ){
+            
+                        await prisma.sellin.deleteMany({
+                            where: {
+                                fecha: {
+                                    startsWith: dat
+                                },
+                            }
+                        })
+                    }
                 }
+    
+                await prisma.sellin.createMany({
+                    data
+                })
+
             }
 
-            await prisma.sellin.createMany({
-                data
-            })
         }
-
-        const usun = await prisma.usuusuarios.findFirst({
-            where: {
-                usutoken : req.headers.usutoken
-            },
-            select: {
-                usuid: true,
-                usuusuario: true
-            }
-        })
 
         let path_file
         
@@ -188,14 +221,15 @@ controller.MetSellin = async (req, res, data, delete_data, error, message_errors
         const token_excel = crypto.randomBytes(30).toString('hex')
         const car = await prisma.carcargasarchivos.create({
             data: {
-                usuid       : usun.usuid,
+                usuid       : usu.usuid,
                 carnombre   : req.files.carga_sellin.name,
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
                 cartipo     : req_type_file,
                 carurl      : baseUrl + '/carga-archivos/generar-descarga?token='+token_excel,
                 carexito    : carexito_bd,
-                carnotificaciones : carnotificaciones_bd
+                carnotificaciones : carnotificaciones_bd,
+                carplataforma : req_plataforma ? req_plataforma : null
             }
         })
 
@@ -208,7 +242,7 @@ controller.MetSellin = async (req, res, data, delete_data, error, message_errors
         const data_mail = {
             archivo: req.files.carga_sellin.name, 
             tipo: "Archivo Sell In", 
-            usuario: usun.usuusuario,
+            usuario: usu.usuusuario,
             url_archivo: car.cartoken,
             error_val   : error,
             error_message_mail: message_errors
@@ -285,6 +319,37 @@ controller.FormatMessageError = async ( messages ) => {
     }
 
     return JSON.stringify(message_notifications)
+}
+
+controller.SellinCargaExterna = async ( req, res, delete_data ) => {
+
+    const {
+        req_action_file,
+    } = req.body
+
+    let messages_delete_data_acc
+
+    const action_file = JSON.parse(req_action_file)
+
+    const { messages_delete_data } = controller.SellinOverWrittern(delete_data)
+    messages_delete_data_acc = messages_delete_data
+
+    if(action_file.delete_data){
+        for await (const dat of delete_data ){
+
+            await prisma.sellin.deleteMany({
+                where: {
+                    fecha: {
+                        startsWith: dat
+                    },
+                }
+            })
+        }
+    }
+
+    await prisma.sellin.createMany({
+        data
+    })
 }
 
 module.exports = controller
