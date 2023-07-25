@@ -206,7 +206,6 @@ model master_distribuidoras {
 
   master_productos_so  master_productos_so[]
   ventas_so            ventas_so[]
-  inventarios         inventarios[]
 }
 
 model master_productos {
@@ -347,7 +346,6 @@ model master_precios{
 model inventarios {
   id                            Int         @id @default(autoincrement()) @db.UnsignedInt
   pro_so_id                     Int?        @db.UnsignedInt
-  m_dt_id                       Int?        @db.UnsignedInt
   m_cl_grow                     Int?        @db.UnsignedInt
   c_date                        String?     @db.VarChar(255)
   dia                           Int?        @db.UnsignedInt
@@ -378,7 +376,6 @@ model inventarios {
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @db.Timestamp(0)
   master_productos_so           master_productos_so?   @relation(fields: [pro_so_id], references: [id], onUpdate: Restrict, map: "inventarios_id_foreign")
-  master_distribuidoras         master_distribuidoras?   @relation(fields: [m_dt_id], references: [id], onUpdate: Restrict, map: "master_distribuidoras_m_dt_id_inventarios_foreign")
   masterclientes_grow           masterclientes_grow?   @relation(fields: [m_cl_grow], references: [id], onUpdate: Restrict, map: "masterclientes_grow_inventarios_id_foreign")
 }
 
