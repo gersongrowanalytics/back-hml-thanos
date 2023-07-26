@@ -1,10 +1,10 @@
 controller = {}
-const { 
-    AthenaClient, 
-    StartQueryExecutionCommand, 
-    GetQueryResultsCommand, 
-    GetQueryExecutionCommand,
-} = require("@aws-sdk/client-athena")
+// const { 
+//     AthenaClient, 
+//     StartQueryExecutionCommand, 
+//     GetQueryResultsCommand, 
+//     GetQueryExecutionCommand,
+// } = require("@aws-sdk/client-athena")
 
 controller.MetAthenaQuery = async (query) => {
     // try{

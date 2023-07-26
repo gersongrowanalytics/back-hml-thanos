@@ -1,7 +1,7 @@
 controller = {}
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const AthenaQuery = require('../Helpers/AthenaQuery')
+// const AthenaQuery = require('../Helpers/AthenaQuery')
 
 controller.MetMigrarInventario = async (req, res) => {
     // const {
