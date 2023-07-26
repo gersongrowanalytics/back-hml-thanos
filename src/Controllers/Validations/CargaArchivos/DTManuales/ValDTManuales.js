@@ -253,7 +253,7 @@ controller.ValCellsFile = async (workbook, usu, date) => {
         if(usu.usuid != 1){
             if(row[properties[4]]){
                 
-                if(row[properties[4]].toString().length != 11 || row[properties[4]].toString().length != 8){
+                if(row[properties[4]].toString().length != 11 && row[properties[4]].toString().length != 8){
                     add_dt_manuales = false
                     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
                     controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'number of digits', null)
@@ -268,7 +268,7 @@ controller.ValCellsFile = async (workbook, usu, date) => {
     
             if(row[properties[8]]){
                 
-                if(row[properties[8]].toString().length != 8 || row[properties[8]].toString().length != 9){
+                if(row[properties[8]].toString().length != 8 && row[properties[8]].toString().length != 9){
                     add_dt_manuales = false
                     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[8]['name'])
                     controller.ValAddMessageLog(rows_error, messages_error, columns_name[8]['name'], num_row, 'number of digits', null)
