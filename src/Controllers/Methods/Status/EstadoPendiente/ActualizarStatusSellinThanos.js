@@ -18,20 +18,55 @@ controller.MetActualizarStatusSellinThanos = async (usutoken, date, perid, file_
 
         let perid_usu
         let fecid
-
+        let usu
+    
         const baseUrl = req.protocol + '://' + req.get('host')
 
         if(!date){
-            const usu = await prisma.usuusuarios.findFirst({
-                where: {
-                    usutoken : usutoken
-                },
-                select: {
-                    usuid: true,
-                    usuusuario: true,
-                    perid : true
+
+            if(req_plataforma == 'Subsidios'){
+                usu = await prisma.usuusuarios.findFirst({
+                    where : {
+                        usucorreo : req_usucorreo
+                    }
+                })
+
+                if(!usu){
+
+                    let per = await prisma.perpersonas.findFirst({
+                        where : {
+                            pernombre : 'Usuario'
+                        }
+                    })
+
+                    usu = await prisma.usuusuarios.create({
+                        data : {
+                            tpuid                   : 1,
+                            perid                   : per.perid,
+                            usuusuario              : 'usuario@gmail.com',
+                            usucorreo               : 'usuario@gmail.com',
+                            estid                   : 1,
+                            usutoken                : crypto.randomBytes(30).toString('hex'),
+                            usupaistodos            : false,
+                            usupermisosespeciales   : false,
+                            usucerrosesion          : false,
+                            usucierreautomatico     : false
+                        }
+                    })
                 }
-            })
+            }else{
+                usu = await prisma.usuusuarios.findFirst({
+                    where: {
+                        usutoken : usutoken
+                    },
+                    select: {
+                        usuid: true,
+                        usuusuario: true,
+                        perid : true
+                    }
+                })
+                
+            }
 
             perid_usu = usu.perid
     
@@ -52,14 +87,8 @@ controller.MetActualizarStatusSellinThanos = async (usutoken, date, perid, file_
 
         const espe = await prisma.espestadospendientes.findFirst({
             where : {
-                AND : [
-                    {
-                        fecid : fecid
-                    },
-                    {
-                        espbasedato : 'Sellin Thanos (Mes actual)'
-                    }
-                ]
+                fecid : fecid,
+                espbasedato : 'Sell In Thanos (Mes actual)'
             }
         })
 
