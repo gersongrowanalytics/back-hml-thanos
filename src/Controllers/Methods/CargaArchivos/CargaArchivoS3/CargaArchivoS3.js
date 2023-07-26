@@ -12,6 +12,7 @@ const StatusMasterClientes = require('../../Status/EstadoPendiente/ActualizarSta
 const StatusMasterProductos = require('../../Status/EstadoPendiente/ActualizarStatusMasterProductos')
 const StatusMasterPrecios = require('../../Status/EstadoPendiente/ActualizarStatusMasterPrecios')
 const StatusSellinThanos = require('../../Status/EstadoPendiente/ActualizarStatusSellinThanos')
+const StatusCuotaSellOut = require('../../Status/EstadoPendiente/ActualizarStatusCuotaSellOut')
 const path = require('path');
 
 controller.MetCargaArchivoS3 = async ( req, res ) => {
@@ -133,6 +134,9 @@ controller.ActualizarStatus = async ( usutoken, req_type_file, req) => {
             break;
         case 'Sell In Thanos':
             await StatusSellinThanos.MetActualizarStatusSellinThanos(usutoken, date, perid, null, req)
+            break;
+        case 'Sell Out':
+            await StatusCuotaSellOut.MetActualizarStatusCuotaSellOut(usutoken, date, perid, null, req)
             break;
         default:
             console.log('No se encontró algun tipo de archivo');
