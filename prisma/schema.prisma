@@ -538,7 +538,7 @@ model masterclientes_grow {
   direccion                   String?     @db.VarChar(255)
   zona_venta                  String?     @db.VarChar(255)
   created_at                  DateTime?   @default(now())
-  updated_at                  DateTime?   @db.Timestamp(0)
+  updated_at                  DateTime?   @updatedAt
   ventas_so                   ventas_so[]
   espestadospendientes        espestadospendientes[]
   master_productos_so         master_productos_so[]
@@ -584,7 +584,7 @@ model master_productos_grow {
   metros_unidad               Decimal?    @db.Decimal(17,10)
   disponible                  String?     @db.VarChar(255)
   created_at                  DateTime?   @default(now())
-  updated_at                  DateTime?   @db.Timestamp(0)
+  updated_at                  DateTime?   @updatedAt
   master_productos_so         master_productos_so[]
 }
 
