@@ -93,14 +93,8 @@ controller.MetSellin = async (req, res, data, delete_data, error, message_errors
 
             const espe = await prisma.espestadospendientes.findFirst({
                 where : {
-                    AND : [
-                        {
-                            fecid : fecid
-                        },
-                        {
-                            espbasedato : 'Sellin Thanos (Mes actual)'
-                        }
-                    ]
+                    fecid : fecid,
+                    espbasedato : 'Sell In Thanos (Mes actual)'
                 }
             })
 

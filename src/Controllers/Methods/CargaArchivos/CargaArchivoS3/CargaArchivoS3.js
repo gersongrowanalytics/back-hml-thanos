@@ -23,21 +23,55 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
 
     const {
         req_type_file,
-        req_action_file
+        req_action_file,
+        req_usucorreo
     } = req.body
 
     try{
 
-        const usu = await prisma.usuusuarios.findFirst({
-            where : {
-                usutoken : usutoken
-            },
-            select : {
-                usuusuario : true,
-                usuid : true
+        let usu
+        if(usutoken){
+            usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    usutoken : usutoken
+                },
+                select : {
+                    usuusuario : true,
+                    usuid : true
+                }
+            })
+        }else{
+            usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    usucorreo : req_usucorreo
+                }
+            })
+
+            if(!usu){
+
+                let per = await prisma.perpersonas.findFirst({
+                    where : {
+                        pernombre : 'Usuario'
+                    }
+                })
+
+                usu = await prisma.usuusuarios.create({
+                    data : {
+                        tpuid                   : 1,
+                        perid                   : per.perid,
+                        usuusuario              : 'usuario@gmail.com',
+                        usucorreo               : 'usuario@gmail.com',
+                        estid                   : 1,
+                        usutoken                : crypto.randomBytes(30).toString('hex'),
+                        usupaistodos            : false,
+                        usupermisosespeciales   : false,
+                        usucerrosesion          : false,
+                        usucierreautomatico     : false
+                    }
+                })
             }
-        })
-        
+        }
+
         const baseUrl = req.protocol + '://' + req.get('host');
         let path_file
         

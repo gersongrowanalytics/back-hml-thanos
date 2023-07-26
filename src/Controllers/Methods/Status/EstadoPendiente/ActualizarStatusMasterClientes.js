@@ -113,14 +113,8 @@ controller.MetActualizarStatusMasterClientes = async (usutoken, date, perid, fil
         
         const espe = await prisma.espestadospendientes.findFirst({
             where : {
-                AND : [
-                    {
-                        fecid : fecid
-                    },
-                    {
-                        espbasedato : 'Master Clientes'
-                    }
-                ]
+                fecid : fecid,
+                espbasedato : 'Master Clientes'
             }
         })
 
