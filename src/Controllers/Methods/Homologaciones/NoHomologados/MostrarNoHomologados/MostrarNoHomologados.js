@@ -31,7 +31,10 @@ controller.MetMostrarNoHomologados = async (req, res) => {
         
         let query_words_exc = ''
         const words_exc = [
-            'babysec', 'ladysoft', 'navidad', 'mundial', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas','patrias','verano','practica','ldsft','lady-soft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian','ladisoft', 'Noble', 'celeste', 'naranja'
+            'babysec', 'ladysoft', 'navidad', 'mundial', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas','patrias',
+            'verano','practica','ldsft','lady-soft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian','ladisoft', 'Noble', 
+            'celeste', 'naranja','Nova', 'Higienol', 'Nobl', 'touch', 'softmax', 'aloe', 'bb/sec', 'baby', 'hum', 'premium', 'natural', 
+            'soft', 'lady', 'nocturn', 'ultrafresh', 'humeda', 'menthol'
         ]
         // const words_exc = []
 
