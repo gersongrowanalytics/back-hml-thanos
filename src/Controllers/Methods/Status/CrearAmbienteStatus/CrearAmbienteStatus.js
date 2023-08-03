@@ -172,7 +172,7 @@ controller.CreateDataAreEsp = async ( fecn, req_sithanos,req_masterproductos, re
             espfechaprogramado      : new Date(req_sithanos),
             espchacargareal         : null,
             espfechactualizacion    : null,
-            espbasedato             : 'Sellin Thanos (Mes actual)',
+            espbasedato             : 'Sell In Thanos (Mes Actual)',
             espresponsable          : 'Maria Yauri',
             espdiaretraso           : '0',
             esporden                : false,
