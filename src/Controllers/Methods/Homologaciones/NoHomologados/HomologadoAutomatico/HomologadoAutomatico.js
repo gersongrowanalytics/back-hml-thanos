@@ -14,12 +14,12 @@ controller.MetHomologadoAutomatico = async ( req, res ) => {
         if(!data){
             data = await prisma.master_productos_so.findMany({
                 where : {
-                    homologado : true
+                    homologado : false
                 }
             })
         }
 
-        const condicion_seleccionar = [ 'babysec', 'ladysoft', 'navidad', 'mundial', 'looney', 'diseño', 'cumple', 'torta', 'lineas', 'circulos', 'halloween', 'fiestas', 'patrias','verano','practica','ldsft','lady soft', 'ultrasec', 'hipoal', 'dove', 'rexona', 'palos', 'dobby','cotidian','ladisoft' ]
+        const condicion_seleccionar = ['babysec', 'ladysoft', 'navidad', 'mundial', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas','patrias', 'verano','practica','ldsft','lady-soft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian','ladisoft', 'Noble', 'celeste', 'naranja','Nova', 'Higienol', 'Nobl', 'touch', 'softmax', 'aloe', 'bb/sec', 'baby', 'hum', 'premium', 'natural soft', 'lady', 'nocturn', 'ultrafresh', 'humeda', 'menthol']
 
         let productos_so_ids = []
         data.map(dat => {
