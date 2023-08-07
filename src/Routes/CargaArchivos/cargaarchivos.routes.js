@@ -25,6 +25,8 @@ const ValHomologaciones = require('../../Controllers/Validations/CargaArchivos/H
 
 const ValInventories = require('../../Controllers/Validations/CargaArchivos/Inventarios/ValInventarios')
 
+const ValForRegistrosVentasSO = require('../../Controllers/Validations/CargaArchivos/Helpers/ValFormatearRegistrosVentasSO')
+
 const protectedRoutes = express.Router();
 // protectedRoutes.use(authMiddleware);
 
@@ -89,6 +91,10 @@ protectedRoutes.get('/generar-descarga', ValDowloadGenerateUrl.ValDowloadGenerat
 // **** **** **** **** **** //
 // RUTAS CARGAR MASTER PRECIOS
 // **** **** **** **** **** //
+
+
+protectedRoutes.post('/formatear-ventas-so', ValForRegistrosVentasSO.ValFormatearRegistrosVentasSO)
+
 protectedRoutes.post('/master-precios', function(req, res){
 
     if(req.files.master_precios['mimetype'] == 'text/csv'){

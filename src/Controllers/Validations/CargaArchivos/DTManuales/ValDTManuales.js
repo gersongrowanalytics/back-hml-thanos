@@ -387,7 +387,7 @@ controller.ValCellsFile = async (workbook, usu, date) => {
             dni_vendedor_distribuidor       : row[properties[8]]    ?  row[properties[8]].toString() : '',
             nombre_vendedor_distribuidor    : row[properties[9]]    ? row[properties[9]].toString() : '',
             codigo_producto                 : row[properties[10]]   ? row[properties[10]].toString().trim() : '',
-            descripcion_producto            : row[properties[11]]   ? row[properties[11]].toString() : '',
+            descripcion_producto            : row[properties[11]]   ? row[properties[11]].toString().replace(/\r\n+/g, ' ') : '',
             cantidad                        : row[properties[12]]   ? row[properties[12]].toString() : '',
             cod_unidad_medida               : cod_unidad_medida,
             unidad_medida                   : unidad_medida,
