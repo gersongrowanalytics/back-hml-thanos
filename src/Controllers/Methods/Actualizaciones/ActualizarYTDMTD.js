@@ -11,6 +11,11 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data ) => {
 
         const ventas_so = await prisma.ventas_so.findMany({
             distinct: ['pro_so_id'],
+            where:{
+                created_at: {
+                    gte: new Date('2023-08-09T00:00:00')
+                }
+            }
         })
 
 
