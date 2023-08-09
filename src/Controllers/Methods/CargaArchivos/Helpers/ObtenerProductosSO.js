@@ -13,7 +13,9 @@ controller.MetObtenerProductosSO = async (audpk=[], devmsg=[], req, res) => {
         const distinct_ventas_so = await prisma.ventas_so.findMany({
             where: {
                 pro_so_id: null,
-                created_at: "2023-08-09 00:00:00"
+                created_at: {
+                    greaterThan: new Date('2023-08-09T00:00:00')
+                }
             },
             select: {
                 pk_extractor_venta_so: true,
