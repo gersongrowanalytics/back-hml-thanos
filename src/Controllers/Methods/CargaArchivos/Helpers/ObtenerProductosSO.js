@@ -14,7 +14,7 @@ controller.MetObtenerProductosSO = async (audpk=[], devmsg=[], req, res) => {
             where: {
                 pro_so_id: null,
                 created_at: {
-                    greaterThan: new Date('2023-08-09T00:00:00')
+                    gte: new Date('2023-08-09T00:00:00')
                 }
             },
             select: {
