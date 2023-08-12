@@ -10,7 +10,7 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data ) => {
         let arr_duplicados_pk_extractor_so = []
 
         const ventas_so = await prisma.ventas_so.findMany({
-            distinct: ['pro_so_id'],
+            distinct: ['pk_venta_so'],
             where:{
                 created_at: {
                     gte: new Date('2023-08-09T00:00:00')
@@ -26,20 +26,20 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data ) => {
                     precio_total_sin_igv : true
                 },
                 where: {
-                    pro_so_id : vso.pro_so_id
+                    pk_venta_so : vso.pk_venta_so
                 },
             });
 
             console.log("-------------------------");
-            console.log(vso.pro_so_id);
+            console.log(vso.pk_venta_so);
             console.log(total_v._sum.precio_total_sin_igv);
             console.log("-------------------------");
             
             const totalytdmtd = total_v?._sum?.precio_total_sin_igv
 
-            await prisma.master_productos_so.update({
+            await prisma.master_productos_so.updateMany({
                 where : {
-                    id : vso.pro_so_id,
+                    pk_venta_so : vso.pk_venta_so
                 },
                 data: {
                     s_mtd : totalytdmtd ? parseFloat(totalytdmtd) : 0,
@@ -47,11 +47,11 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data ) => {
                 }
             })
 
-            pk_extr = arr_pk_extractor_so.find(pk_extractor => pk_extractor == vso.pro_so_id)
+            pk_extr = arr_pk_extractor_so.find(pk_extractor => pk_extractor == vso.pk_venta_so)
             if(!pk_extr){
-                arr_pk_extractor_so.push(vso.pro_so_id)
+                arr_pk_extractor_so.push(vso.pk_venta_so)
             }else{
-                arr_duplicados_pk_extractor_so.push(vso.pro_so_id)
+                arr_duplicados_pk_extractor_so.push(vso.pk_venta_so)
             }
 
         }
