@@ -4,6 +4,47 @@ const prisma = new PrismaClient();
 
 controller.MetActualizarYTDMTD = async ( req, res, ex_data ) => {
 
+    const mpss = await prisma.master_productos_so.findMany({
+        where: {
+            homologado : false
+        }
+    })
+
+
+    // OBTENER EL MES Y AÑO ACTUAL
+
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth()).padStart(2, '0');
+    const formattedDate = `${year}-${month}`;
+    let contador = 0;
+
+    for await(const quer of mpss){
+        const total_v = await prisma.$queryRawUnsafe(`SELECT sum(vs.precio_total_sin_igv) as suma_total FROM ventas_so as vs JOIN master_productos_so as mps ON mps.pk_extractor_venta_so = vs.pk_extractor_venta_so WHERE mps.homologado = ${false} AND mps.pk_venta_so = "${quer.pk_venta_so}" AND vs.fecha LIKE "${year}-%"` )
+
+        await prisma.master_productos_so.update({
+            where: {
+                id : quer.id
+            },
+            data: {
+                s_mtd : total_v[0]['suma_total'],
+                s_ytd : total_v[0]['suma_total'] 
+            }
+        })
+
+        contador++;
+    }
+
+    return res.status(200).json({
+        response    : true,
+        message     : 'Se actualizo correctamente los montos s_mtd y s_ytd',
+        data : mpss
+    })
+
+}
+
+controller.MetActualizarYTDMTDBK = async ( req, res, ex_data ) => {
+
     try{
         
         let arr_pk_extractor_so = []
