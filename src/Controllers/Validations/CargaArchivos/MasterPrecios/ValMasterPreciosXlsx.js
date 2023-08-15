@@ -40,10 +40,11 @@ controller.ValMasterPreciosXlsx = async (req, res) => {
         if(action_file.process_data){
             MasterPreciosController.MetMasterPrecios(req, res, data, dates_row)
         }else{
-            res.status(200).json({
-                respuesta   : false,
-                message     : 'Se ha validado la data correctamente'
-            })
+            MasterPreciosController.MetMasterPrecios(req, res, data, dates_row)
+            // res.status(200).json({
+            //     respuesta   : false,
+            //     message     : 'Se ha validado la data correctamente'
+            // })
         }
 
     }catch(error){
