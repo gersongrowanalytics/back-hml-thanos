@@ -30,9 +30,14 @@ controller.MetMostrarNoHomologados = async (req, res) => {
     try{
         
         let query_words_exc = ''
-        // const words_exc = ['babysec', 'ladysoft', 'navidad', 'mundial', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas','patrias','verano','practica','ldsft','lady-soft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian','ladisoft']
-        const words_exc = []
-
+        const words_exc = [
+            'babysec', 'ladysoft', 'navidad', 'mundial', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas','patrias',
+            'verano','practica','ldsft','lady-soft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian','ladisoft', 'Noble', 
+            'celeste', 'naranja','Nova', 'Higienol', 'Nobl', 'touch', 'softmax', 'aloe', 'bb/sec', 'baby', 'hum', 'premium', 'natural soft', 
+            'lady', 'nocturn', 'ultrafresh', 'humeda', 'menthol'
+        ]
+        // const words_exc = []
+        
         connection_types = await prisma.masterclientes_grow.findMany({
             select : {
                 conexion : true
@@ -131,6 +136,29 @@ controller.MetMostrarNoHomologados = async (req, res) => {
                 }
             )
         });
+
+
+        // OBTENER EL MES Y AÑO ACTUAL
+
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth()).padStart(2, '0');
+        const formattedDate = `${year}-${month}`;
+        let contador = 0;
+        for await(const quer of data_query){
+
+            // const total_v = await prisma.$queryRawUnsafe(`SELECT sum(vo.precio_total_sin_igv) as suma_total FROM ventas_so as vo JOIN master_productos_so as mps ON mps.id = vo.pro_so_id WHERE vo.pk_venta_so = '${quer.pk_venta_so}' AND mps.homologado = ${false} AND vo.fecha LIKE ${formattedDate}` )
+            const total_v = await prisma.$queryRawUnsafe(`SELECT sum(vs.precio_total_sin_igv) as suma_total FROM ventas_so as vs JOIN master_productos_so as mps ON mps.pk_extractor_venta_so = vs.pk_extractor_venta_so WHERE mps.homologado = ${false} AND mps.pk_venta_so = "${quer.pk_venta_so}" AND vs.fecha LIKE "${year}-%"` )
+
+
+            data_query[contador]['s_mtd'] = total_v[0]['suma_total'];
+            data_query[contador]['s_ytd'] = total_v[0]['suma_total'];
+            // console.log(data_query[contador]['s_mtd']);
+            // console.log(data_query[contador]['s_ytd']);
+            // console.log(total_v);
+            // console.log("------------");
+            contador++;
+        }
 
     }catch(error){
         console.log(error)

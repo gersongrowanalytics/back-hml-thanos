@@ -21,7 +21,7 @@ const ValObtenerInfoSO = require('../../Controllers/Validations/Homologaciones/N
 const ValObtenerInfoMasterPrecios   = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/MasterPrecios/ValInfoMasterPrecios')
 const ValObtenerInfoInvController = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/Inventarios/InfoInventarios/InfoInventarios')
 const ValActualizarInventarios = require('../../Controllers/Validations/Homologaciones/NoHomologados/ActualizarHomologacion/Inventarios/ActualizarInventario/ActualizarInventario')
-
+const ValHomologadoAutomaticoController = require('../../Controllers/Methods/Homologaciones/NoHomologados/HomologadoAutomatico/HomologadoAutomatico')
 
 const protectedRoutes = express.Router();
 // protectedRoutes.use(authMiddleware);
@@ -48,6 +48,8 @@ protectedRoutes.post('/register-product', ValRegHomController.ValRegistrarHomolo
 protectedRoutes.post('/update-non-approved-products', ValActProHom.ValActualizarHomologacion)
 protectedRoutes.post('/get-non-approved-product', ValMosNoHomMasterController.ValMostrarNoHomologadosMaster)
 protectedRoutes.post('/get-paqxbul-product', ValMosPaqBulProController.ValObtenerPaquetexBultoProduto)
+protectedRoutes.post('/approved-products', ValHomologadoAutomaticoController.MetHomologadoAutomatico)
+
 
 protectedRoutes.post('/get-si', ValObtenerInfoSI.ValObtenerInfoSI)
 protectedRoutes.post('/get-so', ValObtenerInfoSO.ValObtenerInfoSO)

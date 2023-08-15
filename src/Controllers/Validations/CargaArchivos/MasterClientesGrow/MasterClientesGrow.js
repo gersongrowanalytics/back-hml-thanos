@@ -5,7 +5,8 @@ const MasterClientesGrowController = require('../../../Methods/CargaArchivos/Mas
 controller.ValMasterClientesGrow = async ( req, res ) => {
 
     const {
-        req_action_file
+        req_action_file,
+        req_plataforma
     } = req.body
     
     try{
@@ -15,13 +16,13 @@ controller.ValMasterClientesGrow = async ( req, res ) => {
 
         const workbook = XLSX.read(file.data)
         if(!workbook.Sheets['Hoja1']){
-
             res.status(500).json({
                 message : 'Lo sentimos no se encontró la hoja con nombre "Hoja1"',
                 messages_error : '',
                 notificaciones : [],
                 respuesta : false
             })
+
         }else{
 
             const rows      = XLSX.utils.sheet_to_json(workbook.Sheets['Hoja1'], {defval:""})
@@ -66,7 +67,7 @@ controller.ValMasterClientesGrow = async ( req, res ) => {
                 })
             }
     
-            MasterClientesGrowController.MetMasterClientesGrow(req, res, data)
+            await MasterClientesGrowController.MetMasterClientesGrow(req, res, data)
         }
 
 

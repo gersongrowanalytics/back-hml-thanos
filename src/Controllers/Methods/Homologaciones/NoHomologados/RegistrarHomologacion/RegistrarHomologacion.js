@@ -11,7 +11,8 @@ controller.MetRegistrarHomologacion = async (req, res) => {
         producto_hml_id,
         req_envio_otros,
         productos_so_ids,
-        producto_uni_medida
+        producto_uni_medida,
+        controller
     } = req.body;
 
     try{
@@ -71,19 +72,27 @@ controller.MetRegistrarHomologacion = async (req, res) => {
 
     }catch(error){
         console.log(error)
-        res.status(500)
-        res.json({
-            message : 'Lo sentimos hubo un error al momento de ...',
-            devmsg  : error,
-            respuesta : false
-        })
+        if(controller){
+            return false
+        }else{
+            res.status(500)
+            res.json({
+                message : 'Lo sentimos hubo un error al momento de ...',
+                devmsg  : error,
+                respuesta : false
+            })
+        }
     } finally {
         await prisma.$disconnect()
-        res.status(200)
-        res.json({
-            message : 'El producto ha sido homologado correctamente',
-            respuesta : true
-        })
+        if(controller){
+            return true
+        }else{
+            res.status(200)
+            res.json({
+                message : 'El producto ha sido homologado correctamente',
+                respuesta : true
+            })
+        }
     }
 }
 

@@ -5,7 +5,8 @@ const MasterProductosGrowController = require('../../../Methods/CargaArchivos/Ma
 controller.ValMasterProductosGrow = async ( req, res ) => {
     
     const {
-        req_action_file
+        req_action_file,
+        req_plataforma
     } = req.body
     
     try{
@@ -20,6 +21,7 @@ controller.ValMasterProductosGrow = async ( req, res ) => {
                 message     : 'Lo sentimos no se encontró la hoja con nombre "Hoja1"',
                 notificaciones : []
             })
+            return false
         }
 
         const rows      = XLSX.utils.sheet_to_json(workbook.Sheets['Hoja1'], {defval:""})
@@ -77,6 +79,7 @@ controller.ValMasterProductosGrow = async ( req, res ) => {
             message     : 'Ha ocurrido un error al cargar master productos grow',
             notificaciones : []
         })
+        return false
     }
 }
 

@@ -8,53 +8,56 @@ const SellinController = require('../../../../Methods/CargaArchivos/SI/CargaSell
 controller.ValSellin = async (req, res) => {
 
     const {
-        req_action_file
+        req_action_file,
+        req_plataforma
     } = req.body
     const file          = req.files.carga_sellin
 
     try{
 
-        const action_file = JSON.parse(req_action_file)
+        let action_file
+        if(req_action_file){
+            action_file = JSON.parse(req_action_file)
+        }
         const { exists_data, message, status, workbook } = await controller.ValExistsData(file)
 
         if(!exists_data){
-            res.status(status)
-            return res.json({
+            return res.status(status).json({
                 message,
             })
         }
 
         const { messages_error, add_sellin, borrar_data, data } = await controller.ValCellsFile(workbook)
 
-        const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg));
+        const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg))
+
 
         if(!add_sellin){
             await SellinController.MetSellin(req, res, null, null, true, messages_error)
-            res.status(500)
-            return res.json({
+            return res.status(500).json({
                 response        : false,
                 message         : 'Lo sentimos se encontraron algunas observaciones',
                 notificaciones  : messages_error,
                 messages_error  : messages
             })
         }
-
-        if(action_file.process_data){
-            SellinController.MetSellin(req, res, data, borrar_data, false)
+        
+        if(action_file?.process_data || req_plataforma){
+            SellinController.MetSellin(req, res, data, borrar_data, false, [])
         }else{
-            res.status(200).json({
+            return res.status(200).json({
                 respuesta   : false,
                 message     : 'Se ha validado la data correctamente'
             })
         }
 
+
     }catch(error){
-        console.log(error)
-        res.status(500)
-        res.json({
+        console.log(error)        
+        return res.status(500).json({
             message : 'Lo sentimos hubo un error al momento de leer el archivo',
             devmsg  : error
-        })
+        })    
     }
 }
 

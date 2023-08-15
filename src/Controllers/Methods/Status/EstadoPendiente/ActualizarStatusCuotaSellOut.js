@@ -7,10 +7,10 @@ const bcryptjs = require('bcryptjs')
 const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadenaAleatorio')
 const UploadFileS3 = require('../../S3/UploadFileS3')
 
-controller.MetActualizarStatusMasterProductos = async (usutoken, date, perid, file_update = null, req) => {
+controller.MetActualizarStatusCuotaSellOut = async (usutoken, date, perid, file_update = null, req) => {
 
     try{
-        
+
         const {
             req_plataforma,
             req_usucorreo
@@ -18,24 +18,11 @@ controller.MetActualizarStatusMasterProductos = async (usutoken, date, perid, fi
 
         let perid_usu
         let fecid
-        let usuid
-        let usu
-
-        if(usutoken){
-            usu = await prisma.usuusuarios.findFirst({
-                where : {
-                    usutoken : usutoken
-                }
-            })
-
-            usuid = usu.usuid
-        }
 
         const baseUrl = req.protocol + '://' + req.get('host')
 
         if(!date){
-
-            usu = await prisma.usuusuarios.findFirst({
+            const usu = await prisma.usuusuarios.findFirst({
                 where: {
                     usutoken : usutoken
                 },
@@ -47,54 +34,6 @@ controller.MetActualizarStatusMasterProductos = async (usutoken, date, perid, fi
             })
 
             perid_usu = usu.perid
-
-            if(req_plataforma == 'Subsidios'){
-                usu = await prisma.usuusuarios.findFirst({
-                    where: {
-                        usucorreo : req_usucorreo
-                    },
-                    select: {
-                        usuid: true,
-                        usuusuario: true,
-                        perid : true
-                    }
-                })
-
-                if(!usu){
-                    usu = await prisma.usuusuarios.findFirst({
-                        where : {
-                            usucorreo : 'usuario@gmail.com'
-                        }
-                    })
-    
-                    if(!usu){
-    
-                        let per = await prisma.perpersonas.findFirst({
-                            where : {
-                                pernombre : 'Usuario'
-                            }
-                        })
-    
-                        usu = await prisma.usuusuarios.create({
-                            data : {
-                                tpuid                   : 1,
-                                perid                   : per.perid,
-                                usuusuario              : 'usuario@gmail.com',
-                                usucorreo               : 'usuario@gmail.com',
-                                estid                   : 1,
-                                usutoken                : crypto.randomBytes(30).toString('hex'),
-                                usupaistodos            : false,
-                                usupermisosespeciales   : false,
-                                usucerrosesion          : false,
-                                usucierreautomatico     : false
-                            }
-                        })
-
-                    }
-                }                
-                perid_usu = usu.perid
-                usuid = usu.usuid
-            }
     
             const fec = await prisma.fecfechas.findFirst({
                 where : {
@@ -118,13 +57,13 @@ controller.MetActualizarStatusMasterProductos = async (usutoken, date, perid, fi
                         fecid : fecid
                     },
                     {
-                        espbasedato : 'Master Productos'
+                        espbasedato : 'Sell Out (Cuota)'
                     }
                 ]
             }
         })
 
-        if(espe && usuid != 1){
+        if(espe){
 
             let date_one = moment()
             let date_two = moment(espe.espfechaprogramado)
@@ -150,8 +89,7 @@ controller.MetActualizarStatusMasterProductos = async (usutoken, date, perid, fi
                 data : {
                     perid                   : perid_usu,
                     espfechactualizacion    : new Date().toISOString(),
-                    espdiaretraso           : esp_day_late,
-                    updated_at              : new Date()
+                    espdiaretraso           : esp_day_late
                 }
             })
 
@@ -174,7 +112,7 @@ controller.MetActualizarStatusMasterProductos = async (usutoken, date, perid, fi
                 if(espcount.length == 0){
                     are_percentage = '100'
                 }else{
-                    are_percentage = (100 - (espcount.length*25)).toString()
+                    are_percentage = (100-(espcount.length*25)).toString()
                 }
 
                 const areu = await prisma.areareasestados.update({
@@ -199,13 +137,51 @@ controller.MetActualizarStatusMasterProductos = async (usutoken, date, perid, fi
             const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
 
             if(process.env.ENTORNO == 'PREPRODUCTIVO'){
-                path_file = 'hmlthanos/prueba/pe/tradicional/carga_archivos/Master de Producto/'
+                path_file = 'hmlthanos/prueba/pe/tradicional/carga_archivos/CuotaSellOut/'
             }else{
-                path_file = 'hmlthanos/pe/tradicional/archivosgenerados/masterproductos/'
+                path_file = 'hmlthanos/pe/tradicional/archivosgenerados/sellin/'
             }
             const ubicacion_s3 = path_file + name_file + '-' + token_name + '.' + ext_file
 
             await UploadFileS3.UploadFileS3(archivoExcel, ubicacion_s3)
+    
+            let usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    usucorreo : req_usucorreo
+                }
+            })
+
+            if(!usu){
+                usu = await prisma.usuusuarios.findFirst({
+                    where : {
+                        usucorreo : 'usuario@gmail.com'
+                    }
+                })
+
+                if(!usu){
+
+                    let per = await prisma.perpersonas.findFirst({
+                        where : {
+                            pernombre : 'Usuario'
+                        }
+                    })
+
+                    usu = await prisma.usuusuarios.create({
+                        data : {
+                            tpuid                   : 1,
+                            perid                   : per.perid,
+                            usuusuario              : 'usuario@gmail.com',
+                            usucorreo               : 'usuario@gmail.com',
+                            estid                   : 1,
+                            usutoken                : crypto.randomBytes(30).toString('hex'),
+                            usupaistodos            : false,
+                            usupermisosespeciales   : false,
+                            usucerrosesion          : false,
+                            usucierreautomatico     : false
+                        }
+                    })
+                }
+            }
 
             const carn = await prisma.carcargasarchivos.create({
                 data: {
@@ -213,18 +189,17 @@ controller.MetActualizarStatusMasterProductos = async (usutoken, date, perid, fi
                     carnombre           : file_update.name,
                     cararchivo          : ubicacion_s3,
                     cartoken            : token_excel,
-                    cartipo             : 'Master de Producto',
+                    cartipo             : 'Sell In Thanos',
                     carurl              : baseUrl + '/carga-archivos/generar-descarga?token='+token_excel,
                     carexito            : true,
-                    carnotificaciones   : 'El archivo de Master de Producto fue cargado exitosamente',
+                    carnotificaciones   : 'El archivo de Sell In Thanos fue cargado exitosamente',
                     carplataforma       : req_plataforma ? req_plataforma : null
                 }
             })
         }
 
-
         return true
-
+        
     }catch(err){
         console.log(err)
         return false

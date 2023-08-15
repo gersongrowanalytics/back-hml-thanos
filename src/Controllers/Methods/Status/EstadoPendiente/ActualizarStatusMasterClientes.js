@@ -18,11 +18,23 @@ controller.MetActualizarStatusMasterClientes = async (usutoken, date, perid, fil
 
         let perid_usu
         let fecid
+        let usuid
+        let usu
+
+        if(usutoken){
+            usu = await prisma.usuusuarios.findFirst({
+                where : {
+                    usutoken : usutoken
+                }
+            })
+            
+            usuid = usu.usuid
+        }
 
         const baseUrl = req.protocol + '://' + req.get('host')
 
         if(!date){
-            const usu = await prisma.usuusuarios.findFirst({
+            usu = await prisma.usuusuarios.findFirst({
                 where: {
                     usutoken : usutoken
                 },
@@ -34,6 +46,54 @@ controller.MetActualizarStatusMasterClientes = async (usutoken, date, perid, fil
             })
 
             perid_usu = usu.perid
+
+            if(req_plataforma == 'Subsidios'){
+                usu = await prisma.usuusuarios.findFirst({
+                    where: {
+                        usucorreo : req_usucorreo
+                    },
+                    select: {
+                        usuid: true,
+                        usuusuario: true,
+                        perid : true
+                    }
+                })
+
+                if(!usu){
+                    usu = await prisma.usuusuarios.findFirst({
+                        where : {
+                            usucorreo : 'usuario@gmail.com'
+                        }
+                    })
+    
+                    if(!usu){
+    
+                        let per = await prisma.perpersonas.findFirst({
+                            where : {
+                                pernombre : 'Usuario'
+                            }
+                        })
+    
+                        usu = await prisma.usuusuarios.create({
+                            data : {
+                                tpuid                   : 1,
+                                perid                   : per.perid,
+                                usuusuario              : 'usuario@gmail.com',
+                                usucorreo               : 'usuario@gmail.com',
+                                estid                   : 1,
+                                usutoken                : crypto.randomBytes(30).toString('hex'),
+                                usupaistodos            : false,
+                                usupermisosespeciales   : false,
+                                usucerrosesion          : false,
+                                usucierreautomatico     : false
+                            }
+                        })
+                    }
+                }
+                
+                perid_usu = usu.perid
+                usuid = usu.usuid
+            }
     
             const fec = await prisma.fecfechas.findFirst({
                 where : {
@@ -48,22 +108,17 @@ controller.MetActualizarStatusMasterClientes = async (usutoken, date, perid, fil
         }else{
             perid_usu = perid
             fecid = date
+
         }
         
         const espe = await prisma.espestadospendientes.findFirst({
             where : {
-                AND : [
-                    {
-                        fecid : fecid
-                    },
-                    {
-                        espbasedato : 'Master Clientes'
-                    }
-                ]
+                fecid : fecid,
+                espbasedato : 'Master Clientes'
             }
         })
 
-        if(espe){
+        if(espe && usuid != 1){
             
             let date_one = moment()
             let date_two = moment(espe.espfechaprogramado)
@@ -146,44 +201,6 @@ controller.MetActualizarStatusMasterClientes = async (usutoken, date, perid, fil
 
             await UploadFileS3.UploadFileS3(archivoExcel, ubicacion_s3)
     
-            let usu = await prisma.usuusuarios.findFirst({
-                where : {
-                    usucorreo : req_usucorreo
-                }
-            })
-
-            if(!usu){
-                usu = await prisma.usuusuarios.findFirst({
-                    where : {
-                        usucorreo : 'usuario@gmail.com'
-                    }
-                })
-
-                if(!usu){
-
-                    let per = await prisma.perpersonas.findFirst({
-                        where : {
-                            pernombre : 'Usuario'
-                        }
-                    })
-
-                    usu = await prisma.usuusuarios.create({
-                        data : {
-                            tpuid                   : 1,
-                            perid                   : per.perid,
-                            usuusuario              : 'usuario@gmail.com',
-                            usucorreo               : 'usuario@gmail.com',
-                            estid                   : 1,
-                            usutoken                : crypto.randomBytes(30).toString('hex'),
-                            usupaistodos            : false,
-                            usupermisosespeciales   : false,
-                            usucerrosesion          : false,
-                            usucierreautomatico     : false
-                        }
-                    })
-                }
-            }
-
             const carn = await prisma.carcargasarchivos.create({
                 data: {
                     usuid               : usu.usuid,

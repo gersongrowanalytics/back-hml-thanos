@@ -16,7 +16,8 @@ controller.MetDescargarHomologados = async (req, res) => {
         const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/homologaciones/'+nombre_archivo+'.xlsx'
         const respuestaFile = await CheckFile.CheckFileS3(ubicacion_s3)
 
-        if(!respuestaFile){
+        // if(!respuestaFile){
+        if(true){
             const productos_so = await prisma.master_productos_so.findMany({
                 select: {
                     id: true,
