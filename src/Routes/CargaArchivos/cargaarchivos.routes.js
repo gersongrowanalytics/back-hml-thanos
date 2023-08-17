@@ -27,6 +27,8 @@ const ValInventories = require('../../Controllers/Validations/CargaArchivos/Inve
 
 const ValForRegistrosVentasSO = require('../../Controllers/Validations/CargaArchivos/Helpers/ValFormatearRegistrosVentasSO')
 
+const ValCargarPeVentasSO = require('../../Controllers/Validations/CargaArchivos/PeVentasSO/ValPeVentasSO')
+
 const protectedRoutes = express.Router();
 // protectedRoutes.use(authMiddleware);
 
@@ -108,6 +110,13 @@ protectedRoutes.post('/master-precios', function(req, res){
         })
     }
 })
+
+
+
+// **** **** **** **** **** //
+// RUTAS CARGAR PERU VENTAS SO
+// **** **** **** **** **** //
+protectedRoutes.post('/pe-ventas-so', ValCargarPeVentasSO.ValCargarPeVentasSO)
 
 router.use('/carga-archivos', protectedRoutes);
 
