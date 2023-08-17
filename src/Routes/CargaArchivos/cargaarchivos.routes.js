@@ -20,6 +20,7 @@ const ValCarArchivoS3 = require('../../Controllers/Validations/CargaArchivos/Car
 const ValMasterCliSof = require('../../Controllers/Validations/CargaArchivos/MasterClientesSoftys/MasterClientesSoftys')
 
 const ValSellin = require('../../Controllers/Validations/CargaArchivos/SI/CargaSellin/Sellin')
+const ValSellInUpload = require('../../Controllers/Validations/CargaArchivos/SI/SellInUpload/SellInUpload')
 
 const ValHomologaciones = require('../../Controllers/Validations/CargaArchivos/Homologaciones/Homologaciones')
 
@@ -53,6 +54,7 @@ protectedRoutes.post('/master-materiales', ValMasterDT.ValMasterMateriales)
 // RUTAS CARGAR SELLIN
 // **** **** **** **** **** //
 protectedRoutes.post('/upload-sellin', ValSellin.ValSellin)
+protectedRoutes.post('/upload-sellin-grow', ValSellInUpload.ValSellInUpload)
 
 
 // **** **** **** **** **** //
