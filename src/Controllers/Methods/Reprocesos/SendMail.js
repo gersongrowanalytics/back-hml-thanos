@@ -5,7 +5,7 @@ const nodemailer = require("nodemailer")
 const handlebars = require('handlebars')
 const moment = require('moment')
 
-controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data_mail, to_cc_mail) => {
+controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data_mail, to_cc_mail = []) => {
     let transporter = nodemailer.createTransport({
         host: process.env.HOST_MAIL,
         port: process.env.PORT_MAIL,
@@ -18,6 +18,10 @@ controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data
 
     handlebars.registerHelper('isEqual', function(a, b, opts) {
         return a == b ? opts.fn(this) : opts.inverse(this);
+    })
+
+    handlebars.registerHelper('isGreater', function(a, b, opts) {
+        return a > b ? opts.fn(this) : opts.inverse(this);
     })
 
     handlebars.registerHelper('formatDate', function(dateString) {

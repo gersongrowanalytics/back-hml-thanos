@@ -49,28 +49,47 @@
                             </div>
                         </td>
                     </tr>
-                    {{#if data_mail.error_val}}
+                    {{#if data_mail.error_message_mail}}
                     <tr>
                         <td style="width: 100000px; padding: 0 100px;">
                             <div style="font-style: normal; font-weight: normal; font-size: 13px; line-height: 18px; color: black; padding-top: 10px;">
-                                <b style="color: red;">Observaciones:</b>
-                                {{#each data_mail.error_message_mail}}
-                                    <div style="color: red;">
-                                        Se encontraron las siguientes observaciones en la columna {{columna}}:
-                                    </div>
-                                    {{#each notificaciones}}
-                                    <div style="color: red;">
-                                        - {{msg}}, en las siguientes lineas: 
-                                        {{#each rows}}
-                                        <span style="font-weight: bold;">{{this}},</span>
+                                {{#isGreater data_mail.error_message_mail.length 0}}
+                                    <b style="color: red;">Observaciones de Lógica:</b>
+                                    {{#each data_mail.error_message_mail}}
+                                        <div style="color: red;">
+                                            Se encontraron las siguientes observaciones en la columna {{columna}}:
+                                        </div>
+                                        {{#each notificaciones}}
+                                        <div style="color: red;">
+                                            - {{msg}}, en las siguientes lineas: 
+                                            {{#each rows}}
+                                            <span style="font-weight: bold;">{{this}},</span>
+                                            {{/each}}
+                                        </div>
                                         {{/each}}
-                                    </div>
                                     {{/each}}
-                                {{/each}}
+                                {{/isGreater}}
                             </div>
                         </td>
                     </tr>
                     {{/if}}
+                    {{#isGreater data_mail.error_log.length 0}}
+                    <tr>
+                        <td style="width: 100000px; padding: 0 100px;">
+                            <div style="font-style: normal; font-weight: normal; font-size: 13px; line-height: 18px; color: black; padding-top: 10px;">
+                                <b style="color: red;">Observaciones de Método:</b>
+                                <div style="color: red;">
+                                    Se encontraron los siguientes errores:
+                                </div>
+                                {{#each data_mail.error_log as |log|}}
+                                    <div style="color: red;">
+                                        - {{log}}
+                                    </div>
+                                {{/each}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{/isGreater}}
                     <tr>
                         <td align="center" style=" width: 100000px">
                             <div style="margin-left: 60px; margin-right: 60px; margin-bottom:30px; margin-top:20px">
