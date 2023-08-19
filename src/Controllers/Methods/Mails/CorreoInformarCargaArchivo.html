@@ -49,12 +49,21 @@
                             </div>
                         </td>
                     </tr>
-                    {{#if data_mail.error_message_mail}}
+                    {{#if data_mail.error_val}}
                     <tr>
                         <td style="width: 100000px; padding: 0 100px;">
                             <div style="font-style: normal; font-weight: normal; font-size: 13px; line-height: 18px; color: black; padding-top: 10px;">
+                                {{#compareArray data_mail.sheet_not_found.length data_mail.error_message_mail.length}}
+                                <b style="color: red;">Observaciones de Lógica:</b>
+                                {{/compareArray}}
+                                {{#isGreater data_mail.sheet_not_found.length 0}}
+                                    {{#each data_mail.sheet_not_found}}
+                                        <div style="color: red;">
+                                            <span style="font-weight: bold;">{{this}}</span>
+                                        </div>
+                                    {{/each}}
+                                {{/isGreater}}
                                 {{#isGreater data_mail.error_message_mail.length 0}}
-                                    <b style="color: red;">Observaciones de Lógica:</b>
                                     {{#each data_mail.error_message_mail}}
                                         <div style="color: red;">
                                             Se encontraron las siguientes observaciones en la columna {{columna}}:

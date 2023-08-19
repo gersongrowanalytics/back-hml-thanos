@@ -327,14 +327,11 @@ model lista_precio{
 
 model master_precios{
   id                            Int @id @default(autoincrement()) @db.UnsignedInt
-  date                          String?   @db.VarChar(255)
-  cg_two                        String?   @db.VarChar(255)
-  cod_material                  String?   @db.VarChar(255)
-  ex_changue_one                Decimal?  @db.Decimal(17,5)
-  ex_changue_two                Decimal?  @db.Decimal(17,5)
-  ex_changue_three              Decimal?  @db.Decimal(17,5)
-  ex_changue_four               Decimal?  @db.Decimal(17,5)
-  ex_changue_five               Decimal?  @db.Decimal(17,5)
+  codigo                        String?     @db.VarChar(255)
+  gba                           String?     @db.VarChar(255)
+  tipo                          String?     @db.VarChar(255)
+  precio                        Decimal?    @db.Decimal(17,5)
+  fecha                         String?     @db.VarChar(255)
   dia                           Int?        @db.UnsignedInt
   mes                           Int?        @db.UnsignedInt
   anio                          Int?        @db.UnsignedInt

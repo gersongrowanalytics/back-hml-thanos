@@ -10,35 +10,38 @@ require('dotenv').config()
 const path = require('path');
 
 
-controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_errors) => {
+controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_errors, error_log, sheet_not_found) => {
 
     const {
         req_action_file,
-        req_type_file
+        req_type_file,
+        req_date_updated,
     } = req.body
 
     const {
         usutoken
     } = req.headers
 
+    let usu
+    let carcargas
+    let token_excel = "No se guardo el excel"
+
     try{
         
-        const baseUrl = req.protocol + '://' + req.get('host');
+        const baseUrl = req.protocol + '://' + req.get('host')
+
+        usu = await prisma.usuusuarios.findFirst({
+            where : {
+                usutoken : usutoken
+            },
+            select : {
+                usuid       : true,
+                perid       : true,
+                usuusuario  : true
+            }
+        })
 
         if(!error){
-
-            const action_file = JSON.parse(req_action_file)
-
-            const usu = await prisma.usuusuarios.findFirst({
-                where : {
-                    usutoken : usutoken
-                },
-                select : {
-                    usuid       : true,
-                    perid       : true,
-                    usuusuario  : true
-                }
-            })
 
             const fec = await prisma.fecfechas.findFirst({
                 where : {
@@ -64,18 +67,15 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
                 }
             })
 
-            if(action_file.delete_data){
-                for await (const dat of dates_row ){
-        
-                    await prisma.master_precios.deleteMany({
-                        where: {
-                            date: {
-                                startsWith: dat
-                            }
-                        }
-                    })
+            const [date_year, date_month] = req_date_updated.split('-')
+
+            await prisma.master_precios.deleteMany({
+                where: {
+                    fecha: {
+                        contains: `%${date_month}-${date_year}`
+                    }
                 }
-            }
+            })
 
             await prisma.master_precios.createMany({
                 data
@@ -99,7 +99,7 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
                     esp_day_late = '0'
                 }
 
-                const espu = await prisma.espestadospendientes.update({
+                await prisma.espestadospendientes.update({
                     where : {
                         espid : espe.espid
                     },
@@ -132,7 +132,7 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
                         are_percentage = (100-(espcount.length*25)).toString()
                     }
 
-                    const areu = await prisma.areareasestados.update({
+                    await prisma.areareasestados.update({
                         where : {
                             areid : aree.areid
                         },
@@ -143,16 +143,6 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
                 }
             }
         }
-
-        const usun = await prisma.usuusuarios.findFirst({
-            where: {
-                usutoken : req.headers.usutoken
-            },
-            select: {
-                usuid: true,
-                usuusuario: true
-            }
-        })
 
         let path_file
         
@@ -179,10 +169,10 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
         }
 
         await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
-        const token_excel = crypto.randomBytes(30).toString('hex')
-        const car = await prisma.carcargasarchivos.create({
+        token_excel = crypto.randomBytes(30).toString('hex')
+        carcargas = await prisma.carcargasarchivos.create({
             data: {
-                usuid       : usun.usuid,
+                usuid       : usu.usuid,
                 carnombre   : req.files.master_precios.name,
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
@@ -193,8 +183,19 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
             }
         })
 
-        // const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
-        const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html');
+        if(!carcargas){
+            error_log.push("Método Maestro precios: No se guardo el registro en carcargasarchivos")
+        }
+    }catch(error){
+        console.log(error)
+        error_log.push("Método Maestro precios: "+err.toString())
+    }finally{
+        if(token_excel == "No se guardo el excel"){
+            error_log.push("Método Maestro precios: No se guardo el excel")
+            token_excel = ""
+        }
+
+        const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html')
         const from_mail_data = process.env.USER_MAIL
         const to_mail_data = process.env.TO_MAIL
         const subject_mail_success = "Carga de Archivo"
@@ -202,10 +203,12 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
         const data_mail = {
             archivo: req.files.master_precios.name, 
             tipo: "Archivo Master de Precios", 
-            usuario: usun.usuusuario,
-            url_archivo: car.cartoken,
+            usuario: usu.usuusuario,
+            url_archivo: carcargas ? carcargas.cartoken : token_excel,
             error_val: error,
-            error_message_mail: message_errors
+            error_message_mail: message_errors,
+            error_log: error_log,
+            sheet_not_found: sheet_not_found,
         }
 
         await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
@@ -213,21 +216,13 @@ controller.MetMasterPrecios = async (req, res, data, dates_row, error, message_e
         if(!error){
             res.status(200)
             return res.json({
-                message     : 'La data de Maestro precios fue cargada con éxito',
-                respuesta   : true
+                mensaje     : 'La data de Maestro precios fue cargada con éxito',
+                respuesta   : true,
+                data
             })
         }else{
             return true
         }
-
-    }catch(error){
-        console.log(error)
-        res.status(500)
-        return res.json({
-            message : 'Lo sentimos hubo un error al momento de leer el archivo',
-            devmsg  : error,
-            respuesta   : false
-        })
     }
 }
 

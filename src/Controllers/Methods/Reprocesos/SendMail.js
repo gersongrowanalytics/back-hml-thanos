@@ -24,6 +24,10 @@ controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data
         return a > b ? opts.fn(this) : opts.inverse(this);
     })
 
+    handlebars.registerHelper('compareArray', function(a, b, opts) {
+        return a > 0 || b > 0 ? opts.fn(this) : opts.inverse(this);
+    })
+
     handlebars.registerHelper('formatDate', function(dateString) {
         const date = moment(dateString).utc().format('DD/MM/YYYY')
       
