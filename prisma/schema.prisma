@@ -230,7 +230,6 @@ model master_productos {
   created_at          DateTime?   @default(now())
   updated_at          DateTime?   @db.Timestamp(0)
   master_productos_so master_productos_so[]
-  sellin              sellin[]
 }
 
 model master_productos_so {
@@ -415,27 +414,36 @@ model inventarios {
 }
 
 model sellin {
-  id                            Int         @id @default(autoincrement()) @db.UnsignedInt
-  fecha                         String      @db.VarChar(255)
-  codigo_cliente                String      @db.VarChar(255)
-  proid                         Int         @db.UnsignedInt
-  dia                           Int?        @db.UnsignedInt
-  mes                           Int?        @db.UnsignedInt
-  anio                          Int?        @db.UnsignedInt
-  metric_one                    Decimal     @db.Decimal(17,10)
-  metric_two                    Decimal     @db.Decimal(17,10)
-  metric_three                  Decimal     @db.Decimal(17,10)
-  metric_four                   Decimal?    @db.Decimal(17,10)
-  metric_five                   Decimal?    @db.Decimal(17,10)
-  metric_six                    Decimal?    @db.Decimal(17,10)
-  metric_seven                  Decimal?    @db.Decimal(17,10)
-  metric_eight                  Decimal?    @db.Decimal(17,10)
-  metric_nine                   Decimal?    @db.Decimal(17,10)
-  metric_teen                   Decimal?    @db.Decimal(17,10)
-  precio                        Decimal?    @db.Decimal(17,10)
-  created_at                    DateTime?   @default(now())
-  updated_at                    DateTime?   @db.Timestamp(0)
-  master_productos              master_productos?        @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "sellin_id_foreign")
+  id                            Int          @id @default(autoincrement()) @db.UnsignedInt
+  organizacion_ventas           String?      @db.VarChar(255)
+  canal_distribucion            String?      @db.VarChar(255)
+  sector                        String?      @db.VarChar(255)
+  cod_solicitante               String       @db.VarChar(255)
+  solicitante                   String       @db.VarChar(255)
+  cod_destinatario              String       @db.VarChar(255)
+  destinatario                  String       @db.VarChar(255)
+  familia_material              String?      @db.VarChar(255)
+  jerarquia_material            String?      @db.VarChar(255)
+  cod_material                  String       @db.VarChar(255)
+  material                      String       @db.VarChar(255)
+  cargo                         String?      @db.VarChar(255)
+  fecha                         String       @db.VarChar(255)
+  comuna                        String?      @db.VarChar(255)
+  kgnetofac                     Decimal?     @db.Decimal(17,10)
+  kgnetofac_medida              String?      @db.VarChar(255)
+  ubnetofac                     Decimal?     @db.Decimal(17,10)
+  ubnetofac_tipo                String?      @db.VarChar(255)
+  vend_destin                   Decimal?     @db.Decimal(17,10)
+  segm_materi                   String?      @db.VarChar(255)
+  msvalnetfa_pen                Decimal?     @db.Decimal(17,10)
+  msvalnetfa_pen_tipo           String?      @db.VarChar(255)
+  msvalnetfa_usd                Decimal?     @db.Decimal(17,10)
+  msvalnetfa_usd_tipo           String?      @db.VarChar(255)
+  dia                           Int?         @db.UnsignedInt
+  mes                           Int?         @db.UnsignedInt
+  anio                          Int?         @db.UnsignedInt
+  created_at                    DateTime?    @default(now())
+  updated_at                    DateTime?    @db.Timestamp(0)
 }
 
 model tprtipospromociones{
