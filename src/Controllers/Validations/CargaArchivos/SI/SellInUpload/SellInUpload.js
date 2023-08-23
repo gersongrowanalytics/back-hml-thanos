@@ -34,28 +34,21 @@ controller.ValSellInUpload = async (req, res) => {
 
         const { exists_data, message, status, workbook } = await controller.ValExistsData(file)
 
-        if(!exists_data){
-            res.status(status)
-            return res.json({
-                message,
-                notificaciones : []
-            })
-        }
+        if(exists_data){
+            const { messages_error, sell_in, borrar_data, data, codcli_esp, cods_dts } = await controller.ValCellsFile(workbook, usu)
 
-        const { messages_error, sell_in, borrar_data, data, codcli_esp, cods_dts } = await controller.ValCellsFile(workbook, usu)
+            messages_error_value = messages_error
+            borrar_data_value = borrar_data
+            data_value = data
 
-        messages_error_value = messages_error
-        borrar_data_value = borrar_data
-        data_value = data
+            messages = messages_error.flatMap(mess => mess.notificaciones.map(notif => notif.msg))
 
-        messages = messages_error.flatMap(mess => mess.notificaciones.map(notif => notif.msg))
-
-        if(!sell_in){
+            if(!sell_in){
+                error_api = true
+            }
+        }else{
             error_api = true
         }
-
-        aaa
-        
     }catch(error){
         console.log(error)
         if(error){

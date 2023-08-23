@@ -5,181 +5,179 @@ const MasterPreciosController = require('../../../Methods/CargaArchivos/MasterPr
 controller.ValMasterPreciosXlsx = async (req, res) => {
 
     const {
-        req_action_file
+        req_date_updated,
     } = req.body
 
     const file = req.files.master_precios
+    let error_api = false
+    let sheet_not_found = []
+    let error_log = []
+    let messages = []
+    let messages_error_value = []
+    let borrar_data_value = []
+    let data_value = []
 
     try{
 
-        const action_file = JSON.parse(req_action_file)
-        const { exists_data, message, status, workbook } = await controller.ValExistsData(file)
+        const { exists_data, message, status, workbook } = await controller.ValExistsData(file, sheet_not_found)
 
-        if(!exists_data){
-            res.status(status)
-            return res.json({
-                message,
-            })
-        }
-        
-        const { messages_error, add_master_price, data, dates_row } = await controller.ValCellsFile(workbook)
+        if(exists_data){
+            const data_sheet_1 = await controller.ValCellsFile(workbook, 'PLISTA B2B', req_date_updated)
 
-        const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg))
+            const data_sheet_2 = await controller.ValCellsFile(workbook, 'PLISTA Tradicional', req_date_updated)
 
-        if(!add_master_price){
-            res.status(500)
-            return res.json({
-                response        : false,
-                message         : 'Lo sentimos se encontraron algunas observaciones',
-                notificaciones  : messages_error,
-                messages_error  : messages
+            const messages_error = data_sheet_1.messages_error.concat(data_sheet_2.messages_error)
+            const dates_row = data_sheet_1.dates_row.concat(data_sheet_2.dates_row)
+            const data = data_sheet_1.data.concat(data_sheet_2.data)
 
-            })
-        }
+            messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg))
 
-        if(action_file.process_data){
-            MasterPreciosController.MetMasterPrecios(req, res, data, dates_row)
+            messages_error_value = messages_error
+            borrar_data_value = dates_row
+            data_value = data
+
+            if(!data_sheet_1.add_master_price || !data_sheet_2.add_master_price){
+                error_api = true
+            }
+
         }else{
-            MasterPreciosController.MetMasterPrecios(req, res, data, dates_row)
-            // res.status(200).json({
-            //     respuesta   : false,
-            //     message     : 'Se ha validado la data correctamente'
-            // })
+            error_api = true
         }
 
     }catch(error){
         console.log(error)
-        res.status(500)
-        res.json({
-            message : 'Lo sentimos hubo un error al momento de leer el archivo',
-            devmsg  : error
-        })
+        if(error){
+            error_api = true
+            error_log.push("Validacion Master Precios: "+error.toString())
+        } 
+    }finally{
+        if(error_api){
+            await MasterPreciosController.MetMasterPrecios(req, res, null, null, true, messages_error_value, error_log, sheet_not_found)
+
+            res.status(500)
+            return res.json({
+                respuesta        : false,
+                mensaje         : 'Lo sentimos se encontraron algunas observaciones',
+                notificaciones  : messages_error_value,
+                messages_error  : messages,
+                sheet_not_found : sheet_not_found,
+            })
+        }else{
+            MasterPreciosController.MetMasterPrecios(req, res, data_value, borrar_data_value, false, null, error_log, sheet_not_found)
+        }
     }
 }
 
-controller.ValCellsFile = async (workbook) => {
+controller.ValCellsFile = async (workbook, workbook_title, req_date_updated) => {
 
-    const rows      = XLSX.utils.sheet_to_json(workbook.Sheets['data'], {defval:""})
+    let range_excel
+    let columns_name
+    let num_row = 0
+
+    if(workbook_title == 'PLISTA B2B'){
+        range_excel = 9
+
+        columns_name = [
+            { value   : 0, name    : 'Categoria' },
+            { value   : 1, name    : 'Segmento' },
+            { value   : 2, name    : 'Codigo' },
+            { value   : 3, name    : 'Material' },
+            { value   : 4, name    : 'PAQ X BULTO' },
+            { value   : 5, name    : '020 DIST. LIMA' },
+            { value   : 6, name    : '022 DIST.  PROV.' },
+        ]
+
+        num_row = 10
+    }else{
+        range_excel = 15
+
+        columns_name = [
+            { value   : 0, name    : 'CATEGORIA' },
+            { value   : 1, name    : 'SEGMENTO' },
+            { value   : 2, name    : 'CODIGO' },
+            { value   : 3, name    : 'MATERIAL' },
+            { value   : 4, name    : 'PAQ X BULTO' },
+            { value   : 5, name    : '012CLIENTES TRADICIONAL - Mixtos' },
+        ]
+
+        num_row = 16
+    }
+
+    const rows      = XLSX.utils.sheet_to_json(workbook.Sheets[workbook_title], {defval:"", range: range_excel})
     let properties  = Object.keys(rows[0])
 
     let add_master_price = true
     let messages_error  = []
     const data          = []
     const dates_row     = []
-    const verify_cells  = [0, 1, 2, 3]
 
-    const columns_name = [
-        { value   : 0, name    : 'DATE' },
-        { value   : 1, name    : 'CG2' },
-        { value   : 2, name    : 'COD_MATERIAL' },
-        { value   : 3, name    : 'EXCHANGE_VALUE_1' },
-        { value   : 4, name    : 'EXCHANGE_VALUE_2' },
-        { value   : 5, name    : 'EXCHANGE_VALUE_3' },
-        { value   : 6, name    : 'EXCHANGE_VALUE_4' },
-        { value   : 7, name    : 'EXCHANGE_VALUE_5' }
-    ]
-
-    let num_row = 1
+    const [date_year, date_month] = req_date_updated.split('-')
 
     for await (const row of rows){
 
-        verify_cells.forEach(function(cell){
-            if(!row[properties[cell]]){
-                add_master_price = false
-                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[cell]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[cell]['name'], num_row, 'empty')
-            }
-        })
+        let type_gba = []
 
-        if(row[properties[3]]){
-
-            if(typeof row[properties[3]] != 'number'){
-                add_master_price = false
-                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[3]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[3]['name'], num_row, 'not number')
-            }
+        if(!row[properties[2]]){
+            add_master_price = false
+            let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[2]['name'])
+            controller.ValAddMessageLog(rows_error, messages_error, columns_name[2]['name'], num_row, 'empty', null, workbook_title)
         }
 
-        if(row[properties[4]]){
-
-            if(typeof row[properties[4]] != 'number'){
-                add_master_price = false
-                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[4]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[4]['name'], num_row, 'not number')
-            }
-        }
-
-        if(row[properties[5]]){
-
-            if(typeof row[properties[4]] != 'number'){
+        if(workbook_title == 'PLISTA B2B'){
+            if(!row[properties[5]]){
                 add_master_price = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[5]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[5]['name'], num_row, 'not number')
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[5]['name'], num_row, 'empty', null, workbook_title)
+            }else{
+                if(isNaN(row[properties[5]])){
+                    add_master_price = false
+                    let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[5]['name'])
+                    controller.ValAddMessageLog(rows_error, messages_error, columns_name[5]['name'], num_row, 'not number', null, workbook_title)
+                }else{
+                    type_gba.push({gba: "LIMA", precio: row[properties[5]]})
+                }
             }
-        }
-        if(row[properties[6]]){
-
-            if(typeof row[properties[4]] != 'number'){
+    
+            if(!row[properties[6]]){
                 add_master_price = false
                 let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[6]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[6]['name'], num_row, 'not number')
-            }
-        }
-
-        if(row[properties[7]]){
-
-            if(typeof row[properties[7]] != 'number'){
-                add_master_price = false
-                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[7]['name'])
-                controller.ValAddMessageLog(rows_error, messages_error, columns_name[7]['name'], num_row, 'not number')
-            }
-        }
-
-        let fecha = ''
-        let fechaJavaScript
-        let fecha_mes = ''     
-        let fecha_dia = ''
-        let fecha_anio = ''
-        let fecha_capturada
-        let exist_date
-        
-        if(row[properties[0]]){
-
-            if(typeof(row[properties[0]]) == 'number'){
-                fechaJavaScript = XLSX.SSF.parse_date_code(row[properties[0]]);
-                fecha_mes = fechaJavaScript.m <= 9 ?"0"+fechaJavaScript.m.toString() :fechaJavaScript.m.toString();
-                fecha_dia = fechaJavaScript.d <= 9 ?"0"+fechaJavaScript.d.toString() :fechaJavaScript.d.toString();
-                fecha_anio = fechaJavaScript.y.toString()
-                fecha_capturada = fechaJavaScript.y.toString()+"-"+fecha_mes.toString()
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[6]['name'], num_row, 'empty', null, workbook_title)
             }else{
-
-                fechaJavaScript = row[properties[0]].split('/')
-                fecha_mes = fechaJavaScript[1]
-                fecha_dia = fechaJavaScript[0]
-                fecha_anio = fechaJavaScript[2]
-                fecha_capturada = fecha_anio + "-" + fecha_mes
+                if(isNaN(row[properties[6]])){
+                    add_master_price = false
+                    let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[6]['name'])
+                    controller.ValAddMessageLog(rows_error, messages_error, columns_name[6]['name'], num_row, 'not number', null, workbook_title)
+                }else{
+                    type_gba.push({gba: "PROV", precio: row[properties[6]]})
+                }
             }
-
-            exist_date = dates_row.findIndex( dat => dat == fecha_capturada)
-            fecha = fecha_capturada + "-" + fecha_dia
-            
-            if(exist_date == -1){
-                dates_row.push(fecha_capturada)
+        }else{
+            if(!row[properties[5]]){
+                add_master_price = false
+                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[5]['name'])
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[5]['name'], num_row, 'empty', null, workbook_title)
+            }else{
+                if(isNaN(row[properties[5]])){
+                    add_master_price = false
+                    let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[5]['name'])
+                    controller.ValAddMessageLog(rows_error, messages_error, columns_name[5]['name'], num_row, 'not number', null, workbook_title)
+                }else{
+                    type_gba.push({gba: "MIXTO", precio: row[properties[5]]})
+                }
             }
         }
 
-        data.push({
-            date                        : row[properties[0]] ?  fecha : '',
-            cg_two                      : row[properties[1]] ?  row[properties[1]].toString() : '',
-            cod_material                : row[properties[2]] ?  row[properties[2]].toString()  : '',
-            ex_changue_one              : row[properties[3]] ?  row[properties[3]] : null,
-            ex_changue_two              : row[properties[4]] ?  row[properties[4]] : null,
-            ex_changue_three            : row[properties[5]] ?  row[properties[5]] : null,
-            ex_changue_four             : row[properties[6]] ?  row[properties[6]] : null,
-            ex_changue_five             : row[properties[7]] ?  row[properties[7]] : null,
-            dia                         : parseInt(fecha_dia),
-            mes                         : parseInt(fecha_mes),
-            anio                        : parseInt(fecha_anio),
+        type_gba.map(tgba => {
+            data.push({
+                codigo                      : row[properties[2]] ? row[properties[2]].toString() : null,
+                gba                         : tgba.gba,
+                tipo                        : workbook_title,
+                precio                      : tgba.precio,
+                fecha                       : "01-"+date_month.toString()+"-"+date_year.toString(),
+                dia                         : 1,
+                mes                         : parseInt(date_month),
+                anio                        : parseInt(date_year),
+            })
         })
 
         num_row = num_row + 1
@@ -188,7 +186,7 @@ controller.ValCellsFile = async (workbook) => {
     return { messages_error, add_master_price, data, dates_row }
 }
 
-controller.ValExistsData = async (file) => {
+controller.ValExistsData = async (file, sheet_not_found) => {
 
     let exists_data   = true
     let message       = ''
@@ -201,37 +199,45 @@ controller.ValExistsData = async (file) => {
     }
 
     const workbook = XLSX.read(file.data)
-    if(!workbook.Sheets['data']){
+    if(!workbook.Sheets['PLISTA B2B']){
         exists_data = false
         message     = 'Lo sentimos no se encontró la hoja data'
         status      = 500
+        sheet_not_found.push("No se encontro la hoja PLISTA B2B")
+    }
+
+    if(!workbook.Sheets['PLISTA Tradicional']){
+        exists_data = false
+        message     = 'Lo sentimos no se encontró la hoja data'
+        status      = 500
+        sheet_not_found.push("No se encontro la hoja PLISTA Tradicional")
     }
 
     return { exists_data, message, status, workbook: workbook ? workbook : null }
 }
 
-controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row, type, name_dts = null) => {
+controller.ValAddMessageLog = (rows_error, messages_error, name_column, num_row, type, name_dts = null, title_sheet) => {
 
     let msg_log = ''
 
     switch (type) {
         case 'empty':
-            msg_log = `Lo sentimos, algunos códigos de ${name_column} se encuentran vacios, recordar que este campo es obligatorio`
+            msg_log = `Lo sentimos, algunos códigos de la hoja ${title_sheet} de ${name_column} se encuentran vacios, recordar que este campo es obligatorio`
             break;
         case 'not number':
-            msg_log = `Lo sentimos, algunos de los ${name_column} no son númericos`
+            msg_log = `Lo sentimos, en la hoja ${title_sheet} algunos de los ${name_column} no son númericos`
             break;
         case 'format invalid':
-            msg_log = `Lo sentimos, algunos de los ${name_column} no tienen el formato válido`
+            msg_log = `Lo sentimos, en la hoja ${title_sheet} algunos de los ${name_column} no tienen el formato válido`
             break;
         case 'inconsistent data':
             msg_log = `Lo sentimos, algunos precios totales no cuadran con las cantidades y precios unitarios`
             break;
         case 'distributor not found':
-            msg_log = `El código ${name_dts} no se encuentra en la maestra distribuidoras`
+            msg_log = `El código ${name_dts} de la hoja ${title_sheet} no se encuentra en la maestra distribuidoras`
             break;
         default:
-            msg_log = `Lo sentimos, el tipo de dato para ${name_column} es inválido`
+            msg_log = `Lo sentimos, el tipo de dato para ${name_column} de la hoja ${title_sheet} es inválido`
     }
 
     if(rows_error == -1){
