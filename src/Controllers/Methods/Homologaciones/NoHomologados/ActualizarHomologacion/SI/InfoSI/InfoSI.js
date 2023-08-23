@@ -91,6 +91,8 @@ controller.MetObtenerInfoSI = async (req, res) => {
 
         const total_max_msvalnetfa = parseFloat(max_msvalnetfa) / parseFloat(max_ubnetofac)
         const total_min_msvalnetfa = parseFloat(min_msvalnetfa) / parseFloat(min_ubnetofac)
+
+        await prisma.$disconnect()
         
         res.status(200)
             .json({
@@ -105,6 +107,7 @@ controller.MetObtenerInfoSI = async (req, res) => {
 
     } catch (error) {
         console.log(error)
+        await prisma.$disconnect()
         res.status(500)
         .json({
             devmsg      : error,

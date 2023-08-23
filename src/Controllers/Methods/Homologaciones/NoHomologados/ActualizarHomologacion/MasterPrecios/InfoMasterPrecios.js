@@ -1,11 +1,12 @@
 const controller = {}
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 
 controller.MetInfoMasterPrecios = async (req, res) => {
 
     const {
         req_cod_material,
+        req_clients_zona,
         req_anio,
         req_mes,
         req_dia,
@@ -16,84 +17,69 @@ controller.MetInfoMasterPrecios = async (req, res) => {
     
     try {
 
-        let consulta    = {}
-        let data_filtro = []
-        let data_final  = []
-        let name_chg = ['ex_changue_one','ex_changue_two','ex_changue_three','ex_changue_four','ex_changue_five']
+        let data_price = ['data_price_one','data_price_two']
+        let data_final = []
 
-        if(req_anio && req_type_year){
-
-            let consulta_year = []
+        let where_master_price = {}
+        if(req_type_year){
             if(req_anio.length > 0){
-                req_anio.forEach( year => {
-                    consulta_year.push({ AND : [ { anio : year }, { cod_material : req_cod_material} ] })
-                });
-            }else{
-                consulta_year.push({ AND : [ { cod_material : req_cod_material} ] })
+                where_master_price = { anio: { in: req_anio} } 
             }
-            consulta = {...consulta, OR : consulta_year}
         }
 
-        if(req_mes && req_type_month){
-
-            let consulta_month = []
-            if(req_mes.length > 0){
-                req_mes.forEach( mes => {
-                    consulta_month.push({ AND : [ { anio : mes.year }, { mes : mes.month +1 }, { cod_material : req_cod_material} ] })
-                });
-            }else{
-                consulta_month.push({ AND : [ { cod_material : req_cod_material} ] })
-            }
-
-            consulta = {...consulta, OR : consulta_month}
+        if(req_type_month){
+            const month_data = req_mes.map(m => m.month + 1)
+            const year_data = req_mes.map(m => m.year)
+            where_master_price = { anio: { in: year_data }, mes: { in: month_data } } 
         }
 
-        if(req_dia && req_type_day){
-
-            let consulta_days = []
-            if(req_dia.length > 0){
-                req_dia.forEach( days => {
-                    consulta_days.push({ AND : [ { anio : days.year }, { mes : days.month }, { dia :  days.day}, { cod_material : req_cod_material} ] })
-                });
-            }else{
-                consulta_days.push({ AND : [ { cod_material : req_cod_material} ] })
-            }
-            consulta = {...consulta, OR : consulta_days}
+        if(req_type_day){
+            const day_data = req_dia.map(m => parseInt(m.days))
+            const month_data = req_dia.map(m => m.month + 1)
+            const year_data = req_dia.map(m => m.year)
+            where_master_price = { anio: { in: year_data }, mes: { in: month_data } } 
         }
 
-        data_filtro = await prisma.master_precios.aggregate({
-            _avg :{
-                ex_changue_one      : true,
-                ex_changue_two      : true,
-                ex_changue_three    : true,
-                ex_changue_four     : true,
-                ex_changue_five     : true,
+        if(req_clients_zona == "LIMA"){
+            where_master_price = { ...where_master_price, gba: "LIMA" }
+        }else if(req_clients_zona == "PROVINCIA"){
+            where_master_price = { ...where_master_price, gba: "PROV" }
+        }
+
+        const get_master_price = await prisma.master_precios.findMany({
+            select: {
+                id: true,
+                precio: true,
             },
-            _max: {
-                ex_changue_one      : true,
-                ex_changue_two      : true,
-                ex_changue_three    : true,
-                ex_changue_four     : true,
-                ex_changue_five     : true,
-              },
-            _min: {
-                ex_changue_one      : true,
-                ex_changue_two      : true,
-                ex_changue_three    : true,
-                ex_changue_four     : true,
-                ex_changue_five     : true,
+            where: { 
+                codigo: req_cod_material,
+                ...where_master_price,
             },
-            where : consulta
         })
 
-        name_chg.forEach( chg => {
+        let contador = 0
+        let master_price = 0
+        const master_price_array = get_master_price.map(price => parseFloat(price.precio))
+
+        get_master_price.map(m_pri => {
+            master_price = master_price + parseFloat(m_pri.precio)
+            contador = contador + 1
+        })
+
+        const max_price = Math.max(...master_price_array)
+        const min_price = Math.min(...master_price_array)
+        const promedio_price = master_price / contador
+
+        data_price.map((pr) => {
             data_final.push({
-                nombre      : chg,
-                promedio    : data_filtro['_avg'][chg],
-                maximo      : data_filtro['_max'][chg],
-                minimo      : data_filtro['_min'][chg],
+                nombre      : pr,
+                promedio    : promedio_price ? promedio_price : 0,
+                maximo      : max_price ? max_price : 0,
+                minimo      : min_price ? min_price : 0,
             })
         })
+
+        await prisma.$disconnect()
 
         res.status(200)
             .json({
@@ -104,6 +90,7 @@ controller.MetInfoMasterPrecios = async (req, res) => {
 
     } catch (error) {
         console.log(error)
+        await prisma.$disconnect()
         res.status(500)
         .json({
             devmsg      : error,
