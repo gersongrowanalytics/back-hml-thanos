@@ -15,6 +15,16 @@ controller.MetMostrarUniqueNoHomologados = async (req, res) => {
                         codigo_dt : true
                     }
                 },
+                masterclientes_grow: {
+                    select: {
+                        id: true,
+                        zona: true,
+                        territorio: true,
+                        cliente_hml: true,
+                        codigo_destinatario: true,
+                        sucursal_hml: true,
+                    }
+                },
                 id : true,
                 m_dt_id : true,
                 codigo_distribuidor : true,

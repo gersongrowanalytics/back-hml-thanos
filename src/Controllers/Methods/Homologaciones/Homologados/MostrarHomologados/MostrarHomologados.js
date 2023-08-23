@@ -217,6 +217,7 @@ controller.MetMostrarHomologados = async (req, res) => {
                 },
                 masterclientes_grow : {
                     select : {
+                        id: true,
                         cliente_hml: true,
                         territorio : true,
                         codigo_destinatario : true,

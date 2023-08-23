@@ -32,6 +32,7 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
                         territorio : true, // En el front se muestra región, validar con Jazmin
                         codigo_destinatario : true,
                         sucursal_hml : true,
+                        zona: true,
                     }
                 },
                 master_productos_grow : {

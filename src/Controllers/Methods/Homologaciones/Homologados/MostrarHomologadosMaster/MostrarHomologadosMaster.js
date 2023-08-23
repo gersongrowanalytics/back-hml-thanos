@@ -117,10 +117,32 @@ controller.MetObtenerHomologadosMaster = async ( req, res ) => {
 
         // }
 
+        const get_data_hml = [
+            {
+                "cod_unidad_medida_hml": "UND",
+                "unidad_medida_hml": "UNIDAD",
+            },
+            {
+                "cod_unidad_medida_hml": "CJ",
+                "unidad_medida_hml":  "CAJAS",
+            },
+            {
+                "cod_unidad_medida_hml": "BUL",
+                "unidad_medida_hml": "BULTOS",
+            },
+            {
+                "cod_unidad_medida_hml": "OTROS",
+                "unidad_medida_hml": "OTROS",
+            }
+        ]
+
+        get_data_hml.map((m, index) => get_data_hml[index]['key'] = index)
+
         res.status(200).json({
             response    : true,
             message     : 'Información de producto no homologado obtenida con éxito',
-            data        : mpso
+            data        : mpso,
+            data_hml    : get_data_hml,
         })
 
     }catch(err){

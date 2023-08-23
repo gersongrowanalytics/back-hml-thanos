@@ -54,7 +54,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
 
         req_datos_homologados = dataNoRepetida
 
-        for await (const dhm of req_datos_homologados ){
+        for await (const dhm of req_datos_homologados){
 
             const prod_hml = await prisma.master_productos_grow.findFirst({
                 where : {
@@ -69,6 +69,8 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                 usuid           : usu.usuid
             }
 
+            const find_product_so = req_select_product_so.find(product => product.id == dhm.req_id_copia)
+
             if(dhm.req_combo){
                 data_mpso = { ...data_mpso,
                                 combo                   : dhm.req_combo, 
@@ -80,7 +82,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                                 desde                   : moment(req_rango_fecha.desde).format('YYYY-MM-DD').toString(),
                                 hasta                   : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
                                 cod_unidad_medida   : dhm.req_cod_unidad_medida,
-                                pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.codigo_material
+                                pk_venta_so_hml         :  find_product_so.pk_venta_so + prod_hml.codigo_material
                             }
             }
             if(dhm.req_id){
@@ -94,23 +96,24 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                 audpk.push("master_productos_so-"+updated_product_so.id)
             }else{
                 if(dhm.req_combo){
-
+                    console.log(find_product_so.pk_venta_so);
+                    console.log(prod_hml.codigo_material);
                     const created_product_so = await prisma.master_productos_so.create({
                         data : {
                             // proid : dhm.req_id_producto_homologado,
                             m_pro_grow : dhm.req_id_producto_homologado,
                             // m_dt_id : req_select_product_so.m_dt_id,
-                            m_cl_grow : req_select_product_so.masterclientes_grow.id,
-                            pk_venta_so : req_select_product_so.pk_venta_so,
-                            pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.codigo_material,
-                            pk_extractor_venta_so : req_select_product_so.pk_extractor_venta_so,
-                            codigo_distribuidor : req_select_product_so.codigo_distribuidor,
-                            codigo_producto : req_select_product_so.codigo_producto,
+                            m_cl_grow : find_product_so.masterclientes_grow.id,
+                            pk_venta_so : find_product_so.pk_venta_so,
+                            pk_venta_so_hml         :  find_product_so.pk_venta_so + prod_hml.codigo_material,
+                            pk_extractor_venta_so : find_product_so.pk_extractor_venta_so,
+                            codigo_distribuidor : find_product_so.codigo_distribuidor,
+                            codigo_producto : find_product_so.codigo_producto,
                             cod_unidad_medida : dhm.req_cod_unidad_medida,
-                            unidad_medida : req_select_product_so.unidad_medida,
-                            descripcion_producto : req_select_product_so.descripcion_producto,
+                            unidad_medida : find_product_so.unidad_medida,
+                            descripcion_producto : find_product_so.descripcion_producto,
                             precio_unitario : 0, // EVALUAR
-                            ruc : req_select_product_so.ruc,
+                            ruc : find_product_so.ruc,
                             desde : moment(req_rango_fecha.desde).format('YYYY-MM-DD').toString(),
                             hasta : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
                             s_ytd : 0,
@@ -118,7 +121,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             unidad_minima : dhm.req_unidad_minima_homologado.toString(),
                             combo : dhm.req_combo,
                             cod_unidad_medida_hml   : dhm.req_cod_unidad_medida_homologado,
-                            unidad_medida_hml       : dhm.req_unidad_medida_homologado,
+                            unidad_medida_hml       : dhm.req_unidad_medida_homologado, 
                             coeficiente             : dhm.req_coeficiente,
                             unidad_minima_unitaria  : dhm.req_unidad_minima_unitario,
                             bonificado              : dhm.req_bonificado,
@@ -134,17 +137,17 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             // proid : dhm.req_id_producto_homologado,
                             m_pro_grow : dhm.req_id_producto_homologado,
                             // m_dt_id : req_select_product_so.m_dt_id,
-                            m_cl_grow : req_select_product_so.masterclientes_grow.id,
-                            pk_venta_so : req_select_product_so.pk_venta_so,
-                            pk_venta_so_hml         :  req_select_product_so.pk_venta_so + prod_hml.codigo_material,
-                            pk_extractor_venta_so : req_select_product_so.pk_extractor_venta_so,
-                            codigo_distribuidor : req_select_product_so.codigo_distribuidor,
-                            codigo_producto : req_select_product_so.codigo_producto,
+                            m_cl_grow : find_product_so.masterclientes_grow.id,
+                            pk_venta_so : find_product_so.pk_venta_so,
+                            pk_venta_so_hml         :  find_product_so.pk_venta_so + prod_hml.codigo_material,
+                            pk_extractor_venta_so : find_product_so.pk_extractor_venta_so,
+                            codigo_distribuidor : find_product_so.codigo_distribuidor,
+                            codigo_producto : find_product_so.codigo_producto,
                             cod_unidad_medida : dhm.req_cod_unidad_medida,
-                            unidad_medida : req_select_product_so.unidad_medida,
-                            descripcion_producto : req_select_product_so.descripcion_producto,
+                            unidad_medida : find_product_so.unidad_medida,
+                            descripcion_producto : find_product_so.descripcion_producto,
                             precio_unitario : 0, // EVALUAR
-                            ruc : req_select_product_so.ruc,
+                            ruc : find_product_so.ruc,
                             desde : moment(req_rango_fecha.desde).format('YYYY-MM-DD').toString(),
                             hasta : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
                             s_ytd : 0,

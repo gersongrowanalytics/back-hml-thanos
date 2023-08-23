@@ -90,7 +90,9 @@ controller.MetDescargarHomologados = async (req, res) => {
                     // "PrecioUnitario": pso.precio_unitario ? pso.precio_unitario : '',
                     // "PrecioTotalSinIGV": '',
                     "codigo_producto_maestro": cod_producto_obj,
-                    "unidad_minima": pso.unidad_minima ? pso.unidad_minima : '',
+                    "unidad_minima": cod_producto_obj == "OTROS" 
+                                        ? '1' 
+                                        : pso.unidad_minima ? pso.unidad_minima : '',
                     "fecha_inicial": pso.desde ? pso.desde : '',
                     // "ProductoHML": nomb_producto_obj,
 
