@@ -125,7 +125,7 @@ controller.MetHomologaciones = async (req, res, ex_data) => {
                     usuid : 2,
                     cod_unidad_medida : dat.cod_und,
                     unidad_medida : dat.und,
-                    unidad_minima : dat.unidad_minima
+                    unidad_minima : dat.unidad_minima.toString()
                 })
 
                 await prisma.master_productos_so.createMany({
