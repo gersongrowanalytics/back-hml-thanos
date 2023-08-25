@@ -136,6 +136,17 @@ controller.MetActualizarMClientes = async ( req, res ) => {
             },
         });
 
+        for await(const dat of data){
+            await prisma.master_productos_so.update({
+                where: {
+                    id : dat.id
+                },
+                data: {
+                    codigo_distribuidor : dat.masterclientes_grow.codigo_destinatario
+                }
+            })
+        }
+
     }catch(error){
         console.log(error)
         res.status(500)
