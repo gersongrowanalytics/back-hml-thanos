@@ -27,25 +27,26 @@ controller.MetHomologaciones = async (req, res, ex_data) => {
 
         for await(const dat of ex_data){
             
+            dat.cod_distribuidor = dat.cod_distribuidor.toString()
             dat.cod_producto_maestro = dat.cod_producto_maestro.toString()
             dat.cod_producto_distribuidor = dat.cod_producto_distribuidor.toString()
 
             // ************************************************************************************
             // VALIDAR SI EXISTE EL CODIGO DE CLIENTE GROW
             // ************************************************************************************
-            cli_grow = arr_cli_grow.find(cli_grow => cli_grow.codigo_destinatario == dat.cod_producto_distribuidor)
+            cli_grow = arr_cli_grow.find(cli_grow => cli_grow.codigo_destinatario == dat.cod_distribuidor)
 
             if(!cli_grow){
                 cli_grow = await prisma.masterclientes_grow.findFirst({
                     where : {
-                        codigo_destinatario : dat.cod_producto_distribuidor
+                        codigo_destinatario : dat.cod_distribuidor
                     }
                 })
 
                 if(!cli_grow){
                     
-                    if(!obs_cli_grow.find(ob_cli_grow => ob_cli_grow == dat.cod_producto_distribuidor)){
-                        obs_cli_grow.push(dat.cod_producto_distribuidor)
+                    if(!obs_cli_grow.find(ob_cli_grow => ob_cli_grow == dat.cod_distribuidor)){
+                        obs_cli_grow.push(dat.cod_distribuidor)
                     }
                     
                 }else{
