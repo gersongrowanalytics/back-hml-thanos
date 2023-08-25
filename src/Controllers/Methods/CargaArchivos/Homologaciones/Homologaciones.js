@@ -30,6 +30,7 @@ controller.MetHomologaciones = async (req, res, ex_data) => {
             dat.cod_distribuidor = dat.cod_distribuidor.toString()
             dat.cod_producto_maestro = dat.cod_producto_maestro.toString()
             dat.cod_producto_distribuidor = dat.cod_producto_distribuidor.toString()
+            dat.unidad_minima = dat.unidad_minima.toString()
 
             // ************************************************************************************
             // VALIDAR SI EXISTE EL CODIGO DE CLIENTE GROW
@@ -125,7 +126,7 @@ controller.MetHomologaciones = async (req, res, ex_data) => {
                     usuid : 2,
                     cod_unidad_medida : dat.cod_und,
                     unidad_medida : dat.und,
-                    unidad_minima : dat.unidad_minima.toString()
+                    unidad_minima : dat.unidad_minima
                 })
 
                 await prisma.master_productos_so.createMany({
