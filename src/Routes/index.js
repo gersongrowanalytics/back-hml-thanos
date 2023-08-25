@@ -26,8 +26,10 @@ const MigrarInventario = require('../Controllers/Methods/Reprocesos/BDAthena/Mig
 const routes_actualizacion = require('./Actualizaciones/Actualizaciones')
 
 const publicRoutes = express.Router();
+
 publicRoutes.post('/athena-ventas', MigrarVentas.MetMigrarVentas)
 publicRoutes.post('/athena-inventario', MigrarInventario.MetMigrarInventario)
+
 publicRoutes.post('/log-in', Login.ValLogin)
 protectedRoutes.get('/validation-user', UserValidation.ValUserValidation)
 protectedRoutes.get('/log-out', LogOut.ValLogOut)

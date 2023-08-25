@@ -89,22 +89,23 @@ controller.ValCellsFile = async (workbook) => {
         { value   : 4, name    : 'nombre_producto_distribuidor' },
         { value   : 5, name    : 'codigo_producto_maestro' },
         { value   : 6, name    : 'fecha_inicial' },
-        { value   : 7, name    : 'fecha_final' },
-        { value   : 8, name    : 'es_homologado' },
-        { value   : 9, name    : 'status_actualizacion' },
+        { value   : 8, name    : 'es_homologado' }, 
+        { value   : 10, name   : 'cod_und' },
+        { value   : 11, name   : 'und' }
     ]
 
     const columns = {
         ex_cod_distribuidor : 'codigo_distribuidor',
-        ex_cod_grow             : 'Codigo Grow',
-        ex_nom_distribuidor     : 'nombre_distribuidor',
-        ex_cod_prod_dist        : 'codigo_producto_distribuidor',
-        ex_nom_prod_dist        : 'nombre_producto_distribuidor',
-        ex_cod_prod_maestro     : 'codigo_producto_maestro',
-        ex_fecha_inicial        : 'fecha_inicial',
-        ex_fecha_final          : 'fecha_final',
-        ex_homologado           : 'es_homologado',
-        ex_status_actualizacion : 'status_actualizacion',
+        ex_nom_distribuidor : 'nombre_distribuidor',
+        ex_cod_und          : 'cod_und',
+        ex_und              : 'und',
+
+        ex_cod_prod_dist    : 'codigo_producto_distribuidor',
+        ex_nom_prod_dist    : 'nombre_producto_distribuidor',
+        ex_und_hml          : 'unidad_medida_hml',
+        ex_cod_prod_maestro : 'codigo_producto_maestro',
+        ex_unidad_minima    : 'unidad_minima',
+        ex_fecha_inicial    : 'fecha_inicial'
     }
 
     let num_row = 1
@@ -118,69 +119,69 @@ controller.ValCellsFile = async (workbook) => {
 
         if(!row[properties[1]]){
             // add_list_approvals = false
-            let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_cod_grow)
-            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_grow, num_row, 'empty')
-        }
-
-        if(!row[properties[2]]){
-            // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_nom_distribuidor)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_nom_distribuidor, num_row, 'empty')
         }
 
+        if(!row[properties[2]]){
+            // add_list_approvals = false
+            let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_cod_und)
+            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_und, num_row, 'empty')
+        }
+
         if(!row[properties[3]]){
             // add_list_approvals = false
-            let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_cod_prod_dist)
-            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_prod_dist, num_row, 'empty')
+            let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_und)
+            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_und, num_row, 'empty')
         }
 
         if(!row[properties[4]]){
+            // add_list_approvals = false
+            let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_cod_prod_dist)
+            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_prod_dist, num_row, 'empty')
+        }
+
+        if(!row[properties[5]]){
             // add_list_approvals = false
             let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_nom_prod_dist)
             controller.ValAddMessageLog(rows_error, messages_error, columns.ex_nom_prod_dist, num_row, 'empty')
         }
 
-        if(!row[properties[5]]){
-            // add_list_approvals = false
-            let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_cod_prod_maestro)
-            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_prod_maestro, num_row, 'empty')
-        }
-
         if(!row[properties[6]]){
             // add_list_approvals = false
-            let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_fecha_inicial)
-            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_fecha_inicial, num_row, 'empty')
+            let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_und_hml)
+            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_und_hml, num_row, 'empty')
         }
+
         if(!row[properties[7]]){
             // add_list_approvals = false
-            let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_fecha_final)
-            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_fecha_final, num_row, 'empty')
+            let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_cod_prod_maestro)
+            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_prod_maestro, num_row, 'empty')
         }
 
         if(!row[properties[8]]){
             // add_list_approvals = false
-            let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_homologado)
-            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_homologado, num_row, 'empty')
+            let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_unidad_minima)
+            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_unidad_minima, num_row, 'empty')
         }
 
         if(!row[properties[9]]){
             // add_list_approvals = false
-            let rows_error  = messages_error.findIndex(mes => mes.columna == columns.ex_status_actualizacion)
-            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_status_actualizacion, num_row, 'empty')
+            let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_fecha_inicial)
+            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_fecha_inicial, num_row, 'empty')
         }
 
-
         data.push({
-            cod_distribuidor                 : row[properties[0]] ? row[properties[0]] : '',
-            cod_grow                         : row[properties[1]] ? row[properties[1]] : '',
-            nombre_distribuidor              : row[properties[2]] ? row[properties[2]] : '',
-            cod_producto_distribuidor        : row[properties[3]] ? row[properties[3]] : '',
-            nom_producto_distribuidor        : row[properties[4]] ? row[properties[4]] : '',
-            cod_producto_maestro             : row[properties[5]] ? row[properties[5]] : '',
-            fecha_inicial                    : row[properties[6]] ? row[properties[6]] : '',
-            fecha_final                      : row[properties[7]] ? row[properties[7]] : '',
-            homologado                       : row[properties[8]] ? row[properties[8]] : '',
-            status_actualizacion             : row[properties[9]] ? row[properties[9]] : '',
+            cod_distribuidor          : row[properties[0]] ? row[properties[0]] : '',
+            nombre_distribuidor       : row[properties[1]] ? row[properties[1]] : '',
+            cod_und                   : row[properties[2]] ? row[properties[2]] : '',
+            und                       : row[properties[3]] ? row[properties[3]] : '',
+            cod_producto_distribuidor : row[properties[4]] ? row[properties[4]] : '',
+            nom_producto_distribuidor : row[properties[5]] ? row[properties[5]] : '',
+            cod_und_hml               : row[properties[6]] ? row[properties[6]] : '',
+            cod_producto_maestro      : row[properties[7]] ? row[properties[7]] : '',
+            unidad_minima             : row[properties[8]] ? row[properties[8]] : '',
+            fecha_inicial             : row[properties[9]] ? row[properties[9]] : '',
         })
 
         num_row = num_row + 1

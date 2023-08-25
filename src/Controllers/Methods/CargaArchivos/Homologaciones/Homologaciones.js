@@ -86,19 +86,51 @@ controller.MetHomologaciones = async (req, res, ex_data) => {
             // ************************************************************************************
 
 
-
             if(cli_grow && pro_grow){
 
                 const n_pk_venta_so = dat.cod_distribuidor + dat.cod_producto_distribuidor
-                const n_pk_extractor_venta_so = n_pk_venta_so + "NA" + "NA"
+                const n_pk_extractor_venta_so = n_pk_venta_so + dat.cod_und + dat.und
                 const n_pk_venta_so_hml = n_pk_venta_so + pro_grow.codigo_material
+
+                const codigo_und_hml = dat.cod_und_hml.slice(0, 3);
+
+                await prisma.master_productos_so.deleteMany({
+                    where: {
+                        codigo_distribuidor : dat.cod_distribuidor,
+                        codigo_producto : dat.cod_producto_distribuidor,
+                        pk_extractor_venta_so : n_pk_venta_so+codigo_und_hml+dat.cod_und_hml
+                    }
+                })
 
                 
                 if(!arr_pro_hml.find(pro_hml => pro_hml == n_pk_venta_so_hml)){
-                    arr_pro_hml.push(n_pk_venta_so_hml)
+                    arr_pro_hml.push(n_pk_venta_so_hml)   
+                }else{
+                    obs_pro_hml.push(n_pk_venta_so_hml)
+                }
 
+                data.push({
+                    codigo_distribuidor : dat.cod_distribuidor,
+                    m_pro_grow : pro_grow.id,
+                    m_cl_grow : cli_grow.id,
+                    codigo_producto : dat.cod_producto_distribuidor,
+                    descripcion_producto : dat.nom_producto_distribuidor,
+                    desde: dat.fecha_inicial,
+                    pk_venta_so : n_pk_venta_so,
+                    pk_extractor_venta_so : n_pk_extractor_venta_so,
+                    pk_venta_so_hml : n_pk_venta_so_hml,
+                    cod_unidad_medida_hml : dat.cod_und_hml,
+                    unidad_medida_hml : dat.cod_und_hml,
+                    homologado: true,
+                    usuid : 2,
+                    cod_unidad_medida : dat.cod_und,
+                    unidad_medida : dat.und,
+                    unidad_minima : dat.unidad_minima
+                })
 
-                    data.push({
+                await prisma.master_productos_so.createMany({
+                    data: {
+                        codigo_distribuidor : dat.cod_distribuidor,
                         m_pro_grow : pro_grow.id,
                         m_cl_grow : cli_grow.id,
                         codigo_producto : dat.cod_producto_distribuidor,
@@ -106,24 +138,17 @@ controller.MetHomologaciones = async (req, res, ex_data) => {
                         desde: dat.fecha_inicial,
                         pk_venta_so : n_pk_venta_so,
                         pk_extractor_venta_so : n_pk_extractor_venta_so,
-                        pk_venta_so_hml : n_pk_venta_so_hml
-                    })
+                        pk_venta_so_hml : n_pk_venta_so_hml,
+                        cod_unidad_medida_hml : dat.cod_und_hml,
+                        unidad_medida_hml : dat.cod_und_hml,
+                        homologado: true,
+                        usuid : 2,
+                        cod_unidad_medida : dat.cod_und,
+                        unidad_medida : dat.und,
+                        unidad_minima : dat.unidad_minima
+                    }
+                })
 
-                    await prisma.master_productos_so.createMany({
-                        data: {
-                            m_pro_grow : pro_grow.id,
-                            m_cl_grow : cli_grow.id,
-                            codigo_producto : dat.cod_producto_distribuidor,
-                            descripcion_producto : dat.nom_producto_distribuidor,
-                            desde: dat.fecha_inicial,
-                            pk_venta_so : n_pk_venta_so,
-                            pk_extractor_venta_so : n_pk_extractor_venta_so,
-                            pk_venta_so_hml : n_pk_venta_so_hml
-                        }
-                    })
-                }else{
-                    obs_pro_hml.push(n_pk_venta_so_hml)
-                }
 
             }
 
