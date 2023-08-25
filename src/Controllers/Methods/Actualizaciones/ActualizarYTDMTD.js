@@ -113,4 +113,52 @@ controller.MetActualizarYTDMTDBK = async ( req, res, ex_data ) => {
     }
 }
 
+controller.MetActualizarMClientes = async ( req, res ) => {
+
+    let data = []
+
+    try{
+        data = await prisma.master_productos_so.findMany({
+            select: {
+                id: true,
+                codigo_producto: true,
+                codigo_distribuidor: true,
+                codigo_destinatario: true,
+                m_cl_grow: true,
+            },
+            where: {
+                codigo_distribuidor: null,
+            },
+            include: {
+                masterclientes_grow: {
+                    select: {
+                        id: true,
+                        m_cl_grow: true,
+                    },
+                },
+            },
+        });
+
+    }catch(error){
+        console.log(error)
+        res.status(500)
+        return res.json({
+            message : 'Lo sentimos hubo un error al momento de actualizar los registros',
+            devmsg  : error
+        })
+    }finally{
+
+        await prisma.$disconnect();
+        res.status(200)
+        return res.json({
+            message     : 'Se han actualizado correctamente',
+            response    : true,
+            data : data
+        })
+    }
+  
+    
+
+}
+
 module.exports = controller

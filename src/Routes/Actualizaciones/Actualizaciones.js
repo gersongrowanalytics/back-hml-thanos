@@ -16,6 +16,7 @@ const protectedRoutes = express.Router();
 // RUTAS ACTUALIZACION YTD MTD
 // **** **** **** **** **** //
 protectedRoutes.get('/actualizar-ytd-mtd', MetActYTDMTD.MetActualizarYTDMTD)
+protectedRoutes.get('/actualizar-clientes-products-so', MetActYTDMTD.MetActualizarMClientes)
 
 router.use('/actualizaciones', protectedRoutes);
 
