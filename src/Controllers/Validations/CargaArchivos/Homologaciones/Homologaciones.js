@@ -102,8 +102,8 @@ controller.ValCellsFile = async (workbook) => {
 
         ex_cod_prod_dist    : 'codigo_producto_distribuidor',
         ex_nom_prod_dist    : 'nombre_producto_distribuidor',
-        ex_und_hml          : 'unidad_medida_hml',
         ex_cod_prod_maestro : 'codigo_producto_maestro',
+        ex_und_hml          : 'unidad_medida_hml',
         ex_unidad_minima    : 'unidad_minima',
         ex_fecha_inicial    : 'fecha_inicial'
     }
@@ -149,14 +149,14 @@ controller.ValCellsFile = async (workbook) => {
 
         if(!row[properties[6]]){
             // add_list_approvals = false
-            let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_und_hml)
-            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_und_hml, num_row, 'empty')
+            let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_cod_prod_maestro)
+            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_prod_maestro, num_row, 'empty')
         }
 
         if(!row[properties[7]]){
             // add_list_approvals = false
-            let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_cod_prod_maestro)
-            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_cod_prod_maestro, num_row, 'empty')
+            let rows_error  = messages_error.findIndex(mes => mes.columna ==  columns.ex_und_hml)
+            controller.ValAddMessageLog(rows_error, messages_error, columns.ex_und_hml, num_row, 'empty')
         }
 
         if(!row[properties[8]]){
@@ -178,8 +178,8 @@ controller.ValCellsFile = async (workbook) => {
             und                       : row[properties[3]] ? row[properties[3]] : '',
             cod_producto_distribuidor : row[properties[4]] ? row[properties[4]] : '',
             nom_producto_distribuidor : row[properties[5]] ? row[properties[5]] : '',
-            cod_und_hml               : row[properties[6]] ? row[properties[6]] : '',
-            cod_producto_maestro      : row[properties[7]] ? row[properties[7]] : '',
+            cod_producto_maestro      : row[properties[6]] ? row[properties[6]] : '',
+            cod_und_hml               : row[properties[7]] ? row[properties[7]] : '',
             unidad_minima             : row[properties[8]] ? row[properties[8]] : '',
             fecha_inicial             : row[properties[9]] ? row[properties[9]] : '',
         })
