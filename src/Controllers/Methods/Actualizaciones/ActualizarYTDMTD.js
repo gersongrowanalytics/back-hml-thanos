@@ -123,19 +123,16 @@ controller.MetActualizarMClientes = async ( req, res ) => {
                 id: true,
                 codigo_producto: true,
                 codigo_distribuidor: true,
-                codigo_destinatario: true,
                 m_cl_grow: true,
+                masterclientes_grow: {
+                    select: {
+                        id : true,
+                        codigo_destinatario : true
+                    }
+                }
             },
             where: {
                 codigo_distribuidor: null,
-            },
-            include: {
-                masterclientes_grow: {
-                    select: {
-                        id: true,
-                        m_cl_grow: true,
-                    },
-                },
             },
         });
 
