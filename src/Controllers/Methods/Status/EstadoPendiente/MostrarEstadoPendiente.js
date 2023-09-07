@@ -245,12 +245,16 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
         
         let date_deadline = new Date()
         const date_lost_day = date_deadline.setDate(date_deadline.getDate() - 1)
-        let espdiasretrasomcl = moment().diff(moment(date_lost_day), 'days')
+        // let espdiasretrasomcl = moment().diff(moment(date_lost_day), 'days')
 
         
         date_final = date_final.split("-")
         const date_limit = obtenerSextoDiaHabil(date_final[0], parseInt(date_final[1])+1)
         
+        let espdiasretrasomcl = moment().diff(moment(date_limit), 'days')
+
+        console.log(espdiasretrasomcl)
+
         mcl_grow.forEach(element => {
 
             let existe_cliente = arr_dts.findIndex(arr => arr.masterclientes_grow.codigo_destinatario == element.codigo_destinatario)
