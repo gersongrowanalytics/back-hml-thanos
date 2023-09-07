@@ -49,12 +49,12 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
             const from_mail_data = "Grow TeamSupport:"
             // const to_mail_data = process.env.TO_MAIL
             // const to_mail_data = ["frank.martinez@grow-analytics.com.pe"]
-            const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe"]
+            // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe"]
             // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe", "frank.martinez@grow-analytics.com.pe"]
-            // const to_mail_data = [
-            //     "gporras@softys.com", "jabarcan@softys.com", "cpachecot@softys.com", "maria.yauri@softys.com",
-            //     "supdistribuidorlima@softys.com", "supventasprov@softys.com", "dmorales@softys.com", "rsalinas@softys.com"
-            // ]
+            const to_mail_data = [
+                "gporras@softys.com", "jabarcan@softys.com", "cpachecot@softys.com", "maria.yauri@softys.com",
+                "supdistribuidorlima@softys.com", "supventasprov@softys.com", "dmorales@softys.com", "rsalinas@softys.com"
+            ]
             
             // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", "jabarcan@softys.com"]
             // const to_mail_cc_data = ""
