@@ -47,8 +47,11 @@
                         <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 12px; letter-spacing: -0.051em; color: #706C64; margin-bottom: 2px">
                             Equipo de Softys,
                         </div>
-                        <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: -0.051em; color: #706C64">
+                        <!-- <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: -0.051em; color: #706C64">
                             Se les está compartiendo un update de información que ha sido actualizado al {{ data_mail.fechaActual }}; con ello, se les está brindando visibilidad de los <span style="font-weight: 700"> Cargados correspondientes a cada área/usuario.</span>
+                        </div> -->
+                        <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: -0.051em; color: #706C64">
+                            Status Pendientes de Actividades al {{ data_mail.fechaActual }} por cada area/usuario de ustedes
                         </div>
                         <br>
                         <table style="width: 1000px; font-family: 'Segoe UI', sans-serif;">
@@ -94,7 +97,7 @@
                                                             {{dt.areporcentaje}} %
                                                         </td>
                                                     {{else}}
-                                                        <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 11px; line-height: 10px; letter-spacing: -0.015em; color: orange; padding-left: 10px">
+                                                        <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 11px; line-height: 10px; letter-spacing: -0.015em; color: red; padding-left: 10px; text-transform: uppercase;">
                                                         Falta <br>homologar
                                                         </td>
                                                     {{/isEqual}}
@@ -148,17 +151,17 @@
                                     <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64;">
                                         {{esp.espbasedato}}
                                     </td>
-                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64;"> 
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64; font-weight: 700;"> 
                                         {{esp.espresponsable}}
                                     </td>
-                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64;">
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64; font-weight: 700;">
                                         {{#if esp.perpersonas}}
                                             {{esp.perpersonas.pernombrecompleto}}
                                         {{else}}
                                             -
                                         {{/if}}
                                     </td>
-                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64;">
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64; font-weight: 700;">
                                         {{#if esp.espfechaprogramado}}
                                             {{formatDate esp.espfechaprogramado}}
                                         {{else}}
@@ -216,6 +219,40 @@
                         <br>
                         <table style="width: 1000px;">
                             <tr>
+                                <td align="start" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: bold; font-size: 13px; color: red; margin-bottom: 0; width: 150px;">Staus SKUS (No Homologados) Responsables SAC+IC Softys</td>
+                            </tr>
+                        </table>
+                        <table border="0" cellspacing="0" cellpadding="0" style="font-family: 'Segoe UI', sans-serif; padding-left: 30px; padding-right: 30px; width: 1000px; border-collapse: collapse;">
+                            <tr style="color: #1E1E1E; height: 10px; padding: 0px; margin: 0px; ">
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">N°</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Zona</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Región</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal; padding: 6px">Cantidad Productos no HML</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">YTD</td>
+                            </tr>
+                            {{#each data_mail.datapso as |pso|}}
+                            <tr class="Status-Row">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                    {{pso.key}}
+                                </td>
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                    {{pso.zona}}
+                                </td>
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                    {{pso.territorio}}
+                                </td>
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                    {{pso.nohml}}
+                                </td>
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                    {{pso.ytd}}
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </table>
+                        <br>
+                        <table style="width: 1000px;">
+                            <tr>
                                 <td align="start" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: bold; font-size: 13px; color: #706C64; margin-bottom: 0; width: 150px;">Status Archivo FFVV</td>
                             </tr>
                         </table>
@@ -259,14 +296,14 @@
                                         -
                                     {{/if}}
                                 </td>
-                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64; font-weight: 700;">
                                     {{#if dt.espresponsable}}
                                         {{dt.espresponsable}}
                                     {{else}}
                                         -
                                     {{/if}}
                                 </td>
-                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64; font-weight: 700;">
                                     {{#if dt.perpersonas}}
                                         {{dt.perpersonas.pernombrecompleto}}
                                     {{else}}
@@ -280,7 +317,7 @@
                                         -
                                     {{/if}}
                                 </td>
-                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64; font-weight: 700;">
                                     {{#if dt.espfechaprogramado}}
                                         {{formatDate dt.espfechaprogramado}}
                                     {{else}}
@@ -318,40 +355,6 @@
                                     Pendiente
                                 </td>
                                 {{/if}}
-                            </tr>
-                            {{/each}}
-                        </table>
-                        <br>
-                        <table style="width: 1000px;">
-                            <tr>
-                                <td align="start" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: bold; font-size: 13px; color: #706C64; margin-bottom: 0; width: 150px;">Status SKUS (No homologados)</td>
-                            </tr>
-                        </table>
-                        <table border="0" cellspacing="0" cellpadding="0" style="font-family: 'Segoe UI', sans-serif; padding-left: 30px; padding-right: 30px; width: 1000px; border-collapse: collapse;">
-                            <tr style="color: #1E1E1E; height: 10px; padding: 0px; margin: 0px; ">
-                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">N°</td>
-                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Zona</td>
-                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Región</td>
-                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal; padding: 6px">Cantidad Productos no HML</td>
-                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">YTD</td>
-                            </tr>
-                            {{#each data_mail.datapso as |pso|}}
-                            <tr class="Status-Row">
-                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
-                                    {{pso.key}}
-                                </td>
-                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
-                                    {{pso.zona}}
-                                </td>
-                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
-                                    {{pso.territorio}}
-                                </td>
-                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
-                                    {{pso.nohml}}
-                                </td>
-                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
-                                    {{pso.ytd}}
-                                </td>
                             </tr>
                             {{/each}}
                         </table>

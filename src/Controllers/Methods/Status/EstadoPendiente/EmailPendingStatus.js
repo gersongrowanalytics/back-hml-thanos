@@ -37,7 +37,7 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
             const diaActual = fechaActual.getDate().toString().padStart(2, '0')
             const mesActual = (fechaActual.getMonth() + 1).toString().padStart(2, '0')
             const anioActual = fechaActual.getFullYear().toString()
-            const fechaFormateada = diaActual +'.'+ mesActual +'.'+ anioActual
+            const fechaFormateada = diaActual +'.'+ mesActual
             const nombresMeses = [
                 "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
