@@ -60,7 +60,7 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
             // const to_mail_cc_data = ""
             const to_mail_cc_data = ["miguel.caballero@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", "Gerson.Vilca@grow-analytics.com.pe", "frank.martinez@grow-analytics.com.pe"]
             // const subject_mail_success = `Distribuidores: Status ${nombresMeses[mesTexto]} 2023`
-            const subject_mail_success = `Distribuidores Thanos: Status-Cierre Junio 2023`
+            const subject_mail_success = `Distribuidores Thanos: Status-Cierre Agosto 2023`
             const filterEspsDistribuidoras = espsDistribuidoras.filter(esp => esp.espfechactualizacion == null)
             await filterEspsDistribuidoras.map((dts, index) => filterEspsDistribuidoras[index]['indice'] = index + 1)
 

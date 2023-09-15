@@ -2,7 +2,8 @@ const controller = {}
 const moment = require('moment');
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const ActualizarSacStatusController = require('./ActualizarSacStatus')
+const ActualizarSacStatusController = require('./ActualizarSacStatus');
+const { format } = require('date-fns');
 
 controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
 
@@ -229,14 +230,30 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
         const mcl_grow = await prisma.masterclientes_grow.findMany({
             where : {
                 conexion    : 'MANUAL',
-                estado      : 'ACTIVO'
+                estado      : 'ACTIVO',
+                OR: [
+                    {
+                        zona : 'LIMA'
+                    },
+                    {
+                        zona : 'PROVINCIA'
+                    }
+                ]
             },
             distinct : ['codigo_destinatario']
         })
         
         let date_deadline = new Date()
         const date_lost_day = date_deadline.setDate(date_deadline.getDate() - 1)
-        let espdiasretrasomcl = moment().diff(moment(date_lost_day), 'days')
+        // let espdiasretrasomcl = moment().diff(moment(date_lost_day), 'days')
+
+        
+        date_final = date_final.split("-")
+        const date_limit = obtenerSextoDiaHabil(date_final[0], parseInt(date_final[1])+1)
+        
+        let espdiasretrasomcl = moment().diff(moment(date_limit), 'days')
+
+        console.log(espdiasretrasomcl)
 
         mcl_grow.forEach(element => {
 
@@ -245,7 +262,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
             if(existe_cliente == -1){
                 mc_grow.push({
                     espfechactualizacion: null,
-                    espfechaprogramado : date_lost_day,
+                    espfechaprogramado : date_limit,
                     masterclientes_grow : element,
                     zona : element.zona,
                     territorio :  element.territorio,
@@ -253,7 +270,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                     sucursal_hml : element.sucursal_hml,
                     conexion : element.conexion,
                     pernombrecompleto : '',
-                    espresponsable : 'SAC',
+                    espresponsable : 'Ventas',
                     espdiaretraso : espdiasretrasomcl.toString()
                 })
             }
@@ -305,7 +322,28 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                 datos: '',
             }
         }
+    }finally {
+        // prisma.$disconnect();
     }
 }
+
+function obtenerSextoDiaHabil(anio, mes) {
+    let fecha = new Date(anio, mes - 1, 1); // Mes - 1 porque los meses en JavaScript van de 0 a 11
+    let contadorDiasHabiles = 0;
+  
+    while (contadorDiasHabiles < 5) {
+      fecha.setDate(fecha.getDate() + 1); // Avanzar un día
+  
+      // Verificar si el día es hábil (lunes a viernes, excluyendo fines de semana)
+      if (fecha.getDay() !== 0 && fecha.getDay() !== 6) {
+        contadorDiasHabiles++;
+      }
+    }
+    // console.log(fecha);
+    // fecha = format(fecha, 'dd/MM/yyyy')
+    // console.log(fecha);
+    return fecha;
+  }
+
 
 module.exports = controller
