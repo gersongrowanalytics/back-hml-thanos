@@ -30,10 +30,23 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
         
         const last_prod_hml = await prisma.master_productos_so.findFirst({
             where : {
-                homologado : true
+                homologado : true,
+                usuusuarios : {
+                    usucorreo : {
+                        not : "Administrador"
+                    }
+                },
+                NOT : [
+                    {
+                        usuusuarios : {
+                            usucorreo : {
+                                contains : "grow"
+                            }
+                        }
+                    }
+                ]
             },
             select : {
-                // perpersonas : true,
                 updated_at  : true,
                 id          : true,
                 usuusuarios : {

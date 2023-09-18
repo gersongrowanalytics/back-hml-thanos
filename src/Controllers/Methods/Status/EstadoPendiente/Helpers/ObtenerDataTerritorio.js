@@ -5,6 +5,17 @@ const prisma = new PrismaClient()
 controller.MetObtenerDataTerritorio = async () => {
     let data_final_productos_so = []
     try{
+
+        const words_exc = [
+            "PAÑAL", "BB", "NOBLE", "BABYSEC", "CELESTE", "NARANJA", "LADYSOFT",  "NAVIDAD", "MUNDIAL", "LOONEY", "DISEÑO", "CUMPLE",
+            "TORTA", "LINEAS", "CIRCULOS", "HALLOWEEN", "FIESTAS", "PATRIAS", "VERANO", "PRACTICA", "LDSFT", "LADY-SOFT", "LADISOFT",
+            "ULTRASEC", "HIPOAL", "DOVE", "REXONA", "PALOS", "DOBBY", "COTIDIAN", "NOVA", "HIGIENOL", "NOBL", "TOUCH", "SOFTMAX", "ALOE",
+            "BB/SEC", "BABY", "HUM", "PREMIUM", "NATURAL SOFT", "LADY", "NOCTURN", "ULTRAFRESH", "HUMEDA", "MENTHOL"
+        ]
+
+        const queryAnd = words_exc.map(wor => {
+            return { descripcion_producto : { not : wor }}
+        })
         const get_master_producto_so = await prisma.master_productos_so.findMany({
             select: {
                 id: true,
@@ -16,16 +27,19 @@ controller.MetObtenerDataTerritorio = async () => {
                         zona : true,
                         territorio : true
                     }
-                }
+                },
             },
             where: {
                 homologado: false,
+                AND : queryAnd,
                 m_cl_grow: {
                     not: null,
                 }
             },
             distinct: ['pk_venta_so']
         })
+
+        // console.log()
 
 
         const ejemlo = await MetMostrarNoHomologados(
@@ -47,12 +61,9 @@ controller.MetObtenerDataTerritorio = async () => {
             }
         );
 
-        // console.log(ejemlo);
+
         
         const get_master_producto_so_v2 = ejemlo.data
-
-
-
 
         const idsm_cl_grow = get_master_producto_so.map(d => d.m_cl_grow)
         const filtrar_idsm_cl_grow = [...new Set(idsm_cl_grow)]
@@ -78,10 +89,6 @@ controller.MetObtenerDataTerritorio = async () => {
             }
         })
 
-        console.log(get_master_producto_so);
-        console.log(filter_master_clientes_grow);
-        // console.log(get_master_clientes_grow);
-
         data_final_productos_so = filter_master_clientes_grow.map((fmcg) => {
             let totalNoHml = 0
             let totalytd = 0
@@ -93,14 +100,15 @@ controller.MetObtenerDataTerritorio = async () => {
                 if(gmps.masterclientes_grow.zona == fmcg.zona && gmps.masterclientes_grow.territorio == fmcg.territorio ){
                     // subtotalNoHml = subtotalNoHml + 1
                     subtotalytd = subtotalytd + parseFloat(gmps.s_ytd)
-                    
                     // totalNoHml = subtotalNoHml
                     totalytd = subtotalytd
                 }
             })
 
-            get_master_producto_so.map((gmps) => {
+            get_master_producto_so_v2.map((gmps) => {
+
                 if(gmps.masterclientes_grow.zona == fmcg.zona && gmps.masterclientes_grow.territorio == fmcg.territorio ){
+
                     subtotalNoHml = subtotalNoHml + 1
                     // subtotalytd = subtotalytd + parseFloat(gmps.s_ytd)
                     
@@ -131,8 +139,8 @@ controller.MetObtenerDataTerritorio = async () => {
             }
         })
 
-        console.log("-----------------------------------------------------------");
-        console.log(data_final_productos_so);
+        data_final_productos_so = data_final_productos_so.filter(dat => dat.nohml > 0)
+
 
         // data_final_productos_so.sort((data, data_clone) => {
         //     const territorio = data.territorio.toLowerCase()
@@ -188,7 +196,6 @@ const MetMostrarNoHomologados = async (req, res) => {
         req_zona
     } = req.body;
 
-    let total = []
     let productosSinProid
     let data_query
     let total_query_sql = []
@@ -247,11 +254,8 @@ const MetMostrarNoHomologados = async (req, res) => {
                 page = 1
             }
         }
-
-        const page_query = (page-1)*20
         
-
-        productosSinProid = await prisma.$queryRawUnsafe(`SELECT DISTINCT(pk_venta_so), master_productos_so.id, master_productos_so.m_dt_id, master_productos_so.codigo_distribuidor, master_productos_so.codigo_producto, master_productos_so.descripcion_producto, master_productos_so.desde, master_productos_so.hasta, master_productos_so.s_ytd, master_productos_so.s_mtd, master_productos_so.pk_venta_so, master_productos_so.pk_extractor_venta_so, master_productos_so.unidad_medida, master_productos_so.cod_unidad_medida, master_productos_so.ruc, master_productos_so.posible_combo, master_distribuidoras.nomb_dt, master_distribuidoras.region,master_distribuidoras.codigo_dt,masterclientes_grow.id as idClients, masterclientes_grow.cliente_hml, masterclientes_grow.zona, masterclientes_grow.conexion, masterclientes_grow.territorio, masterclientes_grow.codigo_destinatario, masterclientes_grow.sucursal_hml FROM master_productos_so LEFT JOIN master_distribuidoras ON master_distribuidoras.id = master_productos_so.m_dt_id LEFT JOIN masterclientes_grow ON masterclientes_grow.id = master_productos_so.m_cl_grow WHERE master_productos_so.homologado = 0 AND masterclientes_grow.cliente_hml LIKE '%${req_cliente_hml}%' AND masterclientes_grow.zona LIKE '%${req_zona}%' AND masterclientes_grow.conexion LIKE '%${req_conexion}%' AND masterclientes_grow.territorio LIKE '%${req_territorio}%' AND master_productos_so.codigo_producto LIKE '%${req_cod_producto}%' AND master_productos_so.descripcion_producto LIKE '%${req_des_producto}%' AND master_productos_so.desde LIKE '%${req_desde}%' AND master_productos_so.s_ytd LIKE '${req_ytd}%' AND master_productos_so.s_mtd LIKE '${req_mtd}%' ${query_words_exc} ${query_order_sql} LIMIT 20 OFFSET ${page_query};`)
+        productosSinProid = await prisma.$queryRawUnsafe(`SELECT DISTINCT(pk_venta_so), master_productos_so.id, master_productos_so.m_dt_id, master_productos_so.codigo_distribuidor, master_productos_so.codigo_producto, master_productos_so.descripcion_producto, master_productos_so.desde, master_productos_so.hasta, master_productos_so.s_ytd, master_productos_so.s_mtd, master_productos_so.pk_venta_so, master_productos_so.pk_extractor_venta_so, master_productos_so.unidad_medida, master_productos_so.cod_unidad_medida, master_productos_so.ruc, master_productos_so.posible_combo, master_distribuidoras.nomb_dt, master_distribuidoras.region,master_distribuidoras.codigo_dt,masterclientes_grow.id as idClients, masterclientes_grow.cliente_hml, masterclientes_grow.zona, masterclientes_grow.conexion, masterclientes_grow.territorio, masterclientes_grow.codigo_destinatario, masterclientes_grow.sucursal_hml FROM master_productos_so LEFT JOIN master_distribuidoras ON master_distribuidoras.id = master_productos_so.m_dt_id LEFT JOIN masterclientes_grow ON masterclientes_grow.id = master_productos_so.m_cl_grow WHERE master_productos_so.homologado = 0 AND masterclientes_grow.cliente_hml LIKE '%${req_cliente_hml}%' AND masterclientes_grow.zona LIKE '%${req_zona}%' AND masterclientes_grow.conexion LIKE '%${req_conexion}%' AND masterclientes_grow.territorio LIKE '%${req_territorio}%' AND master_productos_so.codigo_producto LIKE '%${req_cod_producto}%' AND master_productos_so.descripcion_producto LIKE '%${req_des_producto}%' AND master_productos_so.desde LIKE '%${req_desde}%' AND master_productos_so.s_ytd LIKE '${req_ytd}%' AND master_productos_so.s_mtd LIKE '${req_mtd}%' ${query_words_exc} ${query_order_sql};`)
 
         data_query = productosSinProid.map(({ id, pk_venta_so, m_dt_id, codigo_distribuidor, codigo_producto, descripcion_producto, desde, hasta, s_ytd, s_mtd, pk_extractor_venta_so, unidad_medida, cod_unidad_medida, ruc, posible_combo, nomb_dt, region, codigo_dt, idClients, cliente_hml, zona, conexion, territorio, codigo_destinatario, sucursal_hml }, index) => {
 
@@ -304,6 +308,7 @@ const MetMostrarNoHomologados = async (req, res) => {
                 }
             )
         });
+
 
         // OBTENER EL MES Y AÑO ACTUAL
 

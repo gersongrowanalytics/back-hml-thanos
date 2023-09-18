@@ -22,7 +22,7 @@ controller.MetObtenerInfoSI = async (req, res) => {
                 msvalnetfa_pen: true,
             },
             where: {
-                cod_material: req_pk_cod_pro,
+                cod_material: req_pk_cod_pro.toString(),
                 cod_destinatario: req_pk_cod_dist,
                 cargo: {
                     contains: `%Si tiene%`
@@ -40,7 +40,7 @@ controller.MetObtenerInfoSI = async (req, res) => {
                     anio: true,
                 },
                 where: {
-                    cod_material: req_pk_cod_pro,
+                    cod_material: req_pk_cod_pro.toString(),
                     cod_destinatario: req_pk_cod_dist,
                     cargo: {
                         contains: `%Si tiene%`

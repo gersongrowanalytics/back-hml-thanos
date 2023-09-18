@@ -70,16 +70,27 @@ controller.MetActualizarStatusHomologacion = async ( req, res, date, perid ) => 
             day_late = '0'
         }
 
-        await prisma.espestadospendientes.update({
+        const usuHML = await prisma.usuusuarios.findFirst({
             where : {
-                espid : espo.espid
+                perid : perid_usu
             },
-            data : {
-                espfechactualizacion    : new Date(),
-                espdiaretraso           : day_late,
-                perid                   : perid_usu
+            select : {
+                usucorreo : true
             }
         })
+
+        if(usuHML.usucorreo.toUpperCase().includes("GROW") == false && usuHML.usucorreo.toUpperCase().includes("ADMINISTRADOR") == false ){
+            await prisma.espestadospendientes.update({
+                where : {
+                    espid : espo.espid
+                },
+                data : {
+                    espfechactualizacion    : new Date(),
+                    espdiaretraso           : day_late,
+                    perid                   : perid_usu
+                }
+            })
+        }
 
         await prisma.areareasestados.update({
             where : {

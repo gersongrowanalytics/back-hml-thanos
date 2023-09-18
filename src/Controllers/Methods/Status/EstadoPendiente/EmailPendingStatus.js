@@ -77,7 +77,6 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
                 fechaActual: fechaFormateada
             }
 
-            // console.log(data_mail.datapso)
                         
             await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail, to_mail_cc_data)
             res.status(200).json({
