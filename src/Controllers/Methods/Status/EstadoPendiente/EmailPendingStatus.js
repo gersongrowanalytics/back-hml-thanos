@@ -49,18 +49,18 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
             const from_mail_data = "Grow TeamSupport:"
             // const to_mail_data = process.env.TO_MAIL
             // const to_mail_data = ["frank.martinez@grow-analytics.com.pe"]
-            // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe"]
+            const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe"]
             // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe", "frank.martinez@grow-analytics.com.pe"]
-            const to_mail_data = [
-                "gporras@softys.com", "jabarcan@softys.com", "cpachecot@softys.com", "maria.yauri@softys.com",
-                "supdistribuidorlima@softys.com", "supventasprov@softys.com", "dmorales@softys.com", "rsalinas@softys.com"
-            ]
+            // const to_mail_data = [
+            //     "gporras@softys.com", "jabarcan@softys.com", "cpachecot@softys.com", "maria.yauri@softys.com",
+            //     "supdistribuidorlima@softys.com", "supventasprov@softys.com", "dmorales@softys.com", "rsalinas@softys.com"
+            // ]
             
             // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", "jabarcan@softys.com"]
-            // const to_mail_cc_data = ""
-            const to_mail_cc_data = ["miguel.caballero@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", "Gerson.Vilca@grow-analytics.com.pe", "frank.martinez@grow-analytics.com.pe"]
-            // const subject_mail_success = `Distribuidores: Status ${nombresMeses[mesTexto]} 2023`
-            const subject_mail_success = `Distribuidores Thanos: Status-Cierre Agosto 2023`
+            const to_mail_cc_data = [""]
+            // const to_mail_cc_data = ["miguel.caballero@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", "Gerson.Vilca@grow-analytics.com.pe", "frank.martinez@grow-analytics.com.pe"]
+            const subject_mail_success = `Distribuidores: Status ${nombresMeses[mesTexto - 1]} 2023`
+            // const subject_mail_success = `Distribuidores Thanos: Status-Cierre Agosto 2023`
             const filterEspsDistribuidoras = espsDistribuidoras.filter(esp => esp.espfechactualizacion == null)
             await filterEspsDistribuidoras.map((dts, index) => filterEspsDistribuidoras[index]['indice'] = index + 1)
 
@@ -76,6 +76,8 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
                 datapso: data_productos_so,
                 fechaActual: fechaFormateada
             }
+
+            // console.log(data_mail.datapso)
                         
             await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail, to_mail_cc_data)
             res.status(200).json({
