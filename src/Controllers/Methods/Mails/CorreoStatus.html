@@ -170,7 +170,13 @@
                                         {{esp.espbasedato}}
                                     </td>
                                     <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64; font-weight: 700;"> 
-                                        {{esp.espresponsable}}
+                                        
+                                        {{#isEqual esp.espresponsable "SAC"}}
+                                            SAC+IC
+                                        {{else}}
+                                            {{esp.espresponsable}}
+                                        {{/if}}
+
                                     </td>
                                     <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64; font-weight: 700;">
                                         {{#if esp.perpersonas}}
