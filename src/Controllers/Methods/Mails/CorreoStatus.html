@@ -145,20 +145,20 @@
                                 <tr class="Status-Row">
                                     {{#isEqual @index 0}}
 
-                                    
-                                        {{#isEqual dt.arenombre "Revenue"}}
+
+                                        {{#isEqual data.arenombre "Revenue"}}
                                             <td rowspan="{{ data.esps.length }}" align="left" style="color: #004FB8; background: #FFFFFF; font-weight: 700; font-size: 11px; font-style: normal; padding-left: 18px;">
                                                 IC
                                             </td>
                                         {{/isEqual}}
 
-                                        {{#isEqual dt.arenombre "SAC"}}
+                                        {{#isEqual data.arenombre "SAC"}}
                                             <td rowspan="{{ data.esps.length }}" align="left" style="color: #004FB8; background: #FFFFFF; font-weight: 700; font-size: 11px; font-style: normal; padding-left: 18px;">
                                                 SAC+IC
                                             </td>
                                         {{/isEqual}}
 
-                                        {{#isEqual dt.arenombre "Ventas"}}
+                                        {{#isEqual data.arenombre "Ventas"}}
                                             <td rowspan="{{ data.esps.length }}" align="left" style="color: #004FB8; background: #FFFFFF; font-weight: 700; font-size: 11px; font-style: normal; padding-left: 18px;">
                                                 {{data.arenombre}}
                                             </td>
