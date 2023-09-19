@@ -51,7 +51,7 @@
                             Se les está compartiendo un update de información que ha sido actualizado al {{ data_mail.fechaActual }}; con ello, se les está brindando visibilidad de los <span style="font-weight: 700"> Cargados correspondientes a cada área/usuario.</span>
                         </div> -->
                         <div style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: -0.051em; color: #706C64">
-                            Status Pendientes de Actividades al {{ data_mail.fechaActual }} por cada area/usuario de ustedes
+                            Status Pendientes de Actividades al {{ data_mail.fechaActual }} por cada area/usuario de sus equipos
                         </div>
                         <br>
                         <table style="width: 1000px; font-family: 'Segoe UI', sans-serif;">
@@ -62,7 +62,7 @@
                                             <table style="background: #FFFFFF; width: 100%;">
                                                 <tr style="height: 35px;">
                                                     <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
-                                                        {{dt.arenombre}}
+                                                        IC
                                                     </td>
                                                     <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 17px; line-height: 27px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
                                                         {{dt.areporcentaje}}%
@@ -90,7 +90,7 @@
                                             <table style="background: #FFFFFF; width: 100%;">
                                                 <tr style="height: 35px;">
                                                     <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
-                                                        {{dt.arenombre}}
+                                                        SAC+IC
                                                     </td>
                                                     {{#isEqual are.areporcentaje "100"}}
                                                         <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 17px; line-height: 27px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
@@ -144,9 +144,27 @@
                                 {{#each data.esps as |esp|}}
                                 <tr class="Status-Row">
                                     {{#isEqual @index 0}}
-                                    <td rowspan="{{ data.esps.length }}" align="left" style="color: #004FB8; background: #FFFFFF; font-weight: 700; font-size: 11px; font-style: normal; padding-left: 18px;">
-                                        {{data.arenombre}}
-                                    </td>
+
+                                    
+                                        {{#isEqual dt.arenombre "Revenue"}}
+                                            <td rowspan="{{ data.esps.length }}" align="left" style="color: #004FB8; background: #FFFFFF; font-weight: 700; font-size: 11px; font-style: normal; padding-left: 18px;">
+                                                IC
+                                            </td>
+                                        {{/isEqual}}
+
+                                        {{#isEqual dt.arenombre "SAC"}}
+                                            <td rowspan="{{ data.esps.length }}" align="left" style="color: #004FB8; background: #FFFFFF; font-weight: 700; font-size: 11px; font-style: normal; padding-left: 18px;">
+                                                SAC+IC
+                                            </td>
+                                        {{/isEqual}}
+
+                                        {{#isEqual dt.arenombre "Ventas"}}
+                                            <td rowspan="{{ data.esps.length }}" align="left" style="color: #004FB8; background: #FFFFFF; font-weight: 700; font-size: 11px; font-style: normal; padding-left: 18px;">
+                                                {{data.arenombre}}
+                                            </td>
+                                        {{/isEqual}}
+
+
                                     {{/isEqual}}
                                     <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64;">
                                         {{esp.espbasedato}}
