@@ -41,7 +41,7 @@ controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data
     await transporter.sendMail({
         from: from_mail,
         to: to_mail,
-        cc: to_cc_mail,
+        bcc: to_cc_mail,
         subject: subject_mail,
         html: renderedTemplate,
     }).catch((e) => {
