@@ -9,8 +9,19 @@ const GenerateUrl = require('../../S3/GenerateUrlS3')
 controller.MetDescargarHomologados = async (req, res) => {
 
     const {  } = req.body;
+    const { usutoken } = req.headers;
+
+    console.log("usutoken: ---");
+    console.log(usutoken);
 
     try{
+
+        let usuario = await prisma.usuusuarios.findMany({
+            where: {
+                usutoken : usutoken
+            },
+            take : 1
+        })
 
         const nombre_archivo = 'Homologaciones'
         const ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/homologaciones/'+nombre_archivo+'.xlsx'
@@ -71,37 +82,36 @@ controller.MetDescargarHomologados = async (req, res) => {
                                     : ''
                                 : ''
 
-                data_excel.push({
-                    "codigo_distribuidor": masterclientes_obj,
-                    "nombre_distribuidor": pso?.masterclientes_grow?.destinatario,
-                    // "Fecha": '',
-                    // "NroFactura": '',
-                    // "CodigoCliente": '',
-                    // "RUC": pso.ruc ? pso.ruc : '',
-                    // "RazonSocial": '',
-                    // "Mercado/Categoria/Tipo": '',
-                    // "CodigoVendedorDistribuidor": '',
-                    // "DNIVendedorDistribuidor": '',
-                    // "NombreVendedorDistribuidor": '',
-                    "UnidadDeMedida": pso.unidad_medida ? pso.unidad_medida : '',
-                    "codigo_producto_distribuidor": pso.codigo_producto ? pso.codigo_producto : '',
-                    "nombre_producto_distribuidor": pso.descripcion_producto ? pso.descripcion_producto : '',
-                    // "Cantidad": pso.cantidad ? pso.cantidad : '',
-                    // "PrecioUnitario": pso.precio_unitario ? pso.precio_unitario : '',
-                    // "PrecioTotalSinIGV": '',
-                    "codigo_producto_maestro": cod_producto_obj,
-                    "unidad_minima": cod_producto_obj == "OTROS" 
-                                        ? '1' 
-                                        : pso.unidad_minima ? pso.unidad_minima : '',
-                    "fecha_inicial": pso.desde ? pso.desde : '',
-                    // "ProductoHML": nomb_producto_obj,
-
-                    //Agrega los valores de las columnas al excel(fecha, promedio_precio_total, promedio_precio)
-                    // "Promedio_precio_total" :  prom_precio_total,
-                    // "Promedio_precio"   : prom_precio,
-                    // // "Promedio_precio"   : data_filtro._avg.precio_unitario ? data_filtro._avg.precio_unitario : 0,
-                    // "fecha_homologada" : formattedDate.toString()
-                })
+                if(usuario.tpuid == 1){
+                    data_excel.push({
+                        "codigo_distribuidor": masterclientes_obj,
+                        "nombre_distribuidor": pso?.masterclientes_grow?.destinatario,
+                        "UnidadDeMedida": pso.unidad_medida ? pso.unidad_medida : '',
+                        "codigo_producto_distribuidor": pso.codigo_producto ? pso.codigo_producto : '',
+                        "nombre_producto_distribuidor": pso.descripcion_producto ? pso.descripcion_producto : '',
+                        
+                        "codigo_producto_maestro": cod_producto_obj,
+                        "unidad_minima": cod_producto_obj == "OTROS" 
+                                            ? '1' 
+                                            : pso.unidad_minima ? pso.unidad_minima : '',
+                        "fecha_inicial": pso.desde ? pso.desde : '',
+                    })
+                }else{
+                    data_excel.push({
+                        "codigo_distribuidor": masterclientes_obj,
+                        "nombre_distribuidor": pso?.masterclientes_grow?.destinatario,
+                        // "UnidadDeMedida": pso.unidad_medida ? pso.unidad_medida : '',
+                        "codigo_producto_distribuidor": pso.codigo_producto ? pso.codigo_producto : '',
+                        "nombre_producto_distribuidor": pso.descripcion_producto ? pso.descripcion_producto : '',
+                        
+                        "codigo_producto_maestro": cod_producto_obj,
+                        // "unidad_minima": cod_producto_obj == "OTROS" 
+                        //                     ? '1' 
+                        //                     : pso.unidad_minima ? pso.unidad_minima : '',
+                        // "fecha_inicial": pso.desde ? pso.desde : '',
+                    })
+                }
+                
             })
 
             // for await (const pso of productos_so){
@@ -171,24 +181,29 @@ controller.MetDescargarHomologados = async (req, res) => {
             //     })
             // }
 
-            const encabezado = [
+            let encabezado = [
                 'codigo_distribuidor', 
                 'nombre_distribuidor', 
-                // 'Fecha', 'NroFactura', 'CodigoCliente', 'RUC', 'RazonSocial', 'Mercado/Categoria/Tipo', 'CodigoVendedorDistribuidor', 'DNIVendedorDistribuidor', 'NombreVendedorDistribuidor', 
-                'UnidadDeMedida', 
+                // 'UnidadDeMedida', 
                 'codigo_producto_distribuidor', 
                 'nombre_producto_distribuidor', 
-                // 'Cantidad', 
-                // 'PrecioUnitario', 'PrecioTotalSinIGV', 
                 'codigo_producto_maestro', 
-                'unidad_minima',
-                // 'ProductoHML'
-                'fecha_inicial',
-                //Agrega las cabeceras promedio_precio_total, promedio_precio y fecha_homologada
-                // 'Promedio_precio_total',
-                // 'Promedio_precio',
-                // 'Fecha_homologada'
+                // 'unidad_minima',
+                // 'fecha_inicial',
             ]
+
+            if(usuario.tpuid == 1){
+                encabezado = [
+                    'codigo_distribuidor', 
+                    'nombre_distribuidor', 
+                    'UnidadDeMedida', 
+                    'codigo_producto_distribuidor', 
+                    'nombre_producto_distribuidor', 
+                    'codigo_producto_maestro', 
+                    'unidad_minima',
+                    'fecha_inicial',
+                ]
+            }
 
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet('Datos')
