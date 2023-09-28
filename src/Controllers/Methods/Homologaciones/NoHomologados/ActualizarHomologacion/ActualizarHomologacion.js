@@ -66,6 +66,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                 m_pro_grow      : dhm.req_id_producto_homologado, 
                 unidad_minima   : dhm.req_unidad_minima_homologado.toString(),
                 homologado      : true,
+                fecha_homologado: new Date(),
                 usuid           : usu.usuid
             }
 
@@ -126,6 +127,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             unidad_minima_unitaria  : dhm.req_unidad_minima_unitario,
                             bonificado              : dhm.req_bonificado,
                             homologado      : true,
+                            fecha_homologado: new Date(),
                             usuid           : usu.usuid
                         }
                     })
@@ -155,6 +157,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                             unidad_minima : dhm.req_unidad_minima_homologado.toString(),
                             combo : dhm.req_combo,
                             homologado      : true,
+                            fecha_homologado: new Date(),
                             usuid           : usu.usuid
                         }
                     })

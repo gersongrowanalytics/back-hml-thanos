@@ -263,6 +263,7 @@ model master_productos_so {
   bonificado                    Boolean     @default(false)
   extractor                     Boolean     @default(false)
   homologado                    Boolean     @default(false)
+  fecha_homologado              DateTime?   @default(now())
   created_at                    DateTime?   @default(now())
   updated_at                    DateTime?   @updatedAt
   master_productos              master_productos?        @relation(fields: [proid], references: [id], onUpdate: Restrict, map: "master_productos_so_id_foreign")

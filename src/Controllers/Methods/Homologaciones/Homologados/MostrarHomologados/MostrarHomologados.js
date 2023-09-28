@@ -86,7 +86,7 @@ controller.MetMostrarHomologados = async (req, res) => {
                 order_index = true
             }
         }else{
-            query_order = {...query_order, updated_at: 'desc'}
+            query_order = {...query_order, fecha_homologado: 'desc'}
         }
 
         let query_otros = {
@@ -128,7 +128,7 @@ controller.MetMostrarHomologados = async (req, res) => {
                     desde : {
                         contains : desde_modificado
                     },
-                    updated_at : {
+                    fecha_homologado : {
                         lte :  new Date(update_filter_less+'T23:59:59Z'),
                         gte :  new Date(update_filter_more+'T00:00:00Z'),
                     }
@@ -175,7 +175,7 @@ controller.MetMostrarHomologados = async (req, res) => {
                     desde : {
                         contains : desde_modificado
                     },
-                    updated_at : {
+                    fecha_homologado : {
                         lte :  new Date(update_filter_less+'T23:59:59Z'),
                         gte :  new Date(update_filter_more+'T00:00:00Z'),
                     }
@@ -248,6 +248,7 @@ controller.MetMostrarHomologados = async (req, res) => {
                 pk_venta_so_hml         : true,
                 unidad_medida           : true,
                 updated_at              : true,
+                fecha_homologado        : true
             },
             orderBy: query_order,
             distinct : ['pk_venta_so_hml'],
