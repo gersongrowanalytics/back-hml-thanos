@@ -292,95 +292,91 @@
                                 <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Status</td>
                             </tr>
                             {{#each data_mail.datadts as |dt|}}
-                                {{#isEqual dt.espdiaretraso 0}}
-                                    <div></div>
-                                {{else}}
-                                    <tr class="Status-Row">
-                                        <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
-                                            {{dt.indice}}
-                                        </td>
-                                        <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
-                                            {{#if dt.masterclientes_grow}}
-                                                {{dt.masterclientes_grow.zona}}
-                                            {{else}}
-                                                -
-                                            {{/if}}
-                                        </td>
-                                        <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;"> 
-                                            {{#if dt.masterclientes_grow}}
-                                                {{dt.masterclientes_grow.territorio}}
-                                            {{else}}
-                                                -
-                                            {{/if}}
-                                        </td>
-                                        <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
-                                            {{#if dt.masterclientes_grow}}
-                                                {{dt.masterclientes_grow.cliente_hml}}
-                                            {{else}}
-                                                -
-                                            {{/if}}
-                                        </td>
-                                        <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64; font-weight: 700;">
-                                            {{#if dt.espresponsable}}
-                                                {{dt.espresponsable}}
-                                            {{else}}
-                                                -
-                                            {{/if}}
-                                        </td>
-                                        <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64; font-weight: 700;">
-                                            {{#if dt.perpersonas}}
-                                                {{dt.perpersonas.pernombrecompleto}}
-                                            {{else}}
-                                                -
-                                            {{/if}}
-                                        </td>
-                                        <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
-                                            {{#if dt.masterclientes_grow}}
-                                                {{dt.masterclientes_grow.conexion}}
-                                            {{else}}
-                                                -
-                                            {{/if}}
-                                        </td>
-                                        <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64; font-weight: 700;">
-                                            {{#if dt.espfechaprogramado}}
-                                                {{formatDate dt.espfechaprogramado}}
-                                            {{else}}
-                                                -
-                                            {{/if}}
-                                        </td>
-                                        <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: blue;">
-                                            {{#if dt.espfechactualizacion}}
-                                                {{formatDate dt.espfechactualizacion}}
-                                            {{else}}
-                                                -
-                                            {{/if}}
-                                        </td>
-                                        <td align="center" class="Status-Col" style="background: #FFFFFF;"> 
-                                            <div style="place-content: center; display: flex; justify-content: center; width: 50%;">
-                                                {{#isEqual dt.espdiaretraso 0}}
-                                                    <div style="background: #FFFFFF; color: #FF0000; font-weight: 700; font-size: 9px;  font-style: normal">
-                                                        -
-                                                    </div>
-                                                    <div style="width: 17px; height: 10px; border-radius: 8px; background: #FF0000; margin-left: 5px; margin-top: 2px"></div>
-                                                {{else}}
-                                                    <div style="background: #FFFFFF; color: #FF0000; font-weight: 700; font-size: 9px;  font-style: normal">
-                                                        {{dt.espdiaretraso}} días 
-                                                    </div>
-                                                    <div style="width: 17px; height: 10px; border-radius: 8px; background: #FF0000; margin-left: 5px; margin-top: 2px"></div>
-                                                {{/isEqual}}
-                                            </div>
-                                        </td>
-                                        {{#if dt.espfechactualizacion}}
-                                        <td align="center" class="Status-Col-Days" style="color: #FF0000; background: #FFFFFF; font-size: 9px;  font-style: normal;">
-                                            Fuera de Fecha
-                                        </td>
+                                <tr class="Status-Row">
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                        {{dt.indice}}
+                                    </td>
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                        {{#if dt.masterclientes_grow}}
+                                            {{dt.masterclientes_grow.zona}}
                                         {{else}}
-                                        <td align="center" class="Status-Col-Days" style="color: #FF0000; background: #FFFFFF; font-size: 9px;  font-style: normal;">
-                                            Pendiente
-                                        </td>
+                                            -
                                         {{/if}}
-                                    </tr>
-                                {{/isEqual}}
+                                    </td>
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;"> 
+                                        {{#if dt.masterclientes_grow}}
+                                            {{dt.masterclientes_grow.territorio}}
+                                        {{else}}
+                                            -
+                                        {{/if}}
+                                    </td>
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                        {{#if dt.masterclientes_grow}}
+                                            {{dt.masterclientes_grow.cliente_hml}}
+                                        {{else}}
+                                            -
+                                        {{/if}}
+                                    </td>
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64; font-weight: 700;">
+                                        {{#if dt.espresponsable}}
+                                            {{dt.espresponsable}}
+                                        {{else}}
+                                            -
+                                        {{/if}}
+                                    </td>
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64; font-weight: 700;">
+                                        {{#if dt.perpersonas}}
+                                            {{dt.perpersonas.pernombrecompleto}}
+                                        {{else}}
+                                            -
+                                        {{/if}}
+                                    </td>
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                        {{#if dt.masterclientes_grow}}
+                                            {{dt.masterclientes_grow.conexion}}
+                                        {{else}}
+                                            -
+                                        {{/if}}
+                                    </td>
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64; font-weight: 700;">
+                                        {{#if dt.espfechaprogramado}}
+                                            {{formatDate dt.espfechaprogramado}}
+                                        {{else}}
+                                            -
+                                        {{/if}}
+                                    </td>
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: blue;">
+                                        {{#if dt.espfechactualizacion}}
+                                            {{formatDate dt.espfechactualizacion}}
+                                        {{else}}
+                                            -
+                                        {{/if}}
+                                    </td>
+                                    <td align="center" class="Status-Col" style="background: #FFFFFF;"> 
+                                        <div style="place-content: center; display: flex; justify-content: center; width: 50%;">
+                                            {{#isEqual dt.espdiaretraso 0}}
+                                                <div style="background: #FFFFFF; color: #1eec41; font-weight: 700; font-size: 9px;  font-style: normal">
+                                                    {{dt.espdiaretraso}} días
+                                                </div>
+                                                <div style="width: 17px; height: 10px; border-radius: 8px; background: #1eec41; margin-left: 5px; margin-top: 2px"></div>
+                                            {{else}}
+                                                <div style="background: #FFFFFF; color: #FF0000; font-weight: 700; font-size: 9px;  font-style: normal">
+                                                    {{dt.espdiaretraso}} días 
+                                                </div>
+                                                <div style="width: 17px; height: 10px; border-radius: 8px; background: #FF0000; margin-left: 5px; margin-top: 2px"></div>
+                                            {{/isEqual}}
+                                        </div>
+                                    </td>
+                                    {{#if dt.espfechactualizacion}}
+                                    <td align="center" class="Status-Col-Days" style="color: #FF0000; background: #FFFFFF; font-size: 9px;  font-style: normal;">
+                                        Fuera de Fecha
+                                    </td>
+                                    {{else}}
+                                    <td align="center" class="Status-Col-Days" style="color: #FF0000; background: #FFFFFF; font-size: 9px;  font-style: normal;">
+                                        Pendiente
+                                    </td>
+                                    {{/if}}
+                                </tr>
                             {{/each}}
                         </table>
                         <br>

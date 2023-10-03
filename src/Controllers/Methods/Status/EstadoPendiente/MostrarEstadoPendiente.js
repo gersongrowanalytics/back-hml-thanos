@@ -138,7 +138,6 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                         let month_late = false
     
                         if(esp.espfechactualizacion == null){
-    
                             date_two    = moment(esp.espfechaprogramado)
                             date_one    = moment()
                             
@@ -206,7 +205,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
                     }
                 })
 
-                await ActualizarSacStatusController.MetActualizarSacAreasEstados(areid_sac, prod_no_hml_count)                                
+                await ActualizarSacStatusController.MetActualizarSacAreasEstados(areid_sac, prod_no_hml_count)
     
                 const espe = await prisma.espestadospendientes.findFirst({
                     where : {
@@ -263,10 +262,14 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
         
         date_final = date_final.split("-")
         const date_limit = obtenerSextoDiaHabil(date_final[0], parseInt(date_final[1])+1)
+        // console.log(date_final[0]);
+        // console.log(parseInt(date_final[1]) + 1);
+        // console.log(date_limit);
         
-        let espdiasretrasomcl = moment().diff(moment(date_limit), 'days')
-
-        console.log(espdiasretrasomcl)
+        let espdiasretrasomcl = '0'
+        if(moment() > moment(date_limit)){
+            espdiasretrasomcl = moment().diff(moment(date_limit), 'days')
+        }
 
         mcl_grow.forEach(element => {
 
@@ -343,14 +346,18 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
 function obtenerSextoDiaHabil(anio, mes) {
     let fecha = new Date(anio, mes - 1, 1); // Mes - 1 porque los meses en JavaScript van de 0 a 11
     let contadorDiasHabiles = 0;
-  
-    while (contadorDiasHabiles < 5) {
-      fecha.setDate(fecha.getDate() + 1); // Avanzar un día
-  
-      // Verificar si el día es hábil (lunes a viernes, excluyendo fines de semana)
-      if (fecha.getDay() !== 0 && fecha.getDay() !== 6) {
-        contadorDiasHabiles++;
-      }
+
+    while (contadorDiasHabiles <= 5) {
+        // Verificar si el día es hábil (lunes a viernes, excluyendo fines de semana)
+        if (fecha.getDay() !== 0 && fecha.getDay() !== 6) {
+            contadorDiasHabiles++;
+        }
+
+        if(contadorDiasHabiles == 6){
+            fecha.setDate(fecha.getDate())
+        }else{
+            fecha.setDate(fecha.getDate() + 1);
+        }
     }
     // console.log(fecha);
     // fecha = format(fecha, 'dd/MM/yyyy')
