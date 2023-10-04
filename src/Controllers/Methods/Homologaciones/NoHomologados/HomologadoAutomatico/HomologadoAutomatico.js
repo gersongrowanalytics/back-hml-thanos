@@ -19,7 +19,7 @@ controller.MetHomologadoAutomatico = async ( req, res ) => {
             })
         }
 
-        const condicion_seleccionar = ['babysec', 'ladysoft', 'navidad', 'mundial', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas','patrias', 'verano','practica','ldsft','lady-soft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian','ladisoft', 'Noble', 'celeste', 'naranja','Nova', 'Higienol', 'Nobl', 'touch', 'softmax', 'aloe', 'bb/sec', 'baby', 'hum', 'premium', 'natural soft', 'lady', 'nocturn', 'ultrafresh', 'humeda', 'menthol']
+        const condicion_seleccionar = ['noble','babysec', 'celeste', 'naranja', 'ladysoft', 'navidad', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas', 'patrias','verano','practica','ldsft','lady-soft','ladisoft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian', 'nova', 'higienol', 'nobl', 'touch', 'softmax', 'aloe', 'bb/sec', 'baby', 'hum', 'premium', 'natural soft', 'lady', 'nocturn', 'ultrafresh', 'humeda', 'menthol','ideal', 'suave', 'laminado', 'suav', 'megarrollo', 'flor', 'duo' ]
 
         let productos_so_ids = []
         data.map(dat => {
