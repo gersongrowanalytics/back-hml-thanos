@@ -55,7 +55,7 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
                 // "gporras@softys.com", "jabarcan@softys.com", "cpachecot@softys.com", "maria.yauri@softys.com",
                 // "supdistribuidorlima@softys.com", "supventasprov@softys.com", "dmorales@softys.com", "rsalinas@softys.com",
 
-                "gerson.vilca@tecsup.edu.pe"
+                "Gerson.Vilca@grow-analytics.com.pe"
                 
                 // "maria.yauri@softys.com",
                 // "lsecca@softys.com",
