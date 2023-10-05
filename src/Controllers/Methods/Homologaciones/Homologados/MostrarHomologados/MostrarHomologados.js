@@ -97,13 +97,16 @@ controller.MetMostrarHomologados = async (req, res) => {
                         // not: 268
                     },
                     homologado : true,
+                    codigo_producto : {
+                            contains : req_cod_prod_not,
+                    },
                     masterclientes_grow : {
                         territorio : {
                             contains : req_region,
                         },
-                        codigo_destinatario : {
-                            contains : req_cod_prod_not,
-                        },
+                        // codigo_destinatario : {
+                        //     contains : req_cod_prod_not,
+                        // },
                         cliente_hml : {
                             contains : req_cliente_hml
                         },
@@ -144,13 +147,16 @@ controller.MetMostrarHomologados = async (req, res) => {
                         not: null
                     },
                     homologado : true,
+                    codigo_producto : {
+                        contains : req_cod_prod_not,
+                    },
                     masterclientes_grow : {
                         territorio : {
                             contains : req_region,
                         },
-                        codigo_destinatario : {
-                            contains : req_cod_prod_not,
-                        },
+                        // codigo_destinatario : {
+                        //     contains : req_cod_prod_not,
+                        // },
                         cliente_hml : {
                             contains : req_cliente_hml
                         },
