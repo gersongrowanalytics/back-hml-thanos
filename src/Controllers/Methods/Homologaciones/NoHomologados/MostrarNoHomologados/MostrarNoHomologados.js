@@ -35,16 +35,25 @@ controller.MetMostrarNoHomologados = async (req, res) => {
         let query_words_exc = ''
         let queryFilterResponse = ''
 
-        if(req_filtro_responsable == "IC"){
+        let queryIC = ""
+        let querySAC = ""
+
+        wordsIC.map(( ic, index) => {
+            queryIC     = queryIC + `master_productos_so.descripcion_producto LIKE '%${ic}%' ${index == wordsIC.length -1 ? '': 'OR '}`
+            querySAC    = querySAC + `master_productos_so.descripcion_producto NOT LIKE '%${ic}%' ${index == wordsIC.length -1 ? '': 'AND '}`
+        })
+
+        if("SAC".includes(req_filtro_responsable.toUpperCase()) && "IC".includes(req_filtro_responsable.toUpperCase())){
+            queryFilterResponse = ''
+        }else if("IC".includes(req_filtro_responsable.toUpperCase()) && req_filtro_responsable.length > 0){
             filterResponsable = true
-            wordsIC.map(( ic, index) => {
-                queryFilterResponse = queryFilterResponse + `master_productos_so.descripcion_producto LIKE '%${ic}%' ${index == wordsIC.length -1 ? '': 'OR '}`
-            })
-        }else if(req_filtro_responsable == "SAC"){
+            queryFilterResponse = queryIC
+        }else if("SAC".includes(req_filtro_responsable.toUpperCase()) && req_filtro_responsable.length > 0){
             filterResponsable = true
-            wordsIC.map(( ic, index) => {
-                queryFilterResponse = queryFilterResponse + `master_productos_so.descripcion_producto NOT LIKE '%${ic}%' ${index == wordsIC.length -1 ? '': 'AND '}`
-            })
+            queryFilterResponse = querySAC
+        }else{
+            filterResponsable = true
+            queryFilterResponse = queryFilterResponse + `master_productos_so.descripcion_producto = ""`
         }
         
         const words_exc = ['noble','babysec', 'celeste', 'naranja', 'ladysoft', 'navidad', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas', 'patrias','verano','practica','ldsft','lady-soft','ladisoft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian', 'nova', 'higienol', 'nobl', 'touch', 'softmax', 'aloe', 'bb/sec', 'baby', 'hum', 'premium', 'natural soft', 'lady', 'nocturn', 'ultrafresh', 'humeda', 'menthol','ideal', 'suave', 'laminado', 'suav', 'megarrollo', 'flor', 'duo' ]
@@ -70,9 +79,9 @@ controller.MetMostrarNoHomologados = async (req, res) => {
             query_order_sql = `ORDER BY master_productos_so.updated_at ${req_orden.toUpperCase()}`
         }else if (req_column == "responsable"){
             if(req_orden == "asc"){
-                query_order_sql = `ORDER BY CASE WHEN (master_productos_so.descripcion_producto LIKE '%BNF%' OR master_productos_so.descripcion_producto LIKE '%BONIF%' OR master_productos_so.descripcion_producto LIKE '%BONI%' OR master_productos_so.descripcion_producto LIKE '%FDH - 001%' OR master_productos_so.descripcion_producto LIKE '%COMBO%' OR master_productos_so.descripcion_producto LIKE '%T.GRAT%' OR master_productos_so.descripcion_producto LIKE '%T.GRATUITA%' OR master_productos_so.descripcion_producto LIKE '%PROMO%' OR master_productos_so.descripcion_producto LIKE '%**%') THEN 1 WHEN (master_productos_so.descripcion_producto NOT LIKE '%BNF%' OR master_productos_so.descripcion_producto NOT LIKE '%BONIF%' AND master_productos_so.descripcion_producto NOT LIKE '%BONI%' AND master_productos_so.descripcion_producto NOT LIKE '%FDH - 001%' AND master_productos_so.descripcion_producto NOT LIKE '%COMBO%' AND master_productos_so.descripcion_producto NOT LIKE '%T.GRAT%' AND master_productos_so.descripcion_producto NOT LIKE '%T.GRATUITA%' AND master_productos_so.descripcion_producto NOT LIKE '%PROMO%' AND master_productos_so.descripcion_producto NOT LIKE '%**%') THEN 2 ELSE 3 END`
-            }else{
-                query_order_sql = `ORDER BY CASE WHEN (master_productos_so.descripcion_producto NOT LIKE '%BNF%' AND master_productos_so.descripcion_producto NOT LIKE '%BONIF%' AND master_productos_so.descripcion_producto NOT LIKE '%BONI%' AND master_productos_so.descripcion_producto NOT LIKE '%FDH - 001%' AND master_productos_so.descripcion_producto NOT LIKE '%COMBO%' AND master_productos_so.descripcion_producto NOT LIKE '%T.GRAT%' AND master_productos_so.descripcion_producto NOT LIKE '%T.GRATUITA%' AND master_productos_so.descripcion_producto NOT LIKE '%PROMO%' AND master_productos_so.descripcion_producto NOT LIKE '%**%') THEN 1 WHEN (master_productos_so.descripcion_producto LIKE '%BNF%' OR master_productos_so.descripcion_producto LIKE '%BONIF%' OR master_productos_so.descripcion_producto LIKE '%BONI%' OR master_productos_so.descripcion_producto LIKE '%FDH - 001%' OR master_productos_so.descripcion_producto LIKE '%COMBO%' OR master_productos_so.descripcion_producto LIKE '%T.GRAT%' OR master_productos_so.descripcion_producto LIKE '%T.GRATUITA%' OR master_productos_so.descripcion_producto LIKE '%PROMO%' OR master_productos_so.descripcion_producto LIKE '%**%') THEN 2 ELSE 3 END`
+                query_order_sql = `ORDER BY CASE WHEN (${queryIC}) THEN 1 WHEN (${querySAC}) THEN 2 ELSE 3 END`
+            }else if(req_orden == "desc"){
+                query_order_sql = `ORDER BY CASE WHEN (${querySAC}) THEN 1 WHEN (${queryIC}) THEN 2 ELSE 3 END`
                 
             }
         }else{
@@ -158,7 +167,7 @@ controller.MetMostrarNoHomologados = async (req, res) => {
         const formattedDate = `${year}-${month}`;
         let contador = 0;
 
-        const containsIC = (arr, palabra) => arr.some(str => palabra.includes(str))
+        const containsIC = (arr, palabra) => arr.some(str => palabra.toUpperCase().includes(str.toUpperCase()))
 
         for await(const quer of data_query){
 
