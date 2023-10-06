@@ -49,6 +49,8 @@ controller.MetMostrarHomologados = async (req, res) => {
 
         if(!req_otros){
             query_not.push({ master_productos_grow : { material_softys : { contains : 'OTROS' }}})
+        }else{
+            query_not = []
         }
 
         if(req_updated_at == ''){

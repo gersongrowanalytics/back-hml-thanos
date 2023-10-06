@@ -217,9 +217,11 @@ controller.MetDescargarHomologados = async (req, res) => {
 
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet('Datos')
-        
-            await controller.AddInfoApprovalCombo(workbook, usuario, productos_so)
 
+            if(usuario.tpuid == 1){
+                await controller.AddInfoApprovalCombo(workbook, usuario, productos_so)
+            }
+        
             const headerStyleRed = {
                 font: {
                     color: { argb: '000000' },
