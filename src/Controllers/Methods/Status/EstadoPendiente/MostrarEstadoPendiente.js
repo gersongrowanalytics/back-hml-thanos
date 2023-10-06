@@ -262,9 +262,6 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
         
         date_final = date_final.split("-")
         const date_limit = obtenerSextoDiaHabil(date_final[0], parseInt(date_final[1])+1)
-        // console.log(date_final[0]);
-        // console.log(parseInt(date_final[1]) + 1);
-        // console.log(date_limit);
         
         let espdiasretrasomcl = '0'
         if(moment() > moment(date_limit)){

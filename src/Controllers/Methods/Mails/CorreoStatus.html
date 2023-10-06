@@ -59,7 +59,7 @@
                                             <table style="background: #FFFFFF; width: 100%;">
                                                 <tr style="height: 35px;">
                                                     <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
-                                                        IC
+                                                        Trade/IC
                                                     </td>
                                                     <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 17px; line-height: 27px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
                                                         {{dt.areporcentaje}}%
@@ -87,7 +87,7 @@
                                             <table style="background: #FFFFFF; width: 100%;">
                                                 <tr style="height: 35px;">
                                                     <td align="left" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 14px; line-height: 19px; letter-spacing: -0.015em; color: #1EC0ED; padding-left: 27px">
-                                                        SAC+IC
+                                                        SAC+Trade/IC
                                                     </td>
                                                     {{#isEqual are.areporcentaje "100"}}
                                                         <td style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: 700; font-size: 17px; line-height: 27px; letter-spacing: -0.015em; color: #004FB8; padding-left: 10px">
@@ -145,13 +145,13 @@
 
                                         {{#isEqual data.arenombre "Revenue"}}
                                             <td rowspan="{{ data.esps.length }}" align="left" style="color: #004FB8; background: #FFFFFF; font-weight: 700; font-size: 11px; font-style: normal; padding-left: 18px;">
-                                                IC
+                                                Trade/IC
                                             </td>
                                         {{/isEqual}}
 
                                         {{#isEqual data.arenombre "SAC"}}
                                             <td rowspan="{{ data.esps.length }}" align="left" style="color: #004FB8; background: #FFFFFF; font-weight: 700; font-size: 11px; font-style: normal; padding-left: 18px;">
-                                                SAC+IC
+                                                SAC+Trade/IC
                                             </td>
                                         {{/isEqual}}
 
@@ -169,7 +169,7 @@
                                     <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px; font-style: normal; color: #706C64; font-weight: 700;"> 
                                         
                                         {{#isEqual esp.espresponsable "SAC"}}
-                                            SAC+IC
+                                            SAC+Trade/IC
                                         {{else}}
                                             {{esp.espresponsable}}
                                         {{/isEqual}}
@@ -237,21 +237,24 @@
                                 {{/each}}
                             {{/each}}
                         </table>
+
+
+                        <!-- INICIO TABLA SAC-->
                         <table style="width: 1000px;"></table>
                         <table style="width: 1000px;">
                             <tr>
-                                <td align="start" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: bold; font-size: 13px; color: red; margin-bottom: 0; width: 150px;">Status SKUS (No Homologados) Responsables SAC+IC Softys</td>
+                                <td align="start" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: bold; font-size: 13px; color: red; margin-bottom: 0; width: 150px;">Status SKUS (No Homologados) Responsables SAC Softys</td>
                             </tr>
                         </table>
                         <table border="0" cellspacing="0" cellpadding="0" style="font-family: 'Segoe UI', sans-serif; padding-left: 30px; padding-right: 30px; width: 1000px; border-collapse: collapse;">
                             <tr style="color: #1E1E1E; height: 10px; padding: 0px; margin: 0px; ">
-                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">N°</td>
-                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Zona</td>
-                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">Región</td>
-                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal; padding: 6px">Cantidad Productos no HML</td>
-                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px;  font-style: normal">YTD</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px; width: 7px; font-style: normal">N°</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px; width: 100px; font-style: normal">Zona</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px; width: 100px; font-style: normal">Región</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px; width: 100px; font-style: normal; padding: 6px">Cantidad Productos no HML</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px; width: 100px; font-style: normal">YTD</td>
                             </tr>
-                            {{#each data_mail.datapso as |pso|}}
+                            {{#each data_mail.dataSac as |pso|}}
                             <tr class="Status-Row">
                                 <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
                                     {{pso.key}}
@@ -271,6 +274,53 @@
                             </tr>
                             {{/each}}
                         </table>
+                        <!-- FIN TABLA -->
+
+
+                        <!-- INICIO TABLA IC-->
+                        <table style="width: 1000px;"></table>
+                        <table style="width: 1000px;">
+                            <tr>
+                                <td align="start" style="font-family: 'Segoe UI', sans-serif; font-style: normal; font-weight: bold; font-size: 13px; color: red; margin-bottom: 0; width: 150px;">Status SKUS (No Homologados) Responsables Trade/IC Softys</td>
+                            </tr>
+                        </table>
+                        <table border="0" cellspacing="0" cellpadding="0" style="font-family: 'Segoe UI', sans-serif; padding-left: 30px; padding-right: 30px; width: 1000px; border-collapse: collapse;">
+                            <tr style="color: #1E1E1E; height: 10px; padding: 0px; margin: 0px; ">
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px; width: 7px; font-style: normal">N°</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px; width: 100px; font-style: normal">Zona</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px; width: 100px;  font-style: normal">Región</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px; width: 100px; font-style: normal; padding: 6px">Cantidad Productos no HML</td>
+                                <td align="center" style="color: #FFFFFF; background: #004FB8; font-weight: 700; font-size: 9px; width: 100px; font-style: normal">YTD</td>
+                            </tr>
+                            {{#each data_mail.dataIc as |pso|}}
+                            <tr class="Status-Row">
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                    {{pso.key}}
+                                </td>
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                    {{pso.zona}}
+                                </td>
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                    {{pso.territorio}}
+                                </td>
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                    {{pso.nohml}}
+                                </td>
+                                <td align="center" class="Status-Col" style="background: #FFFFFF; font-size: 9px;  font-style: normal; color: #706C64;">
+                                    {{pso.ytd}}
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </table>
+                        <!-- FIN TABLA -->
+
+
+
+
+
+
+
+
                         <table style="width: 1000px;"></table>
                         <table style="width: 1000px;">
                             <tr>

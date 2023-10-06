@@ -106,14 +106,15 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
 
             const DTfilterEspsDistribuidoras = espsDistribuidoras.filter(esp => esp.espfechactualizacion !== null)
 
-            const data_productos_so = await ObtenerDataTerritorio.MetObtenerDataTerritorio()
+            const { dataIC, dataSAC } = await ObtenerDataTerritorio.MetObtenerDataTerritorio()
 
             const data_mail = {
                 data: datos,
                 dataExcludeDt: datos.filter(a => a.arenombre != 'DT'),
                 dtsCantidad: DTfilterEspsDistribuidoras.length,
                 datadts: filterEspsDistribuidoras,
-                datapso: data_productos_so,
+                dataIc: dataIC,
+                dataSac: dataSAC,
                 fechaActual: fechaFormateada
             }
 

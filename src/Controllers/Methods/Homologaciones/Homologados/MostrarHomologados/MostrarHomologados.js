@@ -38,7 +38,8 @@ controller.MetMostrarHomologados = async (req, res) => {
 
         let order_index = false
 
-        const words_exc = ['noble','babysec', 'celeste', 'naranja', 'ladysoft', 'navidad', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas', 'patrias','verano','practica','ldsft','lady-soft','ladisoft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian', 'nova', 'higienol', 'nobl', 'touch', 'softmax', 'aloe', 'bb/sec', 'baby', 'hum', 'premium', 'natural soft', 'lady', 'nocturn', 'ultrafresh', 'humeda', 'menthol','ideal', 'suave', 'laminado', 'suav', 'megarrollo', 'flor', 'duo' ]
+        const words_exc = ['noble','babysec','celeste','naranja','ladysoft','navidad','mundial','looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas','patrias','verano','practica','ldsft','lady-soft','ladisoft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian','nova','higienol','nobl','touch','softmax','aloe','bb/sec','baby','hum','premium','natural soft','lady','nocturn','ultrafresh','humeda','menthol','ideal','suave','laminado','suav','megarrollo','flor','duo','lsdysoft','mega','aromas','paramonga','pet','natural sof' ]
+
 
         let query_not = []
 

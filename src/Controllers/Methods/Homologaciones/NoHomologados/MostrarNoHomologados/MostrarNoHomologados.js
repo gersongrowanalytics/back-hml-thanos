@@ -43,9 +43,9 @@ controller.MetMostrarNoHomologados = async (req, res) => {
             querySAC    = querySAC + `master_productos_so.descripcion_producto NOT LIKE '%${ic}%' ${index == wordsIC.length -1 ? '': 'AND '}`
         })
 
-        if("SAC".includes(req_filtro_responsable.toUpperCase()) && "IC".includes(req_filtro_responsable.toUpperCase())){
+        if("SAC".includes(req_filtro_responsable.toUpperCase()) && "TRADE/IC".includes(req_filtro_responsable.toUpperCase())){
             queryFilterResponse = ''
-        }else if("IC".includes(req_filtro_responsable.toUpperCase()) && req_filtro_responsable.length > 0){
+        }else if("TRADE/IC".includes(req_filtro_responsable.toUpperCase()) && req_filtro_responsable.length > 0){
             filterResponsable = true
             queryFilterResponse = queryIC
         }else if("SAC".includes(req_filtro_responsable.toUpperCase()) && req_filtro_responsable.length > 0){
@@ -176,7 +176,7 @@ controller.MetMostrarNoHomologados = async (req, res) => {
             const total_v = await prisma.$queryRawUnsafe(`SELECT sum(vs.precio_total_sin_igv) as suma_total FROM ventas_so as vs JOIN master_productos_so as mps ON mps.pk_extractor_venta_so = vs.pk_extractor_venta_so WHERE mps.homologado = ${false} AND mps.pk_venta_so = "${quer.pk_venta_so}" AND vs.fecha LIKE "${year}-%"` )
 
             if(containsIC(wordsIC, quer.descripcion_producto)){
-                data_query[contador]['responsable'] = "IC"
+                data_query[contador]['responsable'] = "Trade/IC"
             }else{
                 data_query[contador]['responsable'] = "SAC"
             }
