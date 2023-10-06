@@ -56,7 +56,8 @@ controller.MetMostrarNoHomologados = async (req, res) => {
             queryFilterResponse = queryFilterResponse + `master_productos_so.descripcion_producto = ""`
         }
         
-        const words_exc = ['noble','babysec', 'celeste', 'naranja', 'ladysoft', 'navidad', 'looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas', 'patrias','verano','practica','ldsft','lady-soft','ladisoft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian', 'nova', 'higienol', 'nobl', 'touch', 'softmax', 'aloe', 'bb/sec', 'baby', 'hum', 'premium', 'natural soft', 'lady', 'nocturn', 'ultrafresh', 'humeda', 'menthol','ideal', 'suave', 'laminado', 'suav', 'megarrollo', 'flor', 'duo' ]
+        const words_exc = ['noble','babysec','celeste','naranja','ladysoft','navidad','mundial','looney','diseño','cumple','torta','lineas','circulos','halloween','fiestas','patrias','verano','practica','ldsft','lady-soft','ladisoft','ultrasec','hipoal','dove','rexona','palos','dobby','cotidian','nova','higienol','nobl','touch','softmax','aloe','bb/sec','baby','hum','premium','natural soft','lady','nocturn','ultrafresh','humeda','menthol','ideal','suave','laminado','suav','megarrollo','flor','duo','lsdysoft','mega','aromas','paramonga','pet','natural sof' ]
+
 
         connection_types = await prisma.masterclientes_grow.findMany({
             select : {
