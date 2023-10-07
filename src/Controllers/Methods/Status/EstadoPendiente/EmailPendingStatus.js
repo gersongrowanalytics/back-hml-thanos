@@ -55,37 +55,37 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
                 // "gporras@softys.com", "jabarcan@softys.com", "cpachecot@softys.com", "maria.yauri@softys.com",
                 // "supdistribuidorlima@softys.com", "supventasprov@softys.com", "dmorales@softys.com", "rsalinas@softys.com",
 
-                "Gerson.Vilca@grow-analytics.com.pe"
+                // "Gerson.Vilca@grow-analytics.com.pe"
                 
-                // "maria.yauri@softys.com",
-                // "lsecca@softys.com",
-                // "rsalinas@softys.com",
-                // "dmorales@softys.com",
-                // "fvillamonte@softys.com",
-                // "gporras@softys.com",
-                // "jabarcan@softys.com",
-                // "cpachecot@softys.com",
-                // "aquiroz@softys.com",
-                // "bshiomura@softys.com",
-                // "brodriguezs@softys.com",
-                // "cesar.sanchez.a@softys.com",
-                // "ccaceresm@softys.com",
-                // "esotomayor@softys.com",
-                // "ihurtado@softys.com",
-                // "isantacruz@softys.com",
-                // "lvigil@softys.com",
-                // "maria.guevara@softys.com",
-                // "ogarcia@softys.com",
-                // "vromeroe@softys.com",
+                "maria.yauri@softys.com",
+                "lsecca@softys.com",
+                "rsalinas@softys.com",
+                "dmorales@softys.com",
+                "fvillamonte@softys.com",
+                "gporras@softys.com",
+                "jabarcan@softys.com",
+                "cpachecot@softys.com",
+                "aquiroz@softys.com",
+                "bshiomura@softys.com",
+                "brodriguezs@softys.com",
+                "cesar.sanchez.a@softys.com",
+                "ccaceresm@softys.com",
+                "esotomayor@softys.com",
+                "ihurtado@softys.com",
+                "isantacruz@softys.com",
+                "lvigil@softys.com",
+                "maria.guevara@softys.com",
+                "ogarcia@softys.com",
+                "vromeroe@softys.com",
 
             ]
             
             // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", "jabarcan@softys.com"]
             // const to_mail_cc_data = [""]
             const to_mail_cc_data = [
-                // "miguel.caballero@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", 
-                // "Gerson.Vilca@grow-analytics.com.pe", 
-                // "frank.martinez@grow-analytics.com.pe", "Jose.Cruz@grow-analytics.com.pe"
+                "miguel.caballero@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", 
+                "Gerson.Vilca@grow-analytics.com.pe", 
+                "frank.martinez@grow-analytics.com.pe", "Jose.Cruz@grow-analytics.com.pe"
             ]
             const subject_mail_success = `Distribuidores. Status ${nombresMeses[mesTexto]} ${anioActual} (Procesos de Data Sell Out)`
             // const subject_mail_success = `Distribuidores: Status ${nombresMeses[mesTexto]} 2023`
