@@ -9,10 +9,10 @@ const GenerateUrl = require('../../S3/GenerateUrlS3')
 controller.MetDescargarHomologados = async (req, res) => {
 
     const {  } = req.body;
-    const { usu_token } = req.headers;
+    const { usutoken } = req.headers;
 
-    console.log("usu_token: ---");
-    console.log(usu_token);
+    console.log("usutoken: ---");
+    console.log(usutoken);
 
     try{
 
@@ -20,7 +20,7 @@ controller.MetDescargarHomologados = async (req, res) => {
 
         let usuario = await prisma.usuusuarios.findMany({
             where: {
-                usutoken : usu_token
+                usutoken : usutoken
             },
             take : 1
         })
