@@ -51,7 +51,7 @@ controller.MetDescargarNoHomologados = async (req, res) => {
                     "UnidadDeMedida"                : pso.unidad_medida ? pso.unidad_medida : '',
                     "codigo_producto_distribuidor"  : pso.codigo_producto ? pso.codigo_producto : '',
                     "nombre_producto_distribuidor"  : pso.descripcion_producto ? pso.descripcion_producto : '',
-                    "Cantidad"  : pso.cantidad ? pso.cantidad : '0',
+                    "Cantidad"  : pso.cantidad ? parseFloat(pso.cantidad) : 0,
                     // "Cod Producto Homologado"       : '',
                     // "Unidad Medida Homologada"      : '',
                     // "unidad_minima"                 : pso.unidad_minima ? pso.unidad_minima : '',
