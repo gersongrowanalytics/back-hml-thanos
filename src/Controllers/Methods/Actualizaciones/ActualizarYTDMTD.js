@@ -20,7 +20,7 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data ) => {
     let contador = 0;
 
     for await(const quer of mpss){
-        const total_v = await prisma.$queryRawUnsafe(`SELECT sum(vs.precio_total_sin_igv) as suma_total FROM ventas_so as vs JOIN master_productos_so as mps ON mps.pk_extractor_venta_so = vs.pk_extractor_venta_so WHERE mps.homologado = ${false} AND mps.pk_venta_so = "${quer.pk_venta_so}" AND vs.fecha LIKE "${year}-%"` )
+        const total_v = await prisma.$queryRawUnsafe(`SELECT sum(vs.precio_total_sin_igv) as suma_total, sum(vs.cantidad) as suma_cantidad FROM ventas_so as vs JOIN master_productos_so as mps ON mps.pk_extractor_venta_so = vs.pk_extractor_venta_so WHERE mps.homologado = ${false} AND mps.pk_venta_so = "${quer.pk_venta_so}" AND vs.fecha LIKE "${year}-%"` )
 
         await prisma.master_productos_so.update({
             where: {
@@ -28,7 +28,8 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data ) => {
             },
             data: {
                 s_mtd : total_v[0]['suma_total'],
-                s_ytd : total_v[0]['suma_total'] 
+                s_ytd : total_v[0]['suma_total'],
+                cantidad : total_v[0]['suma_cantidad']
             }
         })
 

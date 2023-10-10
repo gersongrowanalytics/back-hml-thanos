@@ -251,6 +251,7 @@ model master_productos_so {
   ruc                           String?     @db.VarChar(50)
   desde                         String?     @db.VarChar(50)
   hasta                         String?     @db.VarChar(50)
+  cantidad                      Decimal?    @db.Decimal(17,10) @default(0)
   s_ytd                         Decimal?    @db.Decimal(17,10) @default(0)
   s_mtd                         Decimal?    @db.Decimal(17,10) @default(0)
   unidad_minima                 String?     @db.VarChar(50)

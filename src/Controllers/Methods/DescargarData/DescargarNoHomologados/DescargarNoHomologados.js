@@ -34,6 +34,7 @@ controller.MetDescargarNoHomologados = async (req, res) => {
                             destinatario: true
                         }
                     },
+                    cantidad : true
                 },
                 distinct : ['pk_venta_so']
             })
@@ -49,9 +50,10 @@ controller.MetDescargarNoHomologados = async (req, res) => {
                     "UnidadDeMedida"                : pso.unidad_medida ? pso.unidad_medida : '',
                     "codigo_producto_distribuidor"  : pso.codigo_producto ? pso.codigo_producto : '',
                     "nombre_producto_distribuidor"  : pso.descripcion_producto ? pso.descripcion_producto : '',
-                    "Cod Producto Homologado"       : '',
-                    "Unidad Medida Homologada"      : '',
-                    "unidad_minima"                 : pso.unidad_minima ? pso.unidad_minima : '',
+                    "Cantidad"  : pso.cantidad ? pso.cantidad : '0',
+                    // "Cod Producto Homologado"       : '',
+                    // "Unidad Medida Homologada"      : '',
+                    // "unidad_minima"                 : pso.unidad_minima ? pso.unidad_minima : '',
                     "fecha_inicial"                 : pso.desde ? pso.desde : '',
                 })
             })
@@ -63,9 +65,10 @@ controller.MetDescargarNoHomologados = async (req, res) => {
                 'UnidadDeMedida', 
                 'codigo_producto_distribuidor', 
                 'nombre_producto_distribuidor',
-                'Cod Producto Homologado',
-                'Unidad Medida Homologada',
-                'unidad_minima',
+                'Cantidad',
+                // 'Cod Producto Homologado',
+                // 'Unidad Medida Homologada',
+                // 'unidad_minima',
                 'fecha_inicial',
             ]
 
