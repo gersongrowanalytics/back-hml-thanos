@@ -31,7 +31,7 @@ controller.MetMostrarNoHomologados = async (req, res) => {
 
     try{
         
-        const wordsIC = ['BNF','BONIF','BONI','FDH - 001', 'COMBO', 'T.GRAT', 'T.GRATUITA', 'PROMO', '**']
+        const wordsIC = ['BNF','BONIF','BONI','FDH - 001', 'COMBO', 'T.GRAT', 'T.GRATUITA', 'PROMO', '**', 'BON2', 'BONF', 'B REND', 'B ELITE', 'T.G.']
         let query_words_exc = ''
         let queryFilterResponse = ''
 

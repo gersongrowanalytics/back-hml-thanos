@@ -55,7 +55,7 @@ controller.MetObtenerDataTerritorio = async () => {
             }
         );
 
-        const wordsIC = ['BNF','BONIF','BONI','FDH - 001', 'COMBO', 'T.GRAT', 'T.GRATUITA', 'PROMO', '**']
+        const wordsIC = ['BNF','BONIF','BONI','FDH - 001', 'COMBO', 'T.GRAT', 'T.GRATUITA', 'PROMO', '**', 'BON2', 'BONF', 'B REND', 'B ELITE', 'T.G.']
         const containsIC = (arr, palabra) => arr.some(str => palabra.toUpperCase().includes(str.toUpperCase()))
 
         let dataTerritorySAC    = []
