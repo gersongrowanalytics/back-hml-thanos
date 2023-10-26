@@ -148,7 +148,7 @@ controller.ValCellsFile = async (workbook, workbook_title, req_date_updated) => 
                     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[6]['name'])
                     controller.ValAddMessageLog(rows_error, messages_error, columns_name[6]['name'], num_row, 'not number', null, workbook_title)
                 }else{
-                    type_gba.push({gba: "PROV", precio: row[properties[6]]})
+                    type_gba.push({gba: "PROVINCIA", precio: row[properties[6]]})
                 }
             }
         }else{
@@ -162,7 +162,8 @@ controller.ValCellsFile = async (workbook, workbook_title, req_date_updated) => 
                     let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[5]['name'])
                     controller.ValAddMessageLog(rows_error, messages_error, columns_name[5]['name'], num_row, 'not number', null, workbook_title)
                 }else{
-                    type_gba.push({gba: "MIXTO", precio: row[properties[5]]})
+                    type_gba.push({gba: "LIMA", precio: row[properties[5]]})
+                    type_gba.push({gba: "PROVINCIA", precio: row[properties[5]]})
                 }
             }
         }

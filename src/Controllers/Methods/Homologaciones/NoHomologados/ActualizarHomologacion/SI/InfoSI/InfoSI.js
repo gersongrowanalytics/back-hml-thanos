@@ -1,6 +1,6 @@
 const controller = {}
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 
 controller.MetObtenerInfoSI = async (req, res) => {
     const {
@@ -16,6 +16,58 @@ controller.MetObtenerInfoSI = async (req, res) => {
 
     try {
 
+        let where_date = {}
+        let without_date = false
+
+        if(req_type_year && req_anio.length > 0){
+            const year_selected = req_anio.map(year => parseInt(year)) 
+            where_date = {
+                anio: {
+                    in: year_selected,
+                }
+            }
+        }else if(req_type_month && req_mes.length > 0){
+            const mes_selected = req_mes.map(m => parseInt(m.month) + 1)
+            where_date = {
+                mes: {
+                    in: mes_selected,
+                },
+            }
+
+            const year_accumulated = req_mes.map(m => m.year)
+            if(year_accumulated.length > 0){
+                where_date = { ...where_date, anio: parseInt(year_accumulated[0]) }
+            }
+        }else if(req_type_day && req_dia.length > 0){
+            const day_selected = req_dia.map(m => parseInt(m.days))
+            where_date = {
+                dia: {
+                    in: day_selected,
+                },
+            }
+
+            const month_accumulated = req_mes.map(m => parseInt(m.month) + 1)
+            if(month_accumulated.length > 0){
+                where_date = { ...where_date, mes: parseInt(month_accumulated[0]) }
+            }
+
+            const year_accumulated = req_mes.map(m => m.year)
+            if(year_accumulated.length > 0){
+                where_date = { ...where_date, anio: parseInt(year_accumulated[0]) }
+            }
+        }else{
+            const date_now = new Date()
+            const month_now = date_now.getMonth() + 1
+            const year_now = date_now.getFullYear()
+            without_date = true
+
+            where_date = { 
+                fecha: {
+                    contains: `%${month_now}.${year_now}`
+                }
+            }
+        }
+
         let data_sellin = await prisma.sellin.findMany({
             select: {
                 ubnetofac: true,
@@ -27,13 +79,11 @@ controller.MetObtenerInfoSI = async (req, res) => {
                 cargo: {
                     contains: `%Si tiene%`
                 },
-                fecha: {
-                    contains: `%${req_mes}.${req_anio}`
-                },
+                ...where_date,
             }
         })
 
-        if(data_sellin.length == 0){
+        if(data_sellin.length == 0 && without_date){
             const data_sellin_date = await prisma.sellin.findFirst({
                 select: {
                     mes: true,

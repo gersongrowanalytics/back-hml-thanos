@@ -27,24 +27,19 @@ controller.MetInfoMasterPrecios = async (req, res) => {
             }
         }
 
-        if(req_type_month){
+        if(req_type_month && req_mes.length > 0){
             const month_data = req_mes.map(m => m.month + 1)
             const year_data = req_mes.map(m => m.year)
             where_master_price = { anio: { in: year_data }, mes: { in: month_data } } 
         }
 
-        if(req_type_day){
-            const day_data = req_dia.map(m => parseInt(m.days))
+        if(req_type_day && req_dia.length > 0){
             const month_data = req_dia.map(m => m.month + 1)
             const year_data = req_dia.map(m => m.year)
             where_master_price = { anio: { in: year_data }, mes: { in: month_data } } 
         }
 
-        if(req_clients_zona == "LIMA"){
-            where_master_price = { ...where_master_price, gba: "LIMA" }
-        }else if(req_clients_zona == "PROVINCIA"){
-            where_master_price = { ...where_master_price, gba: "PROV" }
-        }
+        where_master_price = { ...where_master_price, gba: req_clients_zona}
 
         const get_master_price = await prisma.master_precios.findMany({
             select: {
