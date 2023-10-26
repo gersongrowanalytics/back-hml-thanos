@@ -209,7 +209,11 @@ controller.MetMasterMateriales = async (req, res, data, error, message_errors) =
         const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html');
         // const success_mail_html = "src/Controllers/Methods/Mails/CorreoInformarCargaArchivo.html"
         const from_mail_data = process.env.USER_MAIL
-        const to_mail_data = process.env.TO_MAIL
+        const to_mail_data = [
+            "Jose.Cruz@grow-analytics.com.pe",
+            "Frank.Martinez@grow-analytics.com.pe",
+            process.env.TO_MAIL
+        ]
         const subject_mail_success = "Carga de Archivo"
 
         const data_mail = {

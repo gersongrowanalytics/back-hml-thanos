@@ -11,7 +11,11 @@ controller.MetEmailPendingStatusDts = async ( req, res ) => {
 
         if(response){
             const from_mail_data = process.env.USER_MAIL
-            const to_mail_data = process.env.TO_MAIL
+            const to_mail_data = [
+                "Jose.Cruz@grow-analytics.com.pe",
+                "Frank.Martinez@grow-analytics.com.pe",
+                process.env.TO_MAIL
+            ]
 
             const fechaActual = new Date()
             const diaActual = fechaActual.getDate().toString().padStart(2, '0')

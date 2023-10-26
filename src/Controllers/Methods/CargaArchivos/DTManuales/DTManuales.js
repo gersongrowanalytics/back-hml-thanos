@@ -153,10 +153,19 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         // const to_mail_data = process.env.TO_MAIL
         const to_mail_cc_data = ""
 
-        let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
+        let to_mail_data = [
+            'Jazmin.Laguna@grow-analytics.com.pe',
+            "Jose.Cruz@grow-analytics.com.pe",
+            "Frank.Martinez@grow-analytics.com.pe",
+            "gerson.vilca@grow-analytics.com.pe",
+        ]
         // let to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
         if(usu.usuid == 1){
-            to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
+            to_mail_data = [
+                "gerson.vilca@grow-analytics.com.pe",
+                "Jose.Cruz@grow-analytics.com.pe",
+                "Frank.Martinez@grow-analytics.com.pe",
+            ]
         }
         
         const subject_mail_success = "Carga de Archivo"
