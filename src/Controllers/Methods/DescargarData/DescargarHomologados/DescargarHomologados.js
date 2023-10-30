@@ -443,7 +443,7 @@ controller.AddInfoApprovalCombo = async ( workbook, usuario, productos_so )  => 
                 "unidad_medida" : pso.unidad_medida ? pso.unidad_medida : '',
                 "coeficiente" : pso.coeficiente ? pso.coeficiente : '',
                 "unidad_minima_unitaria" : pso.unidad_minima_unitaria ? pso.unidad_minima_unitaria : '',
-                "bonificacion" : pso.bonificacion ? 'Si' : 'No',
+                "bonificacion" : pso.bonificado ? 'Si' : 'No',
                 "fecha_inicial": pso.desde ? pso.desde : '',
             })
         }else{
@@ -457,7 +457,7 @@ controller.AddInfoApprovalCombo = async ( workbook, usuario, productos_so )  => 
                 "unidad_medida" : pso.unidad_medida ? pso.unidad_medida : '',
                 "coeficiente" : pso.coeficiente ? pso.coeficiente : '',
                 "unidad_minima_unitaria" : pso.unidad_minima_unitaria ? pso.unidad_minima_unitaria : '',
-                "bonificacion" : pso.bonificacion ? 'Si' : 'No',
+                "bonificacion" : pso.bonificado ? 'Si' : 'No',
             })
         }
         
