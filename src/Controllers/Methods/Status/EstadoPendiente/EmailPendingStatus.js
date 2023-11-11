@@ -75,8 +75,12 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
             ]
             
             // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", "jabarcan@softys.com"]
-            const to_mail_cc_data = ["Jose.Cruz@grow-analytics.com.pe"]
-
+            // const to_mail_cc_data = [""]
+            const to_mail_cc_data = [
+                "miguel.caballero@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", 
+                "Gerson.Vilca@grow-analytics.com.pe", 
+                "frank.martinez@grow-analytics.com.pe", "Jose.Cruz@grow-analytics.com.pe"
+            ]
             const subject_mail_success = `Distribuidores. Status ${nombresMeses[mesTexto]} ${anioActual} (Procesos de Data Sell Out)`
             // const subject_mail_success = `Distribuidores: Status ${nombresMeses[mesTexto]} 2023`
             // const subject_mail_success = `Distribuidores Thanos: Status-Cierre Agosto 2023`
