@@ -72,6 +72,7 @@ controller.MetEmailPendingStatus = async ( req, res ) => {
                 "maria.guevara@softys.com",
                 "ogarcia@softys.com",
                 "vromeroe@softys.com",
+                "alevanop@softys.com"
             ]
             
             // const to_mail_data = ["Gerson.Vilca@grow-analytics.com.pe", "jazmin.laguna@grow-analytics.com.pe", "jabarcan@softys.com"]
