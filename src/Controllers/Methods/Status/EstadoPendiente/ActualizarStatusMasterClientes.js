@@ -119,6 +119,8 @@ controller.MetActualizarStatusMasterClientes = async (usutoken, date, perid, fil
         })
 
         if(espe && usuid != 1){
+
+            console.log("actualiza status cliente")
             
             let date_one = moment()
             let date_two = moment(espe.espfechaprogramado)

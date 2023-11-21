@@ -71,22 +71,27 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
             }
 
             const find_product_so = req_select_product_so.find(product => product.id == dhm.req_id_copia)
-
+            console.log("find_product_so")
+            console.log(find_product_so)
             if(dhm.req_combo){
+                console.log("es combo")
                 data_mpso = { ...data_mpso,
                                 combo                   : dhm.req_combo, 
                                 cod_unidad_medida_hml   : dhm.req_cod_unidad_medida_homologado,
                                 unidad_medida_hml       : dhm.req_unidad_medida_homologado,
-                                coeficiente             : dhm.req_coeficiente,
-                                unidad_minima_unitaria  : dhm.req_unidad_minima_unitario,
+                                coeficiente             : dhm.req_coeficiente, // find_product_so.valueForm.coef
+                                unidad_minima_unitaria  : dhm.req_unidad_minima_unitario, // find_product_so.valueForm.unmin
                                 bonificado              : dhm.req_bonificado,
                                 desde                   : moment(req_rango_fecha.desde).format('YYYY-MM-DD').toString(),
                                 hasta                   : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
-                                cod_unidad_medida   : dhm.req_cod_unidad_medida,
+                                cod_unidad_medida       : dhm.req_cod_unidad_medida,
                                 pk_venta_so_hml         :  find_product_so.pk_venta_so + prod_hml.codigo_material
                             }
             }
             if(dhm.req_id){
+
+                console.log("data_mpso")
+                console.log(data_mpso)
 
                 const updated_product_so = await prisma.master_productos_so.update({
                     where : {

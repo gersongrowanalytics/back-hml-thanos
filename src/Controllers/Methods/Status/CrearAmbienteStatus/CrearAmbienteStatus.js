@@ -3,6 +3,8 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const moment = require('moment');
 moment.locale('es');
+const SendMailController = require('../../Reprocesos/SendMail')
+const path = require('path');
 
 controller.MetCrearAmbienteStatus = async ( req, res ) => {
 
@@ -19,6 +21,10 @@ controller.MetCrearAmbienteStatus = async ( req, res ) => {
         req_fecfecha,
     } = req.body
 
+    let response    = true
+    let message     = "Se ha creado el ambiente para status exitosamente"
+    let statusCode  = 200
+    let msgdev      = []
     
     try{
 
@@ -118,9 +124,6 @@ controller.MetCrearAmbienteStatus = async ( req, res ) => {
                     }
                 })
     
-                // if(areExist){
-                //     await controller.ResetAreEsp(fecfechaexists)
-                // }
                 if(!areExist){
                     responseEsp = await controller.CreateDataAreEsp(
                         fecfechaexists, 
@@ -132,6 +135,8 @@ controller.MetCrearAmbienteStatus = async ( req, res ) => {
                         req_archivoplano, 
                         req_sachml
                     )
+                }else{
+                    message = "Ya existe el entorno creado para el presente mes"
                 }
             }else{
                 await prisma.fecfechas.updateMany({
@@ -166,30 +171,42 @@ controller.MetCrearAmbienteStatus = async ( req, res ) => {
                 )
             }
     
-            if(responseEsp){
-                res.status(200).json({
-                    response    : true,
-                    message     : 'Se ha creado el ambiente para status exitosamente'
-                })
-            }else{
-                res.status(500).json({
-                    response    : false,
-                    message     : 'Ha ocurrido un error al generar los estados pendientes'
-                })
+            if(!responseEsp){
+                statusCode  = 500
+                response    = false,
+                message     = 'Ha ocurrido un error al generar los estados pendientes'
             }
-
         }else{
-            res.status(500).json({
-                response    : false,
-                message     : 'Ha ocurrido un error al generar los estados pendientes. El formato de las fecha debe ser "YYYY/MM/DD"',
-                msgdev      : fechasInvalidas
-            })
+            statusCode  = 500
+            response    = false
+            message     = 'Ha ocurrido un error al generar los estados pendientes. El formato de las fecha debe ser "YYYY/MM/DD"'
+            msgdev      = fechasInvalidas
         }
     }catch(err){
         console.log(err)
-        res.status(500).json({
-            response    : false,
-            message     : 'Ha ocurrido un error al crear el ambiente para status'
+        statusCode  = 500
+        response    = false,
+        message     = 'Ha ocurrido un error en el servidor al crear el ambiente para status'
+    }finally{
+        
+        const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoCreacionEntorno.html');
+        const from_mail_data = process.env.USER_MAIL
+        const to_mail_data = process.env.TO_MAIL
+        const subject_mail_success = response ? "Creación de entorno Status" : "Error al crear entorno de status"
+        const data_mail = {
+            message,
+            msgdev,
+            fecha : req_fecfecha,
+            response,
+            error : response ? false : true
+        }
+        
+        await SendMailController.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail)
+
+        res.status(statusCode).json({
+            response,
+            message,
+            msgdev
         })
     }
 }

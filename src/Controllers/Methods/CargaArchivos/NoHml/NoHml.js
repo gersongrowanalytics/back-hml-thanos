@@ -3,15 +3,13 @@ require('dotenv').config()
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const crypto = require('crypto')
+const ObtenerProductosSO = require('../Helpers/ObtenerProductosSO')
 const SendMail = require('../../Reprocesos/SendMail')
 const UploadFileExcel = require('../../S3/UploadFileExcelS3')
 const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadenaAleatorio')
 const path = require('path')
-const DTActualizarEstadoSelloutController = require('../DTManuales/DTActualizarEstadoSellOut')
 const RegisterAudits = require('../../Audits/CreateAudits/RegisterAudits')
-const ActualizarStatusBaseDatos = require('../../Status/EstadoPendiente/ActualizarStatusBaseDatos')
-
-controller.MetDTManuales = async (req, res, data, delete_data, error, message_errors) => {
+controller.MetNoHml = async (req, res, data, delete_data, error, message_errors) => {
 
     const {
         req_action_file,
@@ -41,7 +39,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
     req.body.req_usucorreo      = usu.usucorreo
     req.body.req_controller     = true
 
-    let message = 'Las ventas manuales fueron cargadas correctamente'
+    let message = 'Los registros No HML fueron cargadas correctamente'
     let respuesta = true
     let devmsg = []
     let jsonentrada = {
@@ -53,96 +51,101 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
     try{
 
-        //Almacena en status
-        console.log("En tarjeta DT MANUALES")
-        console.log("Status ")
-
-        let error_actualizar_esp        = false
-
+        const action_file               = JSON.parse(req_action_file)
         let messages_delete_data_acc    = []
+        let error_actualizar_esp        = false
+        let error_actualizar_so         = false
         const baseUrl = req.protocol + '://' + req.get('host');
 
+        let rpta_obtener_products_so = {}
         if(!error){
             
             const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
 
             messages_delete_data_acc = messages_delete_data
-            if(usu.tpuid != 1){
-                console.log("Actualiza estado sellout")
-                error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data, audpk, devmsg)
+            // REVISAR ESTAS LINEAS !!
+            if(usu.tpuid == 1){
+                console.log("Ejecuta logica de tpuid 1")
+                error_actualizar_so   = await controller.DTActualizarVentasSO(action_file.delete_data, delete_data, data, audpk, devmsg)
+                rpta_obtener_products_so = await ObtenerProductosSO.MetObtenerProductosSO(audpk, devmsg, req, res)
             }
         }
+
+        // const rpta_asignar_dt_ventas_so = await AsignarDTVentasSO.MetAsignarDTVentasSO()
         
         const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
 
         let ubicacion_s3 = ""
 
         if(process.env.ENTORNO == 'PREPRODUCTIVO'){
-            ubicacion_s3 = 'hmlthanos/pe/prueba/tradicional/archivosgenerados/planoso/'+ token_name + '-' + req.files.carga_manual.name
-
+            ubicacion_s3 = 'hmlthanos/pe/prueba/tradicional/archivosgenerados/nohml/'+ token_name + '-' + req.files.carga_no_hml.name
         }else{
-            ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/planoso/'+ token_name + '-' + req.files.carga_manual.name
+            ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/nohml/'+ token_name + '-' + req.files.carga_no_hml.name
         }
 
-        const archivoExcel = req.files.carga_manual.data
-        const excelSize = req.files.carga_manual.size
+
+        const archivoExcel = req.files.carga_no_hml.data
+        const excelSize = req.files.carga_no_hml.size
         
         await UploadFileExcel.UploadFileExcelS3(ubicacion_s3, archivoExcel, excelSize)
 
         let carexito_bd = true
-        let carnotificaciones_bd = 'Las ventas manuales fueron cargadas correctamente'
+        let carnotificaciones_bd = 'Los registros No HML fueron cargados correctamente'
 
         if(error){
             carexito_bd = false
             carnotificaciones_bd = await controller.FormatMessageError(message_errors)
-        }else{
-            const codigos_dt_fechas = Object.values(
-                data.reduce((grupos, dato) => {
-                    const { codigo_distribuidor, fecha } = dato;
-                    grupos[codigo_distribuidor] = grupos[codigo_distribuidor] || {
-                        codigo_distribuidor,
-                        fechas: [],
-                        fechas_query: [],
-                    };
-                    if (!grupos[codigo_distribuidor].fechas.includes(fecha)) {
-                        grupos[codigo_distribuidor].fechas.push(fecha);
-                        grupos[codigo_distribuidor].fechas_query.push({
-                            "fecha" : fecha
-                        });
-                    }
-                    return grupos;
-                }, {})
-            )
+        }
 
-            console.log("ELIMINA")
-            for await(const cod_fecha of codigos_dt_fechas){
-                
-                console.log(cod_fecha)
-
-                await prisma.pvs_pe_ventas_so.deleteMany({
-                    where : {
-                        codigo_distribuidor : cod_fecha.codigo_distribuidor,
-                        OR : cod_fecha.fechas_query
+        const cod_grow = rpta_obtener_products_so.codigo_destinatario ? rpta_obtener_products_so.codigo_destinatario : []
+        let conexion_type = ""
+        if(cod_grow.length > 0){
+            const get_master_clients_grow = await prisma.masterclientes_grow.findMany({
+                where: {
+                    codigo_destinatario: {
+                        in: cod_grow
                     }
-                })
-            }
-            console.log("inserta: " +  data.length + " registros en pvs" )
-            await prisma.pvs_pe_ventas_so.createMany({
-                data
+                },
+                select: {
+                    conexion: true,
+                }
             })
+
+            let aut = false
+            let man = false
+            let ambos = false
+            let nocom = false
+            get_master_clients_grow.map(gmcg => {
+                if(gmcg.conexion == "MANUAL"){
+                    man = true
+                }
+                if(gmcg.conexion == "AUTOMATICO"){
+                    aut = true
+                }
+                if(gmcg.conexion == "NO COMPARTE"){
+                    nocom = true
+                }
+                if(man && aut){
+                    ambos = true
+                }
+            })
+            conexion_type = ambos ? "AMBOS" 
+                                : aut ? "AUTOMATICO" 
+                                : man ? "MANUAL" 
+                                : nocom && "NO COMPARTE"
         }
 
         const token_excel = crypto.randomBytes(30).toString('hex')
         const car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usu.usuid,
-                carnombre   : req.files.carga_manual.name,
+                carnombre   : req.files.carga_no_hml.name,
                 cararchivo  : ubicacion_s3,
                 cartoken    : token_excel,
                 cartipo     : req_type_file,
                 carurl      : baseUrl + '/carga-archivos/generar-descarga?token=' + token_excel,
                 carexito    : carexito_bd,
-                carconexion : "",
+                carconexion : conexion_type,
                 carnotificaciones : carnotificaciones_bd
             }
         })
@@ -155,14 +158,19 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         // if(usu.usuid == 1){
         //     to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
         // }
-        
+        // let to_mail_data = [
+        //     'Jazmin.Laguna@grow-analytics.com.pe',
+        //     "Jose.Cruz@grow-analytics.com.pe",
+        //     "Frank.Martinez@grow-analytics.com.pe",
+        //     "gerson.vilca@grow-analytics.com.pe",
+        // ]
         let to_mail_data = ["Jose.Cruz@grow-analytics.com.pe"]
-
+        
         const subject_mail_success = "Carga de Archivo"
 
         const data_mail = {
-            archivo: req.files.carga_manual.name, 
-            tipo: "Archivo Plano So", 
+            archivo: req.files.carga_no_hml.name, 
+            tipo: "No HML", 
             usuario: usu.usuusuario,
             url_archivo: car.cartoken,
             error_val: error,
@@ -175,18 +183,18 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
             let status      = 200
 
+            if(error_actualizar_esp || error_actualizar_so){
+                status      = 500
+                message     = 'Ha ocurrido un error al crear los registros para No HML' 
+                respuesta   = false
+            }
+
             jsonsalida = { message, messages_delete_data_acc, respuesta }
             let log = null
             if(devmsg.length > 1){
                 log = JSON.stringify(devmsg)
             }
-            await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'DT MANUALES', 'CREAR', '/carga-archivos/dt-manuales', log, audpk)
-
-            //Actualizar status si es diferente de usuid = 1
-            if(usu.tpuid != 1){
-                console.log("Actualiza status, no es tpuid 1")
-                await ActualizarStatusBaseDatos.MetActualizarStatusBaseDatos(req, res)
-            }
+            await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'NO HML', 'CREAR', '/carga-archivos/no-hml', log, audpk)
 
             return res.status(status).json({
                 message,
@@ -200,13 +208,13 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
     }catch(error){
         console.log(error);
-        devmsg.push("MetDTManuales-"+error.toString())
+        devmsg.push("MetNoHml-"+error.toString())
         jsonsalida = { message, respuesta, devmsg }
-        await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'DT MANUALES', 'CREAR', '/carga-archivos/dt-manuales', JSON.stringify(devmsg), null)
+        await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'NO HML', 'CREAR', '/carga-archivos/no-hml', JSON.stringify(devmsg), null)
 
         res.status(500)
         return res.json({
-            message : 'Lo sentimos hubo un error al momento de cargar las dt manuales',
+            message : 'Lo sentimos hubo un error al momento de cargar los no hml',
             devmsg  : error,
             respuesta : false
         })
@@ -259,15 +267,6 @@ controller.DTActualizarVentasSO = async (action_delete, delete_data, data, audpk
 
                 if(find_ventas_so){
                     audpk.push("ventas_so-delete-"+find_ventas_so.id)
-
-                    // await prisma.ventas_so.deleteMany({
-                    //     where: {
-                    //         fecha: {
-                    //             startsWith: dat.fecha
-                    //         },
-                    //         codigo_distribuidor: dat_cod
-                    //     }
-                    // })
                 }
             }
         }

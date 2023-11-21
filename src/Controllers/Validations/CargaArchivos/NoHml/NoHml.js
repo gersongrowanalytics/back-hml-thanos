@@ -2,11 +2,11 @@ const controller = {}
 const XLSX = require('xlsx')
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const DTManualesController = require('../../../Methods/CargaArchivos/DTManuales/DTManuales')
+const NoHmlController = require('../../../Methods/CargaArchivos/NoHml/NoHml')
 const DTManualesMasterClientesGrowController = require('../../../Methods/CargaArchivos/DTManuales/DTManualesMasterClientesGrow')
 const moment = require('moment');
 
-controller.ValDTManuales = async (req, res) => {
+controller.ValNoHml = async (req, res) => {
 
     const {
         req_action_file,
@@ -17,7 +17,7 @@ controller.ValDTManuales = async (req, res) => {
         usutoken
     } = req.headers
 
-    const file          = req.files.carga_manual
+    const file          = req.files.carga_no_hml
 
     try{
 
@@ -28,8 +28,7 @@ controller.ValDTManuales = async (req, res) => {
                 usutoken : usutoken
             },
             select : {
-                usuid : true,
-                tpuid : true
+                usuid : true
             }
         })
 
@@ -50,7 +49,7 @@ controller.ValDTManuales = async (req, res) => {
         const messages = messages_error.flatMap(mess => mess.notificaciones.map(notif=> notif.msg));
 
         if(!add_dt_manuales){
-            await DTManualesController.MetDTManuales(req, res, null, null, true, messages_error)
+            await NoHmlController.MetNoHml(req, res, null, null, true, messages_error)
 
             res.status(500)
             return res.json({
@@ -62,7 +61,7 @@ controller.ValDTManuales = async (req, res) => {
         }
 
         if(action_file.process_data){
-            DTManualesController.MetDTManuales(req, res, data, borrar_data, false)
+            await NoHmlController.MetNoHml(req, res, data, borrar_data, false)
         }else{
             res.status(200).json({
                 respuesta   : true,
@@ -108,12 +107,6 @@ controller.ValCellsFile = async (workbook, usu, date) => {
     let properties  = Object.keys(rows[0])
 
     const [ req_year, req_month ] = date.split("-")
-    // const cod_dts = await prisma.master_distribuidoras.findMany({
-    //     select : {
-    //         codigo_dt   : true,
-    //         id          : true
-    //     }
-    // })
 
     const cod_dts = await prisma.masterclientes_grow.findMany({
         select : {
@@ -251,7 +244,7 @@ controller.ValCellsFile = async (workbook, usu, date) => {
             }
         }
 
-        if(usu.tpuid != 1){
+        if(usu.usuid != 1){
             if(row[properties[4]]){
                 
                 if(row[properties[4]].toString().length != 11 && row[properties[4]].toString().length != 8){
@@ -363,16 +356,17 @@ controller.ValCellsFile = async (workbook, usu, date) => {
         const pk_venta_so           = row[properties[0]].toString().trim() + row[properties[10]].toString().trim()
         const pk_extractor_venta_so = row[properties[0]].toString().trim() + row[properties[10]].toString().trim() + cod_unidad_medida + unidad_medida
 
-        // if(usu.tpuid != 1){
-        //     if(parseInt(month_date) != parseInt(req_month) || parseInt(year_date) != parseInt(req_year)){
-        //         add_dt_manuales = false
-        //         let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[1]['name'])
-        //         controller.ValAddMessageLog(rows_error, messages_error, columns_name[1]['name'], num_row, 'date range', null, date)
-        //     }
-        // }
+        if(usu.usuid != 1){
+            if(parseInt(month_date) != parseInt(req_month) || parseInt(year_date) != parseInt(req_year)){
+                add_dt_manuales = false
+                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[1]['name'])
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[1]['name'], num_row, 'date range', null, date)
+            }
+        }
 
         data.push({
             pro_so_id                       : null,
+            m_dt_id                         : null,
             pk_venta_so                     : pk_venta_so,
             m_cl_grow                       : id_mcl_grow,
             pk_extractor_venta_so           : pk_extractor_venta_so,
@@ -396,6 +390,7 @@ controller.ValCellsFile = async (workbook, usu, date) => {
             dia                             : parseInt(day_date),
             mes                             : parseInt(month_date),
             anio                            : parseInt(year_date),
+            // usuid                           : usu.usuid
         })
 
         num_row = num_row + 1

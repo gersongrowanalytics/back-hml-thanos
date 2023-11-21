@@ -27,9 +27,9 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data ) => {
                 id : quer.id
             },
             data: {
+                cantidad : total_v[0]['suma_cantidad'],
                 s_mtd : total_v[0]['suma_total'],
                 s_ytd : total_v[0]['suma_total'],
-                cantidad : total_v[0]['suma_cantidad']
             }
         })
 

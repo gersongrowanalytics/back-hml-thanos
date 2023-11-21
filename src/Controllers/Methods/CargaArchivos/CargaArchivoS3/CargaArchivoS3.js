@@ -98,7 +98,6 @@ controller.MetCargaArchivoS3 = async ( req, res ) => {
         const to_mail_data = [
             "Jose.Cruz@grow-analytics.com.pe",
             "Frank.Martinez@grow-analytics.com.pe",
-            "gerson.vilca@grow-analytics.com.pe"
         ]
         
         const subject_mail_success = "Carga de Archivo Thanos"
