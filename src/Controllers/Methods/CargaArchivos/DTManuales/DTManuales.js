@@ -114,11 +114,8 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                 }, {})
             )
 
-            console.log("ELIMINA")
             for await(const cod_fecha of codigos_dt_fechas){
                 
-                console.log(cod_fecha)
-
                 await prisma.pvs_pe_ventas_so.deleteMany({
                     where : {
                         codigo_distribuidor : cod_fecha.codigo_distribuidor,
@@ -126,7 +123,6 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
                     }
                 })
             }
-            console.log("inserta: " +  data.length + " registros en pvs" )
             await prisma.pvs_pe_ventas_so.createMany({
                 data
             })
@@ -151,12 +147,18 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         const from_mail_data = process.env.USER_MAIL
         const to_mail_cc_data = ""
 
-        // let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
-        // if(usu.usuid == 1){
-        //     to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
-        // }
-        
-        let to_mail_data = ["Jose.Cruz@grow-analytics.com.pe"]
+        let to_mail_data = [
+            'Jazmin.Laguna@grow-analytics.com.pe',
+            "Jose.Cruz@grow-analytics.com.pe",
+            "Frank.Martinez@grow-analytics.com.pe",
+        ]
+
+        if(usu.usuid == 1){
+            to_mail_data = [
+                "Jose.Cruz@grow-analytics.com.pe",
+                "Frank.Martinez@grow-analytics.com.pe",
+            ]
+        }
 
         const subject_mail_success = "Carga de Archivo"
 

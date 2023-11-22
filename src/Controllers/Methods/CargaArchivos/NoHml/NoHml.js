@@ -8,6 +8,7 @@ const SendMail = require('../../Reprocesos/SendMail')
 const UploadFileExcel = require('../../S3/UploadFileExcelS3')
 const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadenaAleatorio')
 const path = require('path')
+const axios = require('axios');
 const RegisterAudits = require('../../Audits/CreateAudits/RegisterAudits')
 controller.MetNoHml = async (req, res, data, delete_data, error, message_errors) => {
 
@@ -53,7 +54,7 @@ controller.MetNoHml = async (req, res, data, delete_data, error, message_errors)
 
         const action_file               = JSON.parse(req_action_file)
         let messages_delete_data_acc    = []
-        let error_actualizar_esp        = false
+        let error_actualizar_ytd_mtd    = false
         let error_actualizar_so         = false
         const baseUrl = req.protocol + '://' + req.get('host');
 
@@ -154,17 +155,18 @@ controller.MetNoHml = async (req, res, data, delete_data, error, message_errors)
         const from_mail_data = process.env.USER_MAIL
         const to_mail_cc_data = ""
 
-        // let to_mail_data = ["gerson.vilca@grow-analytics.com.pe", 'Jazmin.Laguna@grow-analytics.com.pe']
-        // if(usu.usuid == 1){
-        //     to_mail_data = ["gerson.vilca@grow-analytics.com.pe"]
-        // }
-        // let to_mail_data = [
-        //     'Jazmin.Laguna@grow-analytics.com.pe',
-        //     "Jose.Cruz@grow-analytics.com.pe",
-        //     "Frank.Martinez@grow-analytics.com.pe",
-        //     "gerson.vilca@grow-analytics.com.pe",
-        // ]
-        let to_mail_data = ["Jose.Cruz@grow-analytics.com.pe"]
+        let to_mail_data = [
+            'Jazmin.Laguna@grow-analytics.com.pe',
+            "Jose.Cruz@grow-analytics.com.pe",
+            "Frank.Martinez@grow-analytics.com.pe",
+        ]
+
+        if(usu.usuid == 1){
+            to_mail_data = [
+                "Jose.Cruz@grow-analytics.com.pe",
+                "Frank.Martinez@grow-analytics.com.pe",
+            ]
+        }
         
         const subject_mail_success = "Carga de Archivo"
 
@@ -177,15 +179,23 @@ controller.MetNoHml = async (req, res, data, delete_data, error, message_errors)
             error_message_mail: message_errors
         }
         
+        const resYtdMtd = await axios.get('http://127.0.0.1:8002/actualizaciones/actualizar-ytd-mtd')
+
+        if(resYtdMtd.status == 200){
+            console.log("Actualizó YTD-MTD correctamente")
+        }else{
+            error_actualizar_ytd_mtd = true
+        }
+
         await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail, to_mail_cc_data)
 
         if(!error){
 
             let status      = 200
 
-            if(error_actualizar_esp || error_actualizar_so){
+            if(error_actualizar_ytd_mtd || error_actualizar_so){
                 status      = 500
-                message     = 'Ha ocurrido un error al crear los registros para No HML' 
+                message     = 'Ha ocurrido un error al crear los registros para Productos No HML' 
                 respuesta   = false
             }
 
