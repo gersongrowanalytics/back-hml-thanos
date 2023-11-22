@@ -59,6 +59,7 @@ controller.MetObtenerHomologadosMaster = async ( req, res ) => {
                 },
                 masterclientes_grow : {
                     select : {
+                        id: true,
                         cliente_hml: true,
                         territorio : true, // En el front se muestra región, validar con Jazmin
                         codigo_destinatario : true,
