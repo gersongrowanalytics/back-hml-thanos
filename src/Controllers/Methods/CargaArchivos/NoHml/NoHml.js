@@ -179,7 +179,7 @@ controller.MetNoHml = async (req, res, data, delete_data, error, message_errors)
             error_message_mail: message_errors
         }
         
-        const resYtdMtd = await axios.get('http://127.0.0.1:8002/actualizaciones/actualizar-ytd-mtd')
+        const resYtdMtd = await axios.get('https://back-hml-thanos.grow-solutions.com/actualizaciones/actualizar-ytd-mtd')
 
         if(resYtdMtd.status == 200){
             console.log("Actualizó YTD-MTD correctamente")
