@@ -2,46 +2,68 @@ const controller = {}
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-controller.MetActualizarYTDMTD = async ( req, res, ex_data ) => {
+controller.MetActualizarYTDMTD = async ( req, res, ex_data, apiController=false) => {
 
-    const mpss = await prisma.master_productos_so.findMany({
-        where: {
-            homologado : false
-        }
-    })
-
-
-    // OBTENER EL MES Y AÑO ACTUAL
-
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth()).padStart(2, '0');
-    const formattedDate = `${year}-${month}`;
-    let contador = 0;
-
-    for await(const quer of mpss){
-        const total_v = await prisma.$queryRawUnsafe(`SELECT sum(vs.precio_total_sin_igv) as suma_total, sum(vs.cantidad) as suma_cantidad FROM ventas_so as vs JOIN master_productos_so as mps ON mps.pk_extractor_venta_so = vs.pk_extractor_venta_so WHERE mps.homologado = ${false} AND mps.pk_venta_so = "${quer.pk_venta_so}" AND vs.fecha LIKE "${year}-%"` )
-
-        await prisma.master_productos_so.update({
-            where: {
-                id : quer.id
-            },
-            data: {
-                cantidad : total_v[0]['suma_cantidad'],
-                s_mtd : total_v[0]['suma_total'],
-                s_ytd : total_v[0]['suma_total'],
-            }
-        })
-
-        contador++;
+    let statusCode = 200
+    let jsonResponse = {
+        message : "Se actualizo correctamente los montos s_mtd y s_ytd",
+        response : true,
+        data : []
     }
 
-    return res.status(200).json({
-        response    : true,
-        message     : 'Se actualizo correctamente los montos s_mtd y s_ytd',
-        data : mpss
-    })
+    try{
 
+        const mpss = await prisma.master_productos_so.findMany({
+            where: {
+                homologado : false
+            }
+        })
+    
+        // OBTENER EL MES Y AÑO ACTUAL
+    
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth()).padStart(2, '0');
+        const formattedDate = `${year}-${month}`;
+        let contador = 0;
+    
+        for await(const quer of mpss){
+            const total_v = await prisma.$queryRawUnsafe(`SELECT sum(vs.precio_total_sin_igv) as suma_total, sum(vs.cantidad) as suma_cantidad FROM ventas_so as vs JOIN master_productos_so as mps ON mps.pk_extractor_venta_so = vs.pk_extractor_venta_so WHERE mps.homologado = ${false} AND mps.pk_venta_so = "${quer.pk_venta_so}" AND vs.fecha LIKE "${year}-%"` )
+    
+            await prisma.master_productos_so.update({
+                where: {
+                    id : quer.id
+                },
+                data: {
+                    cantidad : total_v[0]['suma_cantidad'],
+                    s_mtd : total_v[0]['suma_total'],
+                    s_ytd : total_v[0]['suma_total'],
+                }
+            })
+    
+            contador++;
+        }
+
+        jsonResponse = {
+            ...jsonResponse,
+            data : mpss
+        }
+
+    }catch(err){
+        console.log("Ha ocurrido un error")
+        statusCode = 500
+        jsonResponse = {
+            ...jsonResponse,
+            response    : false,
+            message     : "Ha ocurrido un error al actualizar los montos s_mtd y s_ytd"
+        }
+    }finally{
+        if(apiController){
+            return jsonResponse.response
+        }else{
+            return res.status(statusCode).json(jsonResponse)
+        }
+    }
 }
 
 controller.MetActualizarYTDMTDBK = async ( req, res, ex_data ) => {

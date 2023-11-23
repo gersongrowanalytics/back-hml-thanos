@@ -10,6 +10,8 @@ const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadena
 const path = require('path')
 const axios = require('axios');
 const RegisterAudits = require('../../Audits/CreateAudits/RegisterAudits')
+const ActualizarYTDMTD = require('../../Actualizaciones/ActualizarYTDMTD')
+
 controller.MetNoHml = async (req, res, data, delete_data, error, message_errors) => {
 
     const {
@@ -179,9 +181,9 @@ controller.MetNoHml = async (req, res, data, delete_data, error, message_errors)
             error_message_mail: message_errors
         }
         
-        const resYtdMtd = await axios.get('https://back-hml-thanos.grow-solutions.com/actualizaciones/actualizar-ytd-mtd')
+        const resYtdMtd = await ActualizarYTDMTD.MetActualizarYTDMTD(req, res, [], true)
 
-        if(resYtdMtd.status == 200){
+        if(resYtdMtd){
             console.log("Actualizó YTD-MTD correctamente")
         }else{
             error_actualizar_ytd_mtd = true
