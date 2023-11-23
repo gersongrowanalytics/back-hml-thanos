@@ -71,6 +71,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
             }
 
             const find_product_so = req_select_product_so.find(product => product.id == dhm.req_id_copia)
+
             if(dhm.req_combo){
                 data_mpso = { ...data_mpso,
                                 combo                   : dhm.req_combo, 
@@ -81,13 +82,11 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                                 bonificado              : dhm.req_bonificado,
                                 desde                   : moment(req_rango_fecha.desde).format('YYYY-MM-DD').toString(),
                                 hasta                   : moment(req_rango_fecha.hasta).format('YYYY-MM-DD').toString(),
-                                cod_unidad_medida       : dhm.req_cod_unidad_medida,
+                                cod_unidad_medida   : dhm.req_cod_unidad_medida,
                                 pk_venta_so_hml         :  find_product_so.pk_venta_so + prod_hml.codigo_material
                             }
             }
             if(dhm.req_id){
-
-
                 const updated_product_so = await prisma.master_productos_so.update({
                     where : {
                         id : dhm.req_id
@@ -131,7 +130,6 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
                     })
                     audpk.push("master_productos_so-"+created_product_so.id)
                 }else{
-
                     const created_product_so = await prisma.master_productos_so.create({
                         data : {
                             // proid : dhm.req_id_producto_homologado,
@@ -166,6 +164,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
 
         jsonsalida = { message, respuesta }
         await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'NO HOMOLOGADOS', 'ACTUALIZAR', '/approvals/update-non-approved-products', null, audpk)
+        await prisma.$disconnect()
 
         res.status(200).json({
             message     : message,
@@ -179,6 +178,7 @@ controller.MetActualizarHomologacion = async ( req, res ) => {
         devmsg = err
         jsonsalida = { message, devmsg, respuesta }
         await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'NO HOMOLOGADOS', 'ACTUALIZAR', '/approvals/update-non-approved-products', JSON.stringify(devmsg.toString()), null)
+        await prisma.$disconnect()
 
         res.status(500).json({
             message     : message,
