@@ -4,6 +4,8 @@ const prisma = new PrismaClient();
 const XLSX = require('xlsx')
 const HomologacionesController = require('../../../Methods/CargaArchivos/Homologaciones/Homologaciones')
 
+/* OJO con esta api, revisar su logica */
+
 controller.ValHomologaciones = async (req, res) => {
 
     const {

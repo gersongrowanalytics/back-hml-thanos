@@ -353,9 +353,10 @@ controller.ValCellsFile = async (workbook, usu, date) => {
         let cod_unidad_medida   = row[properties[13]].toString().substring(0,3)
         let unidad_medida       = row[properties[13]].toString()
         let precio_unitario     = row[properties[15]]/row[properties[12]]
+        let des_producto        = row[properties[11]] ? row[properties[11]].toString().replace(/\r\n+/g, ' ').trim() : ''
 
         const pk_venta_so           = row[properties[0]].toString().trim() + row[properties[10]].toString().trim()
-        const pk_extractor_venta_so = row[properties[0]].toString().trim() + row[properties[10]].toString().trim() + cod_unidad_medida + unidad_medida
+        const pk_extractor_venta_so = row[properties[0]].toString().trim() + row[properties[10]].toString().trim() + cod_unidad_medida + unidad_medida + des_producto
 
         if(usu.tpuid != 1){
             if(parseInt(month_date) != parseInt(req_month) || parseInt(year_date) != parseInt(req_year)){
@@ -382,7 +383,7 @@ controller.ValCellsFile = async (workbook, usu, date) => {
             dni_vendedor_distribuidor       : row[properties[8]]    ?  row[properties[8]].toString() : '',
             nombre_vendedor_distribuidor    : row[properties[9]]    ? row[properties[9]].toString() : '',
             codigo_producto                 : row[properties[10]]   ? row[properties[10]].toString().trim() : '',
-            descripcion_producto            : row[properties[11]]   ? row[properties[11]].toString().replace(/\r\n+/g, ' ') : '',
+            descripcion_producto            : row[properties[11]]   ? row[properties[11]].toString().replace(/\r\n+/g, ' ').trim() : '',
             cantidad                        : row[properties[12]]   ? row[properties[12]].toString() : '',
             cod_unidad_medida               : cod_unidad_medida,
             unidad_medida                   : unidad_medida,

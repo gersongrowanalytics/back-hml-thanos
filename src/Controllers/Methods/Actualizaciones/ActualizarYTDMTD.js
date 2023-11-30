@@ -12,7 +12,7 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data, apiController=false)
     }
 
     try{
-
+        // Corregir esta api s_mtd mes actual s_ytd año actual
         const mpss = await prisma.master_productos_so.findMany({
             where: {
                 homologado : false

@@ -82,6 +82,7 @@ protectedRoutes.post('/master-clientes-softys', ValMasterCliSof.ValMasterCliente
 // **** **** **** **** **** //
 // RUTAS CARGAR LISTA HOMOLOGACIONES
 // **** **** **** **** **** //
+/* Ojo con esta api revisar su logica */
 protectedRoutes.post('/list-approvals', ValHomologaciones.ValHomologaciones)
 
 // **** **** **** **** **** //
