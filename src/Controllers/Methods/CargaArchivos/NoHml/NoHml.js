@@ -179,8 +179,10 @@ controller.MetNoHml = async (req, res, data, delete_data, error, message_errors)
             error_val: error,
             error_message_mail: message_errors
         }
-        
-        const resYtdMtd = await ActualizarYTDMTD.MetActualizarYTDMTD(req, res, [], true)
+
+        console.log("empieza ytd")
+        const resYtdMtd = true
+        // const resYtdMtd = await ActualizarYTDMTD.MetActualizarYTDMTD(req, res, [], true)
 
         if(resYtdMtd){
             console.log("Actualizó YTD-MTD correctamente")
