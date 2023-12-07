@@ -11,6 +11,8 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data, apiController=false)
         data : []
     }
 
+    let cantidadPrueba = null
+
     try{
         // Corregir esta api s_mtd mes actual s_ytd año actual
         const mpss = await prisma.master_productos_so.findMany({
@@ -29,7 +31,8 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data, apiController=false)
     
         for await(const quer of mpss){
             const total_v = await prisma.$queryRawUnsafe(`SELECT sum(vs.precio_total_sin_igv) as suma_total, sum(vs.cantidad) as suma_cantidad FROM ventas_so as vs JOIN master_productos_so as mps ON mps.pk_extractor_venta_so = vs.pk_extractor_venta_so WHERE mps.homologado = ${false} AND mps.pk_venta_so = "${quer.pk_venta_so}" AND vs.fecha LIKE "${year}-%"` )
-    
+            
+            cantidadPrueba = total_v[0]['suma_cantidad'] 
             await prisma.master_productos_so.update({
                 where: {
                     id : quer.id
@@ -40,6 +43,7 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data, apiController=false)
                     s_ytd : total_v[0]['suma_total'],
                 }
             })
+
     
             contador++;
         }
@@ -51,11 +55,13 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data, apiController=false)
 
     }catch(err){
         console.log("Ha ocurrido un error")
+        console.log(cantidadPrueba);
         console.log(err)
         statusCode = 500
         jsonResponse = {
             ...jsonResponse,
             response    : false,
+            cantidad : cantidadPrueba,
             message     : "Ha ocurrido un error al actualizar los montos s_mtd y s_ytd",
             msgdev :    [err.toString()]
 
