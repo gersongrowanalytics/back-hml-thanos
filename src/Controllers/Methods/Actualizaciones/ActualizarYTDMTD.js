@@ -51,11 +51,14 @@ controller.MetActualizarYTDMTD = async ( req, res, ex_data, apiController=false)
 
     }catch(err){
         console.log("Ha ocurrido un error")
+        console.log(err)
         statusCode = 500
         jsonResponse = {
             ...jsonResponse,
             response    : false,
-            message     : "Ha ocurrido un error al actualizar los montos s_mtd y s_ytd"
+            message     : "Ha ocurrido un error al actualizar los montos s_mtd y s_ytd",
+            msgdev :    [err.toString()]
+
         }
     }finally{
         if(apiController){
