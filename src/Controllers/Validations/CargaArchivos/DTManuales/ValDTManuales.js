@@ -363,13 +363,13 @@ controller.ValCellsFile = async (workbook, usu, date) => {
         const pk_venta_so           = row[properties[0]].toString().trim() + row[properties[10]].toString().trim()
         const pk_extractor_venta_so = row[properties[0]].toString().trim() + row[properties[10]].toString().trim() + cod_unidad_medida + unidad_medida
 
-        // if(usu.tpuid != 1){
-        //     if(parseInt(month_date) != parseInt(req_month) || parseInt(year_date) != parseInt(req_year)){
-        //         add_dt_manuales = false
-        //         let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[1]['name'])
-        //         controller.ValAddMessageLog(rows_error, messages_error, columns_name[1]['name'], num_row, 'date range', null, date)
-        //     }
-        // }
+        if(usu.usuid != 1){
+            if(parseInt(month_date) != parseInt(req_month) || parseInt(year_date) != parseInt(req_year)){
+                add_dt_manuales = false
+                let rows_error  = messages_error.findIndex(mes => mes.columna == columns_name[1]['name'])
+                controller.ValAddMessageLog(rows_error, messages_error, columns_name[1]['name'], num_row, 'date range', null, date)
+            }
+        }
 
         data.push({
             pro_so_id                       : null,
