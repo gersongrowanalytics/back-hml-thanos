@@ -4,9 +4,8 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 
-controller.MetActualizarStatusArchivoPlano = async (usutoken, date, perid) => {
+controller.MetActualizarStatusArchivoPlano = async (usutoken, date, perid, devmsg = []) => {
     try{
-
         let perid_usu
         let fecid
 
@@ -39,7 +38,7 @@ controller.MetActualizarStatusArchivoPlano = async (usutoken, date, perid) => {
             fecid = date
         }
         
-        const are = await prisma.areareasestados.findFirst({
+        await prisma.areareasestados.findFirst({
             where : {
                 fecid       : fecid,
                 arenombre   : 'Ventas'
@@ -47,6 +46,11 @@ controller.MetActualizarStatusArchivoPlano = async (usutoken, date, perid) => {
         })
 
         const espe = await prisma.espestadospendientes.findFirst({
+            select: {
+                espid: true,
+                areid: true,
+                espfechaprogramado: true,
+            },
             where : {
                 AND : [
                     {
@@ -78,7 +82,7 @@ controller.MetActualizarStatusArchivoPlano = async (usutoken, date, perid) => {
                 esp_day_late = '0'
             }
     
-            const espu = await prisma.espestadospendientes.update({
+            await prisma.espestadospendientes.update({
                 where : {
                     espid : espe.espid
                 },
@@ -91,6 +95,9 @@ controller.MetActualizarStatusArchivoPlano = async (usutoken, date, perid) => {
             })
     
             const aree = await prisma.areareasestados.findFirst({
+                select: {
+                    areid: true,
+                },
                 where : {
                     areid : espe.areid
                 }
@@ -113,7 +120,7 @@ controller.MetActualizarStatusArchivoPlano = async (usutoken, date, perid) => {
                     are_percentage = (100-(espcount.length*50)).toString()
                 }
                 
-                const areu = await prisma.areareasestados.update({
+                await prisma.areareasestados.update({
                     where : {
                         areid : aree.areid
                     },
@@ -125,9 +132,17 @@ controller.MetActualizarStatusArchivoPlano = async (usutoken, date, perid) => {
             }
         }
 
+        devmsg.push({
+            response: true,
+            message: "Se actualizó correctamente el status",
+        })
         return true
     }catch(err){
         console.log(err)
+        devmsg.push({
+            response: false,
+            message: `Error al actualizar el status de archivo plano: ${err.toString()}`,
+        })
         return false
     }
 }

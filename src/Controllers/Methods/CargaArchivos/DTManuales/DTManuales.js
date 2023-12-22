@@ -3,13 +3,14 @@ require('dotenv').config()
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const crypto = require('crypto')
+const moment = require('moment')
 const SendMail = require('../../Reprocesos/SendMail')
 const UploadFileExcel = require('../../S3/UploadFileExcelS3')
 const GenerateCadenaAleatorio = require('../../Reprocesos/Helpers/GenerateCadenaAleatorio')
 const path = require('path')
 const DTActualizarEstadoSelloutController = require('../DTManuales/DTActualizarEstadoSellOut')
 const RegisterAudits = require('../../Audits/CreateAudits/RegisterAudits')
-const ActualizarStatusBaseDatos = require('../../Status/EstadoPendiente/ActualizarStatusBaseDatos')
+const StatusArchivoPlano = require('../../Status/EstadoPendiente/ActualizarStatusArchivoPlano')
 
 controller.MetDTManuales = async (req, res, data, delete_data, error, message_errors) => {
 
@@ -50,28 +51,13 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
     }
     let jsonsalida
     let audpk = []
+    let messages_delete_data_acc    = []
+    let car
+    let error_mets = false
 
     try{
 
-        //Almacena en status
-        console.log("En tarjeta DT MANUALES")
-        console.log("Status ")
-
-        let error_actualizar_esp        = false
-
-        let messages_delete_data_acc    = []
-        const baseUrl = req.protocol + '://' + req.get('host');
-
-        if(!error){
-            
-            const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
-
-            messages_delete_data_acc = messages_delete_data
-            if(usu.tpuid != 1){
-                console.log("Actualiza estado sellout")
-                error_actualizar_esp  = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data, audpk, devmsg)
-            }
-        }
+        const baseUrl = req.protocol + '://' + req.get('host')
         
         const token_name = await GenerateCadenaAleatorio.MetGenerateCadenaAleatorio(10)
 
@@ -79,7 +65,6 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
 
         if(process.env.ENTORNO == 'PREPRODUCTIVO'){
             ubicacion_s3 = 'hmlthanos/pe/prueba/tradicional/archivosgenerados/planoso/'+ token_name + '-' + req.files.carga_manual.name
-
         }else{
             ubicacion_s3 = 'hmlthanos/pe/tradicional/archivosgenerados/planoso/'+ token_name + '-' + req.files.carga_manual.name
         }
@@ -95,41 +80,10 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
         if(error){
             carexito_bd = false
             carnotificaciones_bd = await controller.FormatMessageError(message_errors)
-        }else{
-            const codigos_dt_fechas = Object.values(
-                data.reduce((grupos, dato) => {
-                    const { codigo_distribuidor, fecha } = dato;
-                    grupos[codigo_distribuidor] = grupos[codigo_distribuidor] || {
-                        codigo_distribuidor,
-                        fechas: [],
-                        fechas_query: [],
-                    };
-                    if (!grupos[codigo_distribuidor].fechas.includes(fecha)) {
-                        grupos[codigo_distribuidor].fechas.push(fecha);
-                        grupos[codigo_distribuidor].fechas_query.push({
-                            "fecha" : fecha
-                        });
-                    }
-                    return grupos;
-                }, {})
-            )
-
-            for await(const cod_fecha of codigos_dt_fechas){
-                
-                await prisma.pvs_pe_ventas_so.deleteMany({
-                    where : {
-                        codigo_distribuidor : cod_fecha.codigo_distribuidor,
-                        OR : cod_fecha.fechas_query
-                    }
-                })
-            }
-            await prisma.pvs_pe_ventas_so.createMany({
-                data
-            })
         }
 
         const token_excel = crypto.randomBytes(30).toString('hex')
-        const car = await prisma.carcargasarchivos.create({
+        car = await prisma.carcargasarchivos.create({
             data: {
                 usuid       : usu.usuid,
                 carnombre   : req.files.carga_manual.name,
@@ -143,75 +97,94 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             }
         })
 
-        const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html');
+        if(!error){
+            
+            const res_pvs = await controller.AddRegisterPvs(data, devmsg)
+            if(!res_pvs) error_mets = true
+            const { messages_delete_data } = controller.DistribuitorOverWrittern(delete_data)
+
+            messages_delete_data_acc = messages_delete_data
+            if(usu.tpuid != 1){
+                const res_dts = await DTActualizarEstadoSelloutController.ActualizarEstadoSellOut(req, res, data, audpk, devmsg)
+                if(res_dts) error_mets = true
+
+                const date = moment(req_date_updated)
+                const fec = await prisma.fecfechas.findFirst({
+                    select: {
+                        fecid: true,
+                    },
+                    where : {
+                        fecanionumero   : date.year(),
+                        fecmesnumero    : date.month() + 1
+                    }
+                })
+
+                const res_status = await StatusArchivoPlano.MetActualizarStatusArchivoPlano(null, fec.fecid, usu.perid, devmsg)
+                if(!res_status) error_mets = true
+
+                jsonsalida = { message, messages_delete_data_acc, respuesta }
+            }
+        }
+    }catch(error){
+        console.log("MetDTManuales", error)
+        devmsg.push({
+            response: false,
+            message: `Hubo un error en en la api MetDTManuales: ${err.toString()}`,
+        })
+        error_mets = true
+        jsonsalida = { message, respuesta, devmsg }
+    }finally{
+        const success_mail_html = path.resolve(__dirname, '../../Mails/CorreoInformarCargaArchivo.html')
         const from_mail_data = process.env.USER_MAIL
-        const to_mail_cc_data = ""
+        const to_mail_cc_data = []
 
         let to_mail_data = [
-            'Jazmin.Laguna@grow-analytics.com.pe',
-            "Jose.Cruz@grow-analytics.com.pe",
             "Frank.Martinez@grow-analytics.com.pe",
+            "Jose.Cruz@grow-analytics.com.pe",
+            "Jazmin.Laguna@grow-analytics.com.pe",
         ]
-
-        if(usu.usuid == 1){
-            to_mail_data = [
-                "Jose.Cruz@grow-analytics.com.pe",
-                "Frank.Martinez@grow-analytics.com.pe",
-            ]
-        }
 
         const subject_mail_success = "Carga de Archivo"
 
-        const data_mail = {
+        let data_mail = {
             archivo: req.files.carga_manual.name, 
             tipo: "Archivo Plano So", 
             usuario: usu.usuusuario,
             url_archivo: car.cartoken,
             error_val: error,
-            error_message_mail: message_errors
+            error_message_mail: message_errors,
+            error_log: [],
+            devmsg: [],
         }
-        
+
         await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail, to_mail_cc_data)
 
+        if(error_mets){
+            to_mail_data = [
+                "Frank.Martinez@grow-analytics.com.pe",
+                "Jose.Cruz@grow-analytics.com.pe",
+            ]
+            data_mail = {
+                ...data_mail,
+                devmsg: devmsg,
+            }
+
+            await SendMail.MetSendMail(success_mail_html, from_mail_data, to_mail_data, subject_mail_success, data_mail, to_mail_cc_data)
+        }
+        
         if(!error){
+            await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'DT MANUALES', 'CREAR', '/carga-archivos/dt-manuales', JSON.stringify(devmsg), audpk)
+            await prisma.$disconnect()
 
-            let status      = 200
-
-            jsonsalida = { message, messages_delete_data_acc, respuesta }
-            let log = null
-            if(devmsg.length > 1){
-                log = JSON.stringify(devmsg)
-            }
-            await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'DT MANUALES', 'CREAR', '/carga-archivos/dt-manuales', log, audpk)
-
-            //Actualizar status si es diferente de usuid = 1
-            if(usu.tpuid != 1){
-                console.log("Actualiza status, no es tpuid 1")
-                await ActualizarStatusBaseDatos.MetActualizarStatusBaseDatos(req, res)
-            }
-
-            return res.status(status).json({
+            return res.status(200).json({
                 message,
                 messages_delete_data_acc,
                 respuesta,
+                devmsg,
             })
-
         }else{
             return true
         }
-
-    }catch(error){
-        console.log(error);
-        devmsg.push("MetDTManuales-"+error.toString())
-        jsonsalida = { message, respuesta, devmsg }
-        await RegisterAudits.MetRegisterAudits(1, usutoken, null, jsonentrada, jsonsalida, 'DT MANUALES', 'CREAR', '/carga-archivos/dt-manuales', JSON.stringify(devmsg), null)
-
-        res.status(500)
-        return res.json({
-            message : 'Lo sentimos hubo un error al momento de cargar las dt manuales',
-            devmsg  : error,
-            respuesta : false
-        })
     }
 }
 
@@ -242,56 +215,6 @@ controller.DistribuitorOverWrittern = (messages_dts) => {
     return { messages_delete_data }
 }
 
-controller.DTActualizarVentasSO = async (action_delete, delete_data, data, audpk=[], devmsg=[]) => {
-
-    try{
-        if(action_delete){
-            for await (const dat of delete_data ){
-    
-                let dat_cod = dat.cod_dt.toString()
-        
-                const find_ventas_so = await prisma.ventas_so.findFirst({
-                    where: {
-                        fecha: {
-                            startsWith: dat.fecha
-                        },
-                        codigo_distribuidor: dat_cod
-                    }
-                })
-
-                if(find_ventas_so){
-                    audpk.push("ventas_so-delete-"+find_ventas_so.id)
-
-                    // await prisma.ventas_so.deleteMany({
-                    //     where: {
-                    //         fecha: {
-                    //             startsWith: dat.fecha
-                    //         },
-                    //         codigo_distribuidor: dat_cod
-                    //     }
-                    // })
-                }
-            }
-        }
-
-        for await (const dt of data){
-            const create_ventas_so = await prisma.ventas_so.create({
-                data : {
-                    ...dt
-                }
-            })
-            audpk.push("ventas_so-delete-"+create_ventas_so.id)
-        }
-        
-        return false
-
-    }catch(err){
-        devmsg.push("DTActualizarVentasSO-"+err.toString())
-        console.log(err)
-        return true
-    }
-}
-
 controller.FormatMessageError = async ( messages ) => {
 
     let message_notifications = []
@@ -318,6 +241,53 @@ controller.FormatMessageError = async ( messages ) => {
     }
 
     return JSON.stringify(message_notifications)
+}
+
+controller.AddRegisterPvs = async (data, devmsg) => {
+    try{
+        const codigos_dt_fechas = Object.values(
+            data.reduce((grupos, dato) => {
+                const { codigo_distribuidor, fecha } = dato
+                grupos[codigo_distribuidor] = grupos[codigo_distribuidor] || {
+                    codigo_distribuidor,
+                    fechas: [],
+                    fechas_query: [],
+                }
+                if (!grupos[codigo_distribuidor].fechas.includes(fecha)) {
+                    grupos[codigo_distribuidor].fechas.push(fecha);
+                    grupos[codigo_distribuidor].fechas_query.push({
+                        "fecha" : fecha
+                    });
+                }
+                return grupos
+            }, {})
+        )
+    
+        for await(const cod_fecha of codigos_dt_fechas){
+            await prisma.pvs_pe_ventas_so.deleteMany({
+                where : {
+                    codigo_distribuidor : cod_fecha.codigo_distribuidor,
+                    OR : cod_fecha.fechas_query
+                }
+            })
+        }
+        await prisma.pvs_pe_ventas_so.createMany({
+            data
+        })
+
+        devmsg.push({
+            response: true,
+            message: "Se actualizó correctamente el Archivo Plano SO",
+        })
+        return true
+    }catch(error){
+        console.log("AddRegisterPvs", error)
+        devmsg.push({
+            response: false,
+            message: "Error al actualizar los datos Archivo Plano So: "+error.toString(),
+        })
+        return false
+    }
 }
 
 module.exports = controller

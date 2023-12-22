@@ -1,7 +1,7 @@
 const controller = {}
 const XLSX = require('xlsx')
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 const DTManualesController = require('../../../Methods/CargaArchivos/DTManuales/DTManuales')
 const DTManualesMasterClientesGrowController = require('../../../Methods/CargaArchivos/DTManuales/DTManualesMasterClientesGrow')
 const moment = require('moment');
@@ -51,9 +51,9 @@ controller.ValDTManuales = async (req, res) => {
 
         if(!add_dt_manuales){
             await DTManualesController.MetDTManuales(req, res, null, null, true, messages_error)
+            await prisma.$disconnect()
 
-            res.status(500)
-            return res.json({
+            return res.status(500).json({
                 respuesta       : false,
                 message         : 'Lo sentimos se encontraron algunas observaciones',
                 notificaciones  : messages_error,
@@ -63,19 +63,16 @@ controller.ValDTManuales = async (req, res) => {
 
         if(action_file.process_data){
             DTManualesController.MetDTManuales(req, res, data, borrar_data, false)
-        }else{
-            res.status(200).json({
-                respuesta   : true,
-                message     : 'Se ha validado la data correctamente'
-            })
         }
         
     }catch(error){
         console.log(error)
-        res.status(500)
-        res.json({
+        res.status(500).json({
             message : 'Lo sentimos hubo un error al momento de leer el archivo',
-            devmsg  : error
+            respuesta: false,
+            devmsg  : error,
+            notificaciones: [],
+            messages_error: [],
         })
     }
 }

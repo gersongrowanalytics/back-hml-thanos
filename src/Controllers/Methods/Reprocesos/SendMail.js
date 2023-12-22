@@ -34,6 +34,14 @@ controller.MetSendMail = async (url_mail, from_mail, to_mail, subject_mail, data
         return date
     })
 
+    handlebars.registerHelper("if", function(conditional, options) {
+        if(conditional){
+            return options.fn(this)
+        }else{
+            return options.inverse(this)
+        }
+    })
+
     const html = fs.readFileSync(url_mail, 'utf8')
     const template = handlebars.compile(html)
     const renderedTemplate = template({data_mail})

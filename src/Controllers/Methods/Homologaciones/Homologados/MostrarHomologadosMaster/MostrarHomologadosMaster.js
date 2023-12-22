@@ -139,7 +139,8 @@ controller.MetObtenerHomologadosMaster = async ( req, res ) => {
 
         get_data_hml.map((m, index) => get_data_hml[index]['key'] = index)
 
-        res.status(200).json({
+        await prisma.$disconnect()
+        return res.status(200).json({
             response    : true,
             message     : 'Información de producto no homologado obtenida con éxito',
             data        : mpso,
@@ -148,7 +149,8 @@ controller.MetObtenerHomologadosMaster = async ( req, res ) => {
 
     }catch(err){
         console.log(err)
-        res.status(200).json({
+        await prisma.$disconnect()
+        return res.status(200).json({
             msgdev      : err,
             response    : false,
             message     : 'Ha ocurrido un error al obtener la data del producto no homologado'

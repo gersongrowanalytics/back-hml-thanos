@@ -14,7 +14,6 @@ controller.ActualizarEstadoSellOut = async ( req, res, data, audpk=[], devmsg=[]
     } = req.body
 
     try{
-        
         const date = moment(req_date)
         const espn = []
 
@@ -30,6 +29,9 @@ controller.ActualizarEstadoSellOut = async ( req, res, data, audpk=[], devmsg=[]
         })
 
         const fec = await prisma.fecfechas.findFirst({
+            select: {
+                fecid: true,
+            },
             where : {
                 fecanionumero   : date.year(),
                 fecmesnumero    : date.month() + 1
@@ -39,6 +41,9 @@ controller.ActualizarEstadoSellOut = async ( req, res, data, audpk=[], devmsg=[]
         const fecid = fec.fecid
 
         const are = await prisma.areareasestados.findFirst({
+            select: {
+                areid: true,
+            },
             where : {
                 fecid       : fecid,
                 arenombre   : 'Ventas'
@@ -52,8 +57,16 @@ controller.ActualizarEstadoSellOut = async ( req, res, data, audpk=[], devmsg=[]
             }
         })
 
-        const data_espn = data.filter(dat => dat.m_cl_grow != null)
-            
+        let data_espn = []
+        data.filter(dat => dat.m_cl_grow != null).map(dat => {
+            const find_data = data_espn.find(d_espn => d_espn.m_cl_grow === dat.m_cl_grow)
+            if(!find_data){
+                data_espn.push({
+                    m_cl_grow: dat.m_cl_grow
+                })
+            }
+        })
+
         for await (const esp of data_espn){
 
             const espo = await prisma.espestadospendientes.findFirst({
@@ -95,20 +108,26 @@ controller.ActualizarEstadoSellOut = async ( req, res, data, audpk=[], devmsg=[]
             }
         }
 
-        for await (const esp of espn){
-            const create_esp = await prisma.espestadospendientes.create({
-                data : {
-                    ...esp
-                }
-            })
-            audpk.push("espestadospendientes-create-"+create_esp.espid)
-        }
+        await prisma.espestadospendientes.createMany({
+            data: espn,
+        })
 
+        espn.map(esp => {
+            audpk.push("espestadospendientes-create-"+esp.espbasedato)
+        })
+
+        devmsg.push({
+            response: true,
+            message: "Se actualizó correctamente los DTS (Sell Out)",
+        })
         return false
 
     }catch(err){
         console.log(err)
-        devmsg.push("ActualizarEstadoSellOut-"+err.toString())
+        devmsg.push({
+            response: false,
+            message: "Error al actualizar los DTS (Sell Out): "+err.toString(),
+        })
         return true
     }
 }

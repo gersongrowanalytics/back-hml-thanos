@@ -19,7 +19,7 @@
                     <tr>
                         <td align="center" style=" width: 100000px;" >
                             <div id="" style=" font-style: normal; font-weight: bold; font-size: 15px; line-height: 18px; color: #004FB8; padding-top:15px">
-                            Hemos recibido un nuevo archivo
+                            Hemos recibido una nueva carga
                             </div>
                         </td>
                     </tr>
@@ -39,80 +39,16 @@
                         </td>
                     </tr>
                     <tr>
-                        <td align="center" style=" width: 100000px;" >
-                            <div id="" style=" font-style: normal; font-weight: normal; font-size: 13px; line-height: 18px; color: black; padding-top:1px">
-                                <b>Nombre del Archivo:</b> 
-                                
-                                <a 
-                                    href="https://back-hml-thanos.grow-solutions.com/carga-archivos/generar-descarga?token={{data_mail.url_archivo}}"
-                                >{{data_mail.archivo}}</a>
-                            </div>
-                        </td>
-                    </tr>
-                    {{#if data_mail.error_val}}
-                    <tr>
                         <td style="width: 100000px; padding: 0 100px;">
                             <div style="font-style: normal; font-weight: normal; font-size: 13px; line-height: 18px; color: black; padding-top: 10px;">
-                                {{#compareArray data_mail.sheet_not_found.length data_mail.error_message_mail.length}}
-                                <b style="color: red;">Observaciones de Lógica:</b>
-                                {{/compareArray}}
-                                {{#isGreater data_mail.sheet_not_found.length 0}}
-                                    {{#each data_mail.sheet_not_found}}
+                                {{#isGreater data_mail.msgerror.length 0}}
+                                    <div style="font-weight: bold; color: red;">Errores: </div>
+                                    {{#each data_mail.msgerror}}
                                         <div style="color: red;">
                                             <span style="font-weight: bold;">{{this}}</span>
                                         </div>
                                     {{/each}}
                                 {{/isGreater}}
-                                {{#isGreater data_mail.error_message_mail.length 0}}
-                                    {{#each data_mail.error_message_mail}}
-                                        <div style="color: red;">
-                                            Se encontraron las siguientes observaciones en la columna {{columna}}:
-                                        </div>
-                                        {{#each notificaciones}}
-                                        <div style="color: red;">
-                                            - {{msg}}, en las siguientes lineas: 
-                                            {{#each rows}}
-                                            <span style="font-weight: bold;">{{this}},</span>
-                                            {{/each}}
-                                        </div>
-                                        {{/each}}
-                                    {{/each}}
-                                {{/isGreater}}
-                            </div>
-                        </td>
-                    </tr>
-                    {{/if}}
-                    {{#isGreater data_mail.error_log.length 0}}
-                    <tr>
-                        <td style="width: 100000px; padding: 0 100px;">
-                            <div style="font-style: normal; font-weight: normal; font-size: 13px; line-height: 18px; color: black; padding-top: 10px;">
-                                <b style="color: red;">Observaciones de Método:</b>
-                                <div style="color: red;">
-                                    Se encontraron los siguientes errores:
-                                </div>
-                                {{#each data_mail.error_log as |log|}}
-                                    <div style="color: red;">
-                                        - {{log}}
-                                    </div>
-                                {{/each}}
-                            </div>
-                        </td>
-                    </tr>
-                    {{/isGreater}}
-                    <tr>
-                        <td align="center" style="width: 100000px; padding: 0 100px;">
-                            <div style="font-style: normal; font-weight: normal; font-size: 13px; line-height: 18px; color: black; padding-top: 10px;">
-                                {{#each data_mail.devmsg}}
-                                    {{#if response}}
-                                        <div style="color: black;">
-                                            {{message}}
-                                        </div>
-                                    {{else}}
-                                        <div style="color: red;">
-                                            {{message}}
-                                        </div>
-                                    {{/if}}
-                                {{/each}}
                             </div>
                         </td>
                     </tr>

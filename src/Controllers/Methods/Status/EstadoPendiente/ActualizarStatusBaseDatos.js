@@ -28,6 +28,9 @@ controller.MetActualizarStatusBaseDatos = async ( req, res ) => {
 
         const date = moment(req_date)
         const fec = await prisma.fecfechas.findFirst({
+            select: {
+                fecid: true,
+            },
             where : {
                 fecanionumero   : date.year(),
                 fecmesnumero    : date.month() + 1
@@ -125,11 +128,15 @@ controller.MetActualizarStatusBaseDatos = async ( req, res ) => {
 
     }catch(err){
         console.log(err)
-        res.status(500).json({
-            response    : false,
-            message     : 'Ha ocurrido un error al actualizar el status',
-            msg_dev     : err
-        })
+        if(req_controller){
+            return false
+        }else{
+            return res.status(500).json({
+                response    : false,
+                message     : 'Ha ocurrido un error al actualizar el status',
+                msg_dev     : err
+            })
+        }
     }
 }
 

@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 controller.MetMostrarUniqueNoHomologados = async (req, res) => {
-    const { req_id } = req.body;
+    const { req_id } = req.body
 
     try{
         const productosSinProid = await prisma.master_productos_so.findMany({
@@ -46,18 +46,17 @@ controller.MetMostrarUniqueNoHomologados = async (req, res) => {
                 id : req_id
             },
         })
-        
-        res.status(200)
-        res.json({
+
+        await prisma.$disconnect()
+        res.status(200).json({
             message : 'Productos no homologados obtenidos correctamente',
             data    : productosSinProid,
             respuesta : true
         })
-
     }catch(error){
         console.log(error)
-        res.status(500)
-        res.json({
+        await prisma.$disconnect()
+        res.status(500).json({
             message : 'Lo sentimos hubo un error al momento de ...',
             devmsg  : error
         })

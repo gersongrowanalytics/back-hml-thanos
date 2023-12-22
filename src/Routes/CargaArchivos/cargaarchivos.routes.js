@@ -31,6 +31,7 @@ const ValForRegistrosVentasSO = require('../../Controllers/Validations/CargaArch
 const ValCargarPeVentasSO = require('../../Controllers/Validations/CargaArchivos/PeVentasSO/ValPeVentasSO')
 
 const ValCargarNoHml = require('../../Controllers/Validations/CargaArchivos/NoHml/NoHml')
+const ValCargarNoHmlCleaned = require('../../Controllers/Validations/CargaArchivos/NoHml/NoHmlCleaned')
 
 const protectedRoutes = express.Router();
 // protectedRoutes.use(authMiddleware);
@@ -55,6 +56,7 @@ protectedRoutes.post('/master-materiales', ValMasterDT.ValMasterMateriales)
 // RUTAS CARGAR MASTER MATERIALES
 // **** **** **** **** **** //
 protectedRoutes.post('/no-hml', ValCargarNoHml.ValNoHml)
+protectedRoutes.post('/no-hml-cleaned', ValCargarNoHmlCleaned.ValNoHmlCleaned)
 
 
 // **** **** **** **** **** //

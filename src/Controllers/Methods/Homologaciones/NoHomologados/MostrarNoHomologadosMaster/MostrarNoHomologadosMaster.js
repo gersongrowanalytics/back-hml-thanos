@@ -159,6 +159,7 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
             }
         })
 
+        await prisma.$disconnect()
         res.status(200).json({
             response    : true,
             message     : 'Información de producto no homologado obtenida con éxito',
@@ -168,7 +169,8 @@ controller.MetObtenerNoHomologadosMaster = async ( req, res ) => {
 
     }catch(err){
         console.log(err)
-        res.status(200).json({
+        await prisma.$disconnect()
+        res.status(500).json({
             msgdev      : err,
             response    : false,
             message     : 'Ha ocurrido un error al obtener la data del producto no homologado'

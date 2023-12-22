@@ -2,8 +2,7 @@ const controller = {}
 const moment = require('moment');
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const ActualizarSacStatusController = require('./ActualizarSacStatus');
-const { format } = require('date-fns');
+const ActualizarSacStatusController = require('./ActualizarSacStatus')
 
 controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
 
@@ -304,6 +303,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
         });
 
         if(res){
+            await prisma.$disconnect()
             res.status(200).json({
                 response    : true,
                 messagge    : 'Se obtuvo el estado pendiente de status con éxito',
@@ -322,6 +322,7 @@ controller.MetMostrarEstadoPendiente = async ( req, res=null ) => {
     }catch(err){
         console.log(err)
         if(res){
+            await prisma.$disconnect()
             res.status(500).json({
                 response    : false,
                 messagge    : 'Ha ocurrido un error al obtener el estado pendiente de status',
