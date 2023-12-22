@@ -163,6 +163,7 @@ controller.MetDTManuales = async (req, res, data, delete_data, error, message_er
             to_mail_data = [
                 "Frank.Martinez@grow-analytics.com.pe",
                 "Jose.Cruz@grow-analytics.com.pe",
+                "Jazmin.Laguna@grow-analytics.com.pe",
             ]
             data_mail = {
                 ...data_mail,
